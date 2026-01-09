@@ -13,7 +13,7 @@ export default function Home() {
     status: 'Listening on Spotify',
     coverUrl: 'https://i.scdn.co/image/ab67616d0000b2735755e164993d98a38ae57aa1',
     width: 600,
-    height: 300,
+    height: 500,
     theme: 'dark',
     username: '',
     token: ''

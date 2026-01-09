@@ -5,7 +5,7 @@ import { NextRequest } from 'next/server';
 export const runtime = 'edge';
 
 export async function GET(req: NextRequest) {
-  try {
+
     const { searchParams } = new URL(req.url);
     const templateName = searchParams.get('template') || 'spotify';
     
@@ -44,19 +44,42 @@ export async function GET(req: NextRequest) {
                 props.followers = ghData.followers;
                 props.avatarUrl = ghData.avatar_url;
                 props.repos = ghData.public_repos;
+                props.location = ghData.location;
+                props.bio = ghData.bio;
+                props.company = ghData.company;
+                props.blog = ghData.blog;
+                props.joinedDate = new Date(ghData.created_at).getFullYear().toString();
 
-                // Fetch Repos for Star Count
+                // Fetch Repos for Star Count & Languages
                 try {
                     const reposRes = await fetch(`https://api.github.com/users/${props.username}/repos?per_page=100&type=owner&sort=updated`, { headers });
                     if (reposRes.ok) {
-
                         const repos = await reposRes.json();
-                        // Sum stars
+                        
+                        // Sum stars & forks
                         const totalStars = repos.reduce((acc: number, repo: any) => acc + (repo.stargazers_count || 0), 0);
+                        const totalForks = repos.reduce((acc: number, repo: any) => acc + (repo.forks_count || 0), 0);
+                        
                         props.stars = totalStars;
+                        props.forks = totalForks;
+
+                        // Calculate Top Languages
+                        const langMap: Record<string, number> = {};
+                        repos.forEach((repo: any) => {
+                            if (repo.language) {
+                                langMap[repo.language] = (langMap[repo.language] || 0) + 1;
+                            }
+                        });
+
+                        const sortedLangs = Object.entries(langMap)
+                            .sort(([, a], [, b]) => b - a)
+                            .slice(0, 4) // Top 4 languages
+                            .map(([lang, count]) => ({ name: lang, count: count }));
+                            
+                        props.languages = JSON.stringify(sortedLangs); // Pass as string to avoid object complexity in generic props
                     }
                 } catch (e) {
-                    console.warn('Failed to fetch stars', e);
+                    console.warn('Failed to fetch stars/langs', e);
                 }
             }
         } catch (err) {
@@ -65,41 +88,51 @@ export async function GET(req: NextRequest) {
     }
     // -----------------------------
 
-    // Load Font (Instrument Sans)
-    const fontUrl = 'https://cdn.jsdelivr.net/npm/@fontsource/instrument-sans@5.1.0/files/instrument-sans-latin-400-normal.woff';
-    const fontRes = await fetch(fontUrl);
-    
-    if (!fontRes.ok) {
-        throw new Error(`Failed to fetch font from ${fontUrl}: ${fontRes.statusText}`);
+    // Load Font (Instrument Sans) - with fallback
+    let fontData: ArrayBuffer | null = null;
+    try {
+        const fontUrl = 'https://cdn.jsdelivr.net/npm/@fontsource/instrument-sans@5.1.0/files/instrument-sans-latin-400-normal.woff';
+        const fontRes = await fetch(fontUrl);
+        if (fontRes.ok) {
+            fontData = await fontRes.arrayBuffer();
+        } else {
+             console.warn('Font fetch failed:', fontRes.statusText);
+        }
+    } catch (fontErr) {
+        console.warn('Font loading error:', fontErr);
     }
-
-    const fontData = await fontRes.arrayBuffer();
 
     const width = Number(searchParams.get('width')) || 800;
     const height = Number(searchParams.get('height')) || 400;
 
-    return new ImageResponse(
-      (
-        <Component {...props} />
-      ),
-      {
-        width,
-        height,
-        fonts: [
-          {
-            name: 'Instrument Sans',
-            data: fontData,
-            style: 'normal',
-            weight: 400,
-          },
-        ],
-        headers: {
-          'Cache-Control': 'public, max-age=60, stale-while-revalidate=300',
-        },
-      }
-    );
-  } catch (e: any) {
-    console.error(e);
-    return new Response(`Failed to generate image: ${e.message}`, { status: 500 });
-  }
+    try {
+        const options: any = {
+            width,
+            height,
+        };
+
+        if (fontData) {
+            options.fonts = [{
+                name: 'Instrument Sans',
+                data: fontData,
+                style: 'normal',
+            }];
+        }
+
+        return new ImageResponse(
+            <Component {...props} />,
+            options
+        );
+    } catch (renderErr: any) {
+        console.error('Render error:', renderErr);
+        return new ImageResponse(
+            (
+                <div style={{ display: 'flex', width: '100%', height: '100%', backgroundColor: '#000', color: '#fff', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>
+                    Render Error: {renderErr.message}
+                </div>
+            ),
+            { width, height }
+        );
+    }
 }
+
