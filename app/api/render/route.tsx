@@ -141,8 +141,40 @@ export async function GET(req: NextRequest) {
                                 const orgsData = await orgsRes.json();
                                 props.orgs = orgsData.length;
                             }
+
+                            // GraphQL for Total Contributions (Commits++)
+                            // Only works if token is present
+                            if (props.token) {
+                                const query = `
+                                  query($login: String!) {
+                                    user(login: $login) {
+                                      contributionsCollection {
+                                        contributionCalendar {
+                                          totalContributions
+                                        }
+                                      }
+                                    }
+                                  }
+                                `;
+                                const gqlRes = await fetch('https://api.github.com/graphql', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Authorization': `Bearer ${props.token}`,
+                                        'Content-Type': 'application/json',
+                                        'User-Agent': 'Readme-UI'
+                                    },
+                                    body: JSON.stringify({ query, variables: { login: props.username } })
+                                });
+                                
+                                if (gqlRes.ok) {
+                                    const gqlData = await gqlRes.json();
+                                    const contributions = gqlData.data?.user?.contributionsCollection?.contributionCalendar?.totalContributions || 0;
+                                    props.contributions = contributions;
+                                }
+                            }
+
                         } catch (extraErr) {
-                            console.warn('Failed to fetch extra stats (PRs/Issues)');
+                            console.warn('Failed to fetch extra stats (PRs/Issues/Graphql)');
                         }
                     }
                 } catch (e) {

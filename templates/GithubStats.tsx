@@ -11,6 +11,7 @@ export interface GithubStatsProps {
   prs?: number;
   issues?: number;
   orgs?: number;
+  contributions?: number;
   avatarUrl?: string;
   theme?: 'dark' | 'light';
   location?: string;
@@ -22,8 +23,8 @@ export interface GithubStatsProps {
   topics?: string; // JSON string
 }
 
-const calculateRank = ({ stars, followers, repos, forks, prs }: any) => {
-    const score = (stars * 4) + (followers * 2) + (forks * 3) + (repos * 1) + ((prs || 0) * 3);
+const calculateRank = ({ stars, followers, repos, forks, prs, contributions }: any) => {
+    const score = (stars * 4) + (followers * 2) + (forks * 3) + (repos * 1) + ((prs || 0) * 3) + ((contributions || 0) * 0.5);
     
     if (score > 500) return 'S+';
     if (score > 200) return 'S';
@@ -45,6 +46,7 @@ export const GithubStats: React.FC<GithubStatsProps> = ({
   prs = 0,
   issues = 0,
   orgs = 0,
+  contributions = 0,
   avatarUrl = "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
   theme = 'dark',
   location,
@@ -65,7 +67,8 @@ export const GithubStats: React.FC<GithubStatsProps> = ({
   const parsedTopics = topics ? JSON.parse(topics) : [];
   
   const totalLangCount = parsedLanguages.reduce((acc: number, l: any) => acc + l.count, 0);
-  const rank = calculateRank({ stars, followers, repos, forks, prs });
+  const rank = calculateRank({ stars, followers, repos, forks, prs, contributions });
+
 
   // Language Colors
   const colors = ['#3178c6', '#f1e05a', '#e34c26', '#563d7c', '#2b7489', '#f0db4f'];
@@ -209,8 +212,8 @@ export const GithubStats: React.FC<GithubStatsProps> = ({
                     <span style={statLabelStyle}>Forks</span>
                 </div>
                 <div style={statStyle}>
-                    <span style={statValueStyle}>{orgs}</span>
-                    <span style={statLabelStyle}>Orgs</span>
+                    <span style={statValueStyle}>{contributions}</span>
+                    <span style={statLabelStyle}>Contribs</span>
                 </div>
              </div>
              
