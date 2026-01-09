@@ -7,6 +7,7 @@ export interface GithubStatsProps {
   followers?: number;
   repos?: number;
   forks?: number;
+  size?: string;
   avatarUrl?: string;
   theme?: 'dark' | 'light';
   location?: string;
@@ -17,6 +18,18 @@ export interface GithubStatsProps {
   languages?: string; // JSON string
 }
 
+const calculateRank = ({ stars, followers, repos, forks }: any) => {
+    const score = (stars * 4) + (followers * 2) + (forks * 3) + (repos * 1);
+    
+    if (score > 500) return 'S+';
+    if (score > 200) return 'S';
+    if (score > 100) return 'A+';
+    if (score > 50) return 'A';
+    if (score > 20) return 'B+';
+    if (score > 5) return 'B';
+    return 'C';
+};
+
 export const GithubStats: React.FC<GithubStatsProps> = ({
   username = "octocat",
   name = "The Octocat",
@@ -24,6 +37,7 @@ export const GithubStats: React.FC<GithubStatsProps> = ({
   followers = 500,
   repos = 30,
   forks = 0,
+  size = "0 KB",
   avatarUrl = "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
   theme = 'dark',
   location,
@@ -41,9 +55,15 @@ export const GithubStats: React.FC<GithubStatsProps> = ({
 
   const parsedLanguages = languages ? JSON.parse(languages) : [];
   const totalLangCount = parsedLanguages.reduce((acc: number, l: any) => acc + l.count, 0);
+  const rank = calculateRank({ stars, followers, repos, forks });
 
   // Language Colors
   const colors = ['#3178c6', '#f1e05a', '#e34c26', '#563d7c', '#2b7489', '#f0db4f'];
+  
+  // Rank Colors
+  const rankColors: Record<string, string> = {
+      'S+': '#ff0055', 'S': '#00bfff', 'A+': '#2ea043', 'A': '#2ea043', 'B+': '#e3b341', 'B': '#e3b341', 'C': '#8b949e'
+  };
 
   return (
     <div
@@ -74,17 +94,40 @@ export const GithubStats: React.FC<GithubStatsProps> = ({
       >
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '16px', width: '100%' }}>
-          <img
-            src={avatarUrl}
-            alt="Avatar"
-            width={80}
-            height={80}
-            style={{
-              borderRadius: '50%',
-              marginRight: '20px',
-              border: `2px solid ${borderColor}`
-            }}
-          />
+          <div style={{ display: 'flex', position: 'relative' }}>
+               <img
+                    src={avatarUrl}
+                    alt="Avatar"
+                    width={80}
+                    height={80}
+                    style={{
+                    borderRadius: '50%',
+                    marginRight: '20px',
+                    border: `2px solid ${borderColor}`
+                    }}
+                />
+                {/* Rank Badge */}
+                <div style={{ 
+                    display: 'flex', 
+                    position: 'absolute', 
+                    bottom: -5, 
+                    right: 15, 
+                    backgroundColor: rankColors[rank], 
+                    color: '#fff', 
+                    width: '32px', 
+                    height: '32px', 
+                    borderRadius: '50%', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    fontWeight: 800, 
+                    fontSize: '14px',
+                    border: `3px solid ${bgColor}`,
+                    boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
+                }}>
+                    {rank}
+                </div>
+          </div>
+
           <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                 <span style={{ fontSize: '24px', fontWeight: 700, lineHeight: 1.2 }}>{name}</span>
@@ -126,6 +169,10 @@ export const GithubStats: React.FC<GithubStatsProps> = ({
                 <span style={{ fontSize: '18px', fontWeight: 700 }}>{repos}</span>
                 <span style={{ fontSize: '11px', color: secondaryText, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Repos</span>
              </div>
+             <div style={{ display: 'flex',  flex: 1, flexDirection: 'column', alignItems: 'center', padding: '10px', backgroundColor: isDark ? '#161b22' : '#f6f8fa', borderRadius: '8px', border: `1px solid ${borderColor}` }}>
+                <span style={{ fontSize: '18px', fontWeight: 700 }}>{size}</span>
+                <span style={{ fontSize: '11px', color: secondaryText, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Size</span>
+             </div>
         </div>
 
         {/* Top Languages */}
@@ -135,20 +182,26 @@ export const GithubStats: React.FC<GithubStatsProps> = ({
                 
                 {/* Visual Bar */}
                 <div style={{ display: 'flex', width: '100%', height: '10px', borderRadius: '6px', overflow: 'hidden', marginBottom: '10px' }}>
-                    {parsedLanguages.map((lang: any, i: number) => (
-                        <div key={lang.name} style={{ width: `${(lang.count / totalLangCount) * 100}%`, height: '100%', backgroundColor: colors[i % colors.length] }} />
-                    ))}
+                    {parsedLanguages.map((lang: any, i: number) => {
+                        const color = lang.name === 'Others' ? '#8b949e' : colors[i % colors.length];
+                        return (
+                            <div key={lang.name} style={{ width: `${(lang.count / totalLangCount) * 100}%`, height: '100%', backgroundColor: color }} />
+                        );
+                    })}
                 </div>
 
                 {/* Legend */}
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
-                     {parsedLanguages.map((lang: any, i: number) => (
-                        <div key={lang.name} style={{ display: 'flex', alignItems: 'center', fontSize: '12px', color: secondaryText }}>
-                             <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: colors[i % colors.length], marginRight: '6px' }} />
-                             <span style={{ fontWeight: 500, marginRight: '4px', color: textColor }}>{lang.name}</span>
-                             <span style={{ opacity: 0.6 }}>{Math.round((lang.count / totalLangCount) * 100)}%</span>
-                        </div>
-                    ))}
+                     {parsedLanguages.map((lang: any, i: number) => {
+                        const color = lang.name === 'Others' ? '#8b949e' : colors[i % colors.length];
+                        return (
+                            <div key={lang.name} style={{ display: 'flex', alignItems: 'center', fontSize: '12px', color: secondaryText }}>
+                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: color, marginRight: '6px' }} />
+                                <span style={{ fontWeight: 500, marginRight: '4px', color: textColor }}>{lang.name}</span>
+                                <span style={{ opacity: 0.6 }}>{Math.round((lang.count / totalLangCount) * 100)}%</span>
+                            </div>
+                        );
+                     })}
                 </div>
             </div>
         )}

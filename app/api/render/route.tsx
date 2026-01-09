@@ -56,27 +56,51 @@ export async function GET(req: NextRequest) {
                     if (reposRes.ok) {
                         const repos = await reposRes.json();
                         
-                        // Sum stars & forks
+                        // Sum stars & forks & size
                         const totalStars = repos.reduce((acc: number, repo: any) => acc + (repo.stargazers_count || 0), 0);
                         const totalForks = repos.reduce((acc: number, repo: any) => acc + (repo.forks_count || 0), 0);
+                        const totalSizeKB = repos.reduce((acc: number, repo: any) => acc + (repo.size || 0), 0);
+
+                        // Format size
+                        let sizeFormatted = '0 KB';
+                        if (totalSizeKB > 1024 * 1024) {
+                            sizeFormatted = (totalSizeKB / (1024 * 1024)).toFixed(1) + ' GB';
+                        } else if (totalSizeKB > 1024) {
+                            sizeFormatted = (totalSizeKB / 1024).toFixed(1) + ' MB';
+                        } else {
+                            sizeFormatted = totalSizeKB + ' KB';
+                        }
                         
                         props.stars = totalStars;
                         props.forks = totalForks;
+                        props.size = sizeFormatted;
 
                         // Calculate Top Languages
                         const langMap: Record<string, number> = {};
+                        let totalReposWithLang = 0;
+                        
                         repos.forEach((repo: any) => {
                             if (repo.language) {
                                 langMap[repo.language] = (langMap[repo.language] || 0) + 1;
+                                totalReposWithLang++;
                             }
                         });
 
-                        const sortedLangs = Object.entries(langMap)
-                            .sort(([, a], [, b]) => b - a)
-                            .slice(0, 4) // Top 4 languages
+                        const sortedEntries = Object.entries(langMap)
+                            .sort(([, a], [, b]) => b - a);
+
+                        const topLangs = sortedEntries
+                            .slice(0, 4) 
                             .map(([lang, count]) => ({ name: lang, count: count }));
+                        
+                        const topCount = topLangs.reduce((acc, l) => acc + l.count, 0);
+                        const otherCount = totalReposWithLang - topCount;
+
+                        if (otherCount > 0) {
+                            topLangs.push({ name: 'Others', count: otherCount });
+                        }
                             
-                        props.languages = JSON.stringify(sortedLangs); // Pass as string to avoid object complexity in generic props
+                        props.languages = JSON.stringify(topLangs);
                     }
                 } catch (e) {
                     console.warn('Failed to fetch stars/langs', e);
