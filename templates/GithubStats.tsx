@@ -8,6 +8,9 @@ export interface GithubStatsProps {
   repos?: number;
   forks?: number;
   size?: string;
+  prs?: number;
+  issues?: number;
+  orgs?: number;
   avatarUrl?: string;
   theme?: 'dark' | 'light';
   location?: string;
@@ -16,10 +19,11 @@ export interface GithubStatsProps {
   blog?: string;
   joinedDate?: string;
   languages?: string; // JSON string
+  topics?: string; // JSON string
 }
 
-const calculateRank = ({ stars, followers, repos, forks }: any) => {
-    const score = (stars * 4) + (followers * 2) + (forks * 3) + (repos * 1);
+const calculateRank = ({ stars, followers, repos, forks, prs }: any) => {
+    const score = (stars * 4) + (followers * 2) + (forks * 3) + (repos * 1) + ((prs || 0) * 3);
     
     if (score > 500) return 'S+';
     if (score > 200) return 'S';
@@ -38,6 +42,9 @@ export const GithubStats: React.FC<GithubStatsProps> = ({
   repos = 30,
   forks = 0,
   size = "0 KB",
+  prs = 0,
+  issues = 0,
+  orgs = 0,
   avatarUrl = "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
   theme = 'dark',
   location,
@@ -45,7 +52,8 @@ export const GithubStats: React.FC<GithubStatsProps> = ({
   company,
   blog,
   joinedDate,
-  languages
+  languages,
+  topics
 }) => {
   const isDark = theme === 'dark';
   const bgColor = isDark ? '#0d1117' : '#ffffff';
@@ -54,8 +62,10 @@ export const GithubStats: React.FC<GithubStatsProps> = ({
   const secondaryText = isDark ? '#8b949e' : '#586069';
 
   const parsedLanguages = languages ? JSON.parse(languages) : [];
+  const parsedTopics = topics ? JSON.parse(topics) : [];
+  
   const totalLangCount = parsedLanguages.reduce((acc: number, l: any) => acc + l.count, 0);
-  const rank = calculateRank({ stars, followers, repos, forks });
+  const rank = calculateRank({ stars, followers, repos, forks, prs });
 
   // Language Colors
   const colors = ['#3178c6', '#f1e05a', '#e34c26', '#563d7c', '#2b7489', '#f0db4f'];
@@ -64,6 +74,13 @@ export const GithubStats: React.FC<GithubStatsProps> = ({
   const rankColors: Record<string, string> = {
       'S+': '#ff0055', 'S': '#00bfff', 'A+': '#2ea043', 'A': '#2ea043', 'B+': '#e3b341', 'B': '#e3b341', 'C': '#8b949e'
   };
+
+  const statStyle = {
+      display: 'flex', flex: 1, flexDirection: 'column' as const, alignItems: 'center', padding: '10px', backgroundColor: isDark ? '#161b22' : '#f6f8fa', borderRadius: '8px', border: `1px solid ${borderColor}`
+  };
+
+  const statLabelStyle = { fontSize: '11px', color: secondaryText, textTransform: 'uppercase' as const, letterSpacing: '0.5px', marginTop: '4px' };
+  const statValueStyle = { fontSize: '16px', fontWeight: 700 };
 
   return (
     <div
@@ -146,32 +163,75 @@ export const GithubStats: React.FC<GithubStatsProps> = ({
 
         {/* Bio */}
         {bio && (
-            <div style={{ display: 'flex', marginBottom: '24px', fontSize: '14px', color: secondaryText, lineHeight: '1.5', fontStyle: 'italic', borderLeft: `3px solid ${isDark ? '#30363d' : '#e1e4e8'}`, paddingLeft: '12px' }}>
+            <div style={{ display: 'flex', marginBottom: '20px', fontSize: '14px', color: secondaryText, lineHeight: '1.5', fontStyle: 'italic', borderLeft: `3px solid ${isDark ? '#30363d' : '#e1e4e8'}`, paddingLeft: '12px' }}>
                 "{bio.length > 120 ? bio.substring(0, 120) + '...' : bio}"
             </div>
         )}
 
-        {/* Stats Grid - 4 Columns */}
-        <div style={{ display: 'flex', flexDirection: 'row', gap: '8px', marginBottom: '24px' }}>
-             <div style={{ display: 'flex', flex: 1,  flexDirection: 'column', alignItems: 'center', padding: '10px', backgroundColor: isDark ? '#161b22' : '#f6f8fa', borderRadius: '8px', border: `1px solid ${borderColor}` }}>
-                <span style={{ fontSize: '18px', fontWeight: 700 }}>{stars}</span>
-                <span style={{ fontSize: '11px', color: secondaryText, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Stars</span>
+        {/* Topics */}
+        {parsedTopics.length > 0 ? (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '24px' }}>
+                {parsedTopics.map((topic: string) => (
+                    <div key={topic} style={{
+                        display: 'flex',
+                        padding: '4px 10px',
+                        borderRadius: '20px',
+                        backgroundColor: isDark ? 'rgba(56, 139, 253, 0.15)' : '#ddf4ff',
+                        color: isDark ? '#58a6ff' : '#0969da',
+                        fontSize: '11px',
+                        fontWeight: 600,
+                        border: `1px solid ${isDark ? 'rgba(56, 139, 253, 0.4)' : 'rgba(9, 105, 218, 0.2)'}`
+                    }}>
+                        #{topic}
+                    </div>
+                ))}
+            </div>
+        ) : (
+            <div style={{ marginBottom: '24px', fontSize: '12px', color: secondaryText, fontStyle: 'italic' }}>
+                No topics found (Add tags to your repos!)
+            </div>
+        )}
+
+        {/* Stats Grid - 2 Rows x 4 Cols */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '24px' }}>
+             {/* Row 1 */}
+             <div style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
+                <div style={statStyle}>
+                    <span style={statValueStyle}>{stars}</span>
+                    <span style={statLabelStyle}>Stars</span>
+                </div>
+                <div style={statStyle}>
+                    <span style={statValueStyle}>{followers}</span>
+                    <span style={statLabelStyle}>Followers</span>
+                </div>
+                <div style={statStyle}>
+                    <span style={statValueStyle}>{forks}</span>
+                    <span style={statLabelStyle}>Forks</span>
+                </div>
+                <div style={statStyle}>
+                    <span style={statValueStyle}>{orgs}</span>
+                    <span style={statLabelStyle}>Orgs</span>
+                </div>
              </div>
-             <div style={{ display: 'flex', flex: 1,  flexDirection: 'column', alignItems: 'center', padding: '10px', backgroundColor: isDark ? '#161b22' : '#f6f8fa', borderRadius: '8px', border: `1px solid ${borderColor}` }}>
-                <span style={{ fontSize: '18px', fontWeight: 700 }}>{forks}</span>
-                <span style={{ fontSize: '11px', color: secondaryText, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Forks</span>
-             </div>
-             <div style={{ display: 'flex',  flex: 1, flexDirection: 'column', alignItems: 'center', padding: '10px', backgroundColor: isDark ? '#161b22' : '#f6f8fa', borderRadius: '8px', border: `1px solid ${borderColor}` }}>
-                <span style={{ fontSize: '18px', fontWeight: 700 }}>{followers}</span>
-                <span style={{ fontSize: '11px', color: secondaryText, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Followers</span>
-             </div>
-             <div style={{ display: 'flex',  flex: 1, flexDirection: 'column', alignItems: 'center', padding: '10px', backgroundColor: isDark ? '#161b22' : '#f6f8fa', borderRadius: '8px', border: `1px solid ${borderColor}` }}>
-                <span style={{ fontSize: '18px', fontWeight: 700 }}>{repos}</span>
-                <span style={{ fontSize: '11px', color: secondaryText, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Repos</span>
-             </div>
-             <div style={{ display: 'flex',  flex: 1, flexDirection: 'column', alignItems: 'center', padding: '10px', backgroundColor: isDark ? '#161b22' : '#f6f8fa', borderRadius: '8px', border: `1px solid ${borderColor}` }}>
-                <span style={{ fontSize: '18px', fontWeight: 700 }}>{size}</span>
-                <span style={{ fontSize: '11px', color: secondaryText, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Size</span>
+             
+             {/* Row 2 */}
+             <div style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
+                <div style={statStyle}>
+                    <span style={statValueStyle}>{repos}</span>
+                    <span style={statLabelStyle}>Repos</span>
+                </div>
+                 <div style={statStyle}>
+                    <span style={statValueStyle}>{size}</span>
+                    <span style={statLabelStyle}>Size</span>
+                </div>
+                <div style={statStyle}>
+                    <span style={statValueStyle}>{prs}</span>
+                    <span style={statLabelStyle}>PRs</span>
+                </div>
+                <div style={statStyle}>
+                    <span style={statValueStyle}>{issues}</span>
+                    <span style={statLabelStyle}>Issues</span>
+                </div>
              </div>
         </div>
 

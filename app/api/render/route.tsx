@@ -30,7 +30,10 @@ export async function GET(req: NextRequest) {
     // --- Dynamic Data Fetching ---
     if (templateName === 'github' && props.username) {
         try {
-            const headers: HeadersInit = { 'User-Agent': 'Readme-UI' };
+            const headers: HeadersInit = { 
+                'User-Agent': 'Readme-UI',
+                'Accept': 'application/vnd.github.mercy-preview+json' // Required to get topics
+            };
             if (props.token) {
                 headers['Authorization'] = `Bearer ${props.token}`;
             }
@@ -75,8 +78,9 @@ export async function GET(req: NextRequest) {
                         props.forks = totalForks;
                         props.size = sizeFormatted;
 
-                        // Calculate Top Languages
+                        // Calculate Top Languages & Topics
                         const langMap: Record<string, number> = {};
+                        const topicMap: Record<string, number> = {};
                         let totalReposWithLang = 0;
                         
                         repos.forEach((repo: any) => {
@@ -84,8 +88,15 @@ export async function GET(req: NextRequest) {
                                 langMap[repo.language] = (langMap[repo.language] || 0) + 1;
                                 totalReposWithLang++;
                             }
+                            // Collect Topics
+                            if (repo.topics && Array.isArray(repo.topics)) {
+                                repo.topics.forEach((topic: string) => {
+                                    topicMap[topic] = (topicMap[topic] || 0) + 1;
+                                });
+                            }
                         });
 
+                        // Process Languages
                         const sortedEntries = Object.entries(langMap)
                             .sort(([, a], [, b]) => b - a);
 
@@ -99,8 +110,40 @@ export async function GET(req: NextRequest) {
                         if (otherCount > 0) {
                             topLangs.push({ name: 'Others', count: otherCount });
                         }
-                            
+                        
+                        // Process Topics
+                        const sortedTopics = Object.entries(topicMap)
+                            .sort(([, a], [, b]) => b - a)
+                            .slice(0, 6)
+                            .map(([name]) => name);
+
                         props.languages = JSON.stringify(topLangs);
+                        props.topics = JSON.stringify(sortedTopics);
+
+                        // Fetch Extra Stats (PRs, Issues, Orgs)
+                        // Search API has strict limits, so we handle potential failures gently
+                        try {
+                            const [prsRes, issuesRes, orgsRes] = await Promise.all([
+                                fetch(`https://api.github.com/search/issues?q=type:pr+author:${props.username}`, { headers }),
+                                fetch(`https://api.github.com/search/issues?q=type:issue+author:${props.username}`, { headers }),
+                                fetch(`https://api.github.com/users/${props.username}/orgs`, { headers })
+                            ]);
+
+                            if (prsRes.ok) {
+                                const prsData = await prsRes.json();
+                                props.prs = prsData.total_count;
+                            }
+                            if (issuesRes.ok) {
+                                const issuesData = await issuesRes.json();
+                                props.issues = issuesData.total_count;
+                            }
+                            if (orgsRes.ok) {
+                                const orgsData = await orgsRes.json();
+                                props.orgs = orgsData.length;
+                            }
+                        } catch (extraErr) {
+                            console.warn('Failed to fetch extra stats (PRs/Issues)');
+                        }
                     }
                 } catch (e) {
                     console.warn('Failed to fetch stars/langs', e);
