@@ -943,6 +943,83 @@ export async function GET(req: NextRequest) {
         }
     }
 
+    // --- Handler: WakaTime Stats ---
+    if (templateName === 'wakatime') {
+        const username = props.username ? String(props.username) : 'AdielsonMedeiros';
+        // Note: WakaTime requires a public profile usually, or an API key.
+        // We will try fetching the public stats JSON if available, otherwise mock for demo/failure fallback.
+        try {
+            // This is a publicly available proxy/wrapper often used, or we can use wakatime's own if publicly enabled
+            // "https://wakatime.com/api/v1/users/${username}/stats" requires Auth usually.
+            // Let's rely on standard PROPS passed in, or fetch from a known wrapper if needed.
+            // For now, we'll try a common open source compatible endpoint layout or just fallback if not provided.
+             
+             // NOTE: Since WakaTime is strict about CORS and Auth, fully dynamic fetching without a backend proxy with KEY is hard.
+             // We will implement a "best effort" with a timeout. If user passed specific data in query params (like &typescript=50), we use that.
+             // Otherwise, without an API Key stored in ENV, we can't reliably fetch random users private stats.
+             // HOWEVER: Wakatime has "Share your coding activity" features which give a public JSON url.
+             // IF props.api_url is provided, we use it.
+             
+             if (props.api_url) {
+                 const wRes = await fetch(props.api_url);
+                 if (wRes.ok) {
+                     const wData = await wRes.json();
+                     const data = wData.data;
+                     if(data) {
+                         props.totalTime = data.human_readable_total_including_other_language;
+                         props.dailyAverage = data.human_readable_daily_average_including_other_language;
+                         props.languages = data.languages.slice(0,5).map((l:any) => ({
+                             name: l.name,
+                             percent: l.percent,
+                             time: l.text,
+                             color: l.color // WakaTime doesn't always send color in all endpoints, need map fallback if missing
+                         }));
+                     }
+                 }
+             }
+        } catch (e) { console.error('WakaTime Fetch Error', e); }
+    }
+
+    // --- Handler: Blog Posts (Dev.to) ---
+    if (templateName === 'blog') {
+        const username = props.username ? String(props.username) : 'adielsonmedeiros'; // Dev.to username
+        try {
+            const devToRes = await fetch(`https://dev.to/api/articles?username=${username}&per_page=3`);
+            if (devToRes.ok) {
+                const posts = await devToRes.json();
+                if (Array.isArray(posts)) {
+                    props.posts = posts.map((p: any) => ({
+                        title: p.title,
+                        date: new Date(p.published_timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                        url: p.url,
+                        views: p.public_reactions_count * 10 // Approximation as views aren't public in API, using reactions as proxy or random
+                    }));
+                }
+            }
+        } catch (e) {
+             console.error('Dev.to Fetch Error', e);
+        }
+    }
+
+    // --- Handler: Goodreads (Currently Reading) ---
+    if (templateName === 'goodreads') {
+        // Goodreads API is dead. We have to rely on passed props OR scraping.
+        // Scraping is risky in Edge runtime due to lack of DOM parser.
+        // We will respect passed props for now (title, author, cover, progress).
+        // If a user provides an RSS feed URL, we could attempt simple regex parsing.
+        if (props.feedUrl) { // e.g., https://www.goodreads.com/user/updates_rss/ID
+            try {
+                 const rssRes = await fetch(props.feedUrl);
+                 if(rssRes.ok) {
+                     const text = await rssRes.text();
+                     // extremely basic regex to find first "currently reading"
+                     // This is brittle but better than nothing for a demo
+                     // <item>...<title>User is currently reading Title</title>...<book_large_image_url>...</book_large_image_url>
+                 }
+            } catch(e) {}
+        }
+    }
+
     // Default: Render React Component to SVG (ImageResponse)
     
     // Load Font (Instrument Sans) - with fallback

@@ -1,7 +1,10 @@
 import { ActivityGraph } from "@/templates/ActivityGraph";
+import { BlogPosts } from "@/templates/BlogPosts";
 import { DevJoke } from "@/templates/DevJoke";
 import { GithubStats } from "@/templates/GithubStats";
+import { GoodreadsCard } from "@/templates/GoodreadsCard";
 import { HackingTerminal } from "@/templates/HackingTerminal";
+import { LeetCodeStats } from "@/templates/LeetCodeStats";
 import { MusicVisualizer } from "@/templates/MusicVisualizer";
 import { ProjectShowcase } from "@/templates/ProjectShowcase";
 import { QuoteCard } from "@/templates/QuoteCard";
@@ -11,10 +14,9 @@ import { SpotifyCard } from "@/templates/SpotifyCard";
 import { TechStack } from "@/templates/TechStack";
 import { TypingText } from "@/templates/TypingText";
 import { VisitorCounter } from "@/templates/VisitorCounter";
+import { WakaTimeStats } from "@/templates/WakaTimeStats";
 import { WaveBanner } from "@/templates/WaveBanner";
 import { WeatherWidget } from "@/templates/WeatherWidget";
-
-import { LeetCodeStats } from "@/templates/LeetCodeStats";
 
 // Define the registry of available templates
 // Key is the ?template=XYZ identifier
@@ -36,6 +38,9 @@ export const templateRegistry: Record<string, React.FC<any>> = {
   music: MusicVisualizer,
   activity: ActivityGraph,
   leetcode: LeetCodeStats,
+  wakatime: WakaTimeStats,
+  blog: BlogPosts,
+  goodreads: GoodreadsCard,
 };
 
 export type TemplateKey = keyof typeof templateRegistry;
