@@ -280,6 +280,76 @@ export default function Home() {
                             </button>
 
                             <button
+                                onClick={() => setParams({ ...params, template: 'hacking', username: 'AdielsonMedeiros' })}
+                                className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                                    params.template === 'hacking' 
+                                    ? 'bg-neutral-800 border-green-500 ring-1 ring-green-500' 
+                                    : 'bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700'
+                                }`}
+                            >
+                                <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'hacking' ? 'bg-green-500/20 text-green-500' : 'bg-neutral-800 text-neutral-400'}`}>
+                                    <span className={`text-lg ${params.template === 'hacking' ? '' : 'grayscale opacity-50'}`}>👨‍💻</span>
+                                </div>
+                                <span className={`text-xs font-medium ${params.template === 'hacking' ? 'text-white' : 'text-neutral-400'}`}>Hacking</span>
+                            </button>
+
+                            <button
+                                onClick={() => setParams({ ...params, template: 'weather', city: 'San Francisco' })}
+                                className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                                    params.template === 'weather' 
+                                    ? 'bg-neutral-800 border-blue-400 ring-1 ring-blue-400' 
+                                    : 'bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700'
+                                }`}
+                            >
+                                <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'weather' ? 'bg-blue-400/20 text-blue-400' : 'bg-neutral-800 text-neutral-400'}`}>
+                                    <span className={`text-lg ${params.template === 'weather' ? '' : 'grayscale opacity-50'}`}>⛅</span>
+                                </div>
+                                <span className={`text-xs font-medium ${params.template === 'weather' ? 'text-white' : 'text-neutral-400'}`}>Weather</span>
+                            </button>
+
+                            <button
+                                onClick={() => setParams({ ...params, template: 'music', trackName: 'Midnight City', artist: 'M83' })}
+                                className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                                    params.template === 'music' 
+                                    ? 'bg-neutral-800 border-purple-500 ring-1 ring-purple-500' 
+                                    : 'bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700'
+                                }`}
+                            >
+                                <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'music' ? 'bg-purple-500/20 text-purple-500' : 'bg-neutral-800 text-neutral-400'}`}>
+                                    <span className={`text-lg ${params.template === 'music' ? '' : 'grayscale opacity-50'}`}>🎵</span>
+                                </div>
+                                <span className={`text-xs font-medium ${params.template === 'music' ? 'text-white' : 'text-neutral-400'}`}>Music</span>
+                            </button>
+
+                            <button
+                                onClick={() => setParams({ ...params, template: 'activity', username: 'AdielsonMedeiros' })}
+                                className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                                    params.template === 'activity' 
+                                    ? 'bg-neutral-800 border-emerald-600 ring-1 ring-emerald-600' 
+                                    : 'bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700'
+                                }`}
+                            >
+                                <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'activity' ? 'bg-emerald-600/20 text-emerald-600' : 'bg-neutral-800 text-neutral-400'}`}>
+                                    <span className={`text-lg ${params.template === 'activity' ? '' : 'grayscale opacity-50'}`}>🧊</span>
+                                </div>
+                                <span className={`text-xs font-medium ${params.template === 'activity' ? 'text-white' : 'text-neutral-400'}`}>3D Graph</span>
+                            </button>
+
+                            <button
+                                onClick={() => setParams({ ...params, template: 'snake' })}
+                                className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                                    params.template === 'snake' 
+                                    ? 'bg-neutral-800 border-lime-400 ring-1 ring-lime-400' 
+                                    : 'bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700'
+                                }`}
+                            >
+                                <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'snake' ? 'bg-lime-400/20 text-lime-400' : 'bg-neutral-800 text-neutral-400'}`}>
+                                    <span className={`text-lg ${params.template === 'snake' ? '' : 'grayscale opacity-50'}`}>🐍</span>
+                                </div>
+                                <span className={`text-xs font-medium ${params.template === 'snake' ? 'text-white' : 'text-neutral-400'}`}>Snake</span>
+                            </button>
+
+                            <button
                                 onClick={() => setParams({ ...params, template: 'visitors', count: 1234 })}
                                 className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
                                     params.template === 'visitors' 
@@ -572,6 +642,70 @@ export default function Home() {
                             <div className="space-y-2">
                                 <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Label</label>
                                 <input type="text" name="label" value={params.label || 'Profile Engagement'} onChange={handleChange} placeholder="Profile Views" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-lime-500 outline-none transition-all" />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Hacking Simulator Controls */}
+                    {params.template === 'hacking' && (
+                        <div className="space-y-3">
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Target Username</label>
+                                <input type="text" name="username" value={params.username || ''} onChange={handleChange} placeholder="AdielsonMedeiros" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none transition-all" />
+                                <p className="text-xs text-neutral-500">Will fetch recent repos to "hack"</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Weather Widget Controls */}
+                    {params.template === 'weather' && (
+                        <div className="space-y-3">
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">City</label>
+                                <input type="text" name="city" value={params.city || ''} onChange={handleChange} placeholder="San Francisco" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 outline-none transition-all" />
+                                <p className="text-xs text-neutral-500">Auto-fetches current weather from Open-Meteo</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Music Visualizer Controls */}
+                    {params.template === 'music' && (
+                        <div className="space-y-3">
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Track Name</label>
+                                <input type="text" name="trackName" value={params.trackName || ''} onChange={handleChange} placeholder="Midnight City" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 outline-none transition-all" />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Artist</label>
+                                <input type="text" name="artist" value={params.artist || ''} onChange={handleChange} placeholder="M83" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 outline-none transition-all" />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Bar Color</label>
+                                <input type="color" name="barColor" value={params.barColor || '#1db954'} onChange={handleChange} className="w-full h-8 rounded cursor-pointer" />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Activity Graph Controls */}
+                    {params.template === 'activity' && (
+                        <div className="space-y-3">
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Username</label>
+                                <input type="text" name="username" value={params.username || ''} onChange={handleChange} placeholder="AdielsonMedeiros" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-600 outline-none transition-all" />
+                                <p className="text-xs text-neutral-500">Generates a 3D skyline of contributions</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Snake Game Controls */}
+                    {params.template === 'snake' && (
+                        <div className="space-y-3">
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">GitHub Username</label>
+                                <input type="text" name="username" value={params.username || ''} onChange={handleChange} placeholder="AdielsonMedeiros" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-lime-400 outline-none transition-all" />
+                                <p className="text-xs text-neutral-500">
+                                    Why just an animation? The snake will eat your real recent commits!
+                                </p>
                             </div>
                         </div>
                     )}
