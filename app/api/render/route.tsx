@@ -451,18 +451,18 @@ export async function GET(req: NextRequest) {
                 });
                 
                 // Exit Path (Sweep out to right)
-                const exitDist = Math.abs(width - px) + 50;
-                pathStr.push(`L${width + 50},${py+5}`);
+                // Make exit path LONG to ensure the snake fully leaves the screen 
+                // and there's a buffer of time before the loop resets.
+                const exitDist = Math.abs(width - px) + 300;
+                pathStr.push(`L${width + 300},${py+5}`);
                 totalDistance += exitDist;
                 
                 snakePath = pathStr.join(' ');
                 
-                // Constant speed (adjusted for number of targets)
-                // If many targets, we speed up slightly to keep it dynamic
+                // Constant speed 
                 const speed = 180; 
                 duration = totalDistance / speed;
                 if (duration < 5) duration = 5; 
-                // Don't cap max duration too strictly if we have A LOT of commits (let it run)
 
                 // Generate Eaten Cell Animations (Looping)
                 eatenCells = '';
@@ -470,23 +470,21 @@ export async function GET(req: NextRequest) {
                     // Calculate normalized time (0 to 1) when snake arrives
                     const arrivalPct = info.dist / totalDistance;
                     
-                    // We want the overlay to be opacity 0 (invisible) until arrivalPct
-                    // Then quickly turn opacity 1 (black/hiding)
-                    // Then STAY 1 until the very end (reset)
+                    // Trigger slightly before arrival
+                    let trigger = Math.max(0, arrivalPct - 0.005); 
+                    // Finish fading relatively quickly
+                    let finish = trigger + 0.02;
                     
-                    // Precision fix: Ensure trigger is slightly before arrival to "anticipate" bite
-                    const trigger = Math.max(0, arrivalPct - 0.005); 
-                    const finish = Math.min(1, trigger + 0.02); // quick fade out of commit
-                    
-                    // KeyTimes must be 0 -> trigger -> finish -> 0.99 -> 1
-                    // Values: 0 -> 0 -> 1 -> 1 -> 0
-                    
+                    // Safety: Encapsulate animation within 0.9 to allow reset at end
+                    if (finish > 0.9) finish = 0.9;
+                    if (trigger >= finish) trigger = finish - 0.001;
+
                     eatenCells += `
                         <rect x="${info.t.x}" y="${info.t.y}" width="${cellW}" height="${cellW}" rx="2" fill="${bg}" opacity="0">
                             <animate 
                                 attributeName="opacity" 
                                 values="0;0;1;1;0" 
-                                keyTimes="0;${trigger};${finish};0.95;1" 
+                                keyTimes="0;${trigger.toFixed(3)};${finish.toFixed(3)};0.95;1" 
                                 dur="${duration}s" 
                                 repeatCount="indefinite" 
                             />
