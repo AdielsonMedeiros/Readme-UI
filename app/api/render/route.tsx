@@ -391,7 +391,7 @@ export async function GET(req: NextRequest) {
             }
 
             // 2. Build Grid
-            const activeDays = []; 
+            const activeDays: {x:number, y:number, count:number, date:string}[] = []; 
             
             for (let col = 0; col < 53; col++) {
                 for (let row = 0; row < 7; row++) {
@@ -410,49 +410,95 @@ export async function GET(req: NextRequest) {
                 }
             }
 
-            // 3. Generate Snake Path & Eating Animations (Full Sweep)
-            // Sort purely by X (Left -> Right) to ensure a clean sweep across the year
-            const targets = activeDays.sort((a,b) => {
-                if (a.x === b.x) return a.y - b.y; // Same column? sweep down
-                return a.x - b.x;
-            });
+            // 3. Generate Snake Path & Eating Animations (Random Chaos Mode)
+            // Fisher-Yates Shuffle for true randomness
+            const targets = [...activeDays];
+            for (let i = targets.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [targets[i], targets[j]] = [targets[j], targets[i]];
+            }
             
             if (targets.length > 0) {
                 foods = targets;
                 
-                // Start Point (Off screen left with center alignment)
-                // Let's start aligned with the row of the first target
-                let px = targets[0].x - 30; 
+                // Start Point (Center aligned to first random target)
+                let px = targets[0].x - 50; 
+                if (px < 0) px = 0;
                 let py = targets[0].y;
                 
                 // M must be CENTERED (+5, +5) matches the rest of the path logic
                 let pathStr = [`M${px+5},${py+5}`];
                 let totalDistance = 0;
                 
-                const arrivalInfos: {dist: number, t: any}[] = [];
+                // Map to store the earliest distance at which a target is "hit"
+                // Key: "x,y" coordinate string, Value: distance in pixels
+                const hitMap = new Map<string, number>();
+
+                const checkCollision = (p1: {x:number, y:number}, p2: {x:number, y:number}, startDist: number) => {
+                    const isHoriz = p1.y === p2.y;
+                    const isVert = p1.x === p2.x;
+                    
+                    activeDays.forEach(day => {
+                        const key = `${day.x},${day.y}`;
+                        // Optimization: If already hit earlier, ignore
+                        // logic needed: we want the MINIMUM distance.
+                        
+                        let hitDist = -1;
+
+                        if (isHoriz && day.y === p1.y) {
+                            // Check if x is between p1.x and p2.x
+                            const minX = Math.min(p1.x, p2.x);
+                            const maxX = Math.max(p1.x, p2.x);
+                            if (day.x >= minX && day.x <= maxX) {
+                                // Hit! Distance is startDist + distance from p1
+                                hitDist = startDist + Math.abs(day.x - p1.x);
+                            }
+                        } else if (isVert && day.x === p1.x) {
+                            // Check if y is between p1.y and p2.y
+                            const minY = Math.min(p1.y, p2.y);
+                            const maxY = Math.max(p1.y, p2.y);
+                            if (day.y >= minY && day.y <= maxY) {
+                                hitDist = startDist + Math.abs(day.y - p1.y);
+                            }
+                        }
+
+                        if (hitDist !== -1) {
+                            if (!hitMap.has(key) || hitDist < hitMap.get(key)!) {
+                                hitMap.set(key, hitDist);
+                            }
+                        }
+                    });
+                };
                 
+                // Initial check for start point
+                checkCollision({x: px, y: py}, {x: px, y: py}, 0);
+
                 targets.forEach((t) => {
+                    const currentPos = {x: px, y: py};
                     // Manhattan Movement
+                    // 1. Horizontal Move
                     const dH = Math.abs(t.x - px);
                     if (dH > 0) {
+                        const nextPos = {x: t.x, y: py};
                         pathStr.push(`L${t.x+5},${py+5}`);
+                        checkCollision(currentPos, nextPos, totalDistance);
                         totalDistance += dH;
+                        px = t.x; // update X
                     }
+                    
+                    // 2. Vertical Move
                     const dV = Math.abs(t.y - py);
                     if (dV > 0) {
-                        pathStr.push(`L${t.x+5},${t.y+5}`); // Center of cell
+                        const posAfterH = {x: px, y: py}; // px is already new X, py is old Y
+                        const nextPos = {x: px, y: t.y};
+                        pathStr.push(`L${t.x+5},${t.y+5}`);
+                        checkCollision(posAfterH, nextPos, totalDistance);
                         totalDistance += dV;
+                        py = t.y; // update Y
                     }
-                    
-                    px = t.x;
-                    py = t.y;
-                    
-                    arrivalInfos.push({ dist: totalDistance, t });
                 });
                 
-                // Exit Path (Sweep out to right)
-                // Make exit path LONG to ensure the snake fully leaves the screen 
-                // and there's a buffer of time before the loop resets.
+                // Exit Path
                 const exitDist = Math.abs(width - px) + 300;
                 pathStr.push(`L${width + 300},${py+5}`);
                 totalDistance += exitDist;
@@ -464,32 +510,39 @@ export async function GET(req: NextRequest) {
                 duration = totalDistance / speed;
                 if (duration < 5) duration = 5; 
 
-                // Generate Eaten Cell Animations (Looping)
+                // Generate Eaten Cell Animations using HitMap
                 eatenCells = '';
-                arrivalInfos.forEach((info) => {
-                    // Calculate normalized time (0 to 1) when snake arrives
-                    const arrivalPct = info.dist / totalDistance;
+                
+                // Iterate over ALL active days, because random path might hit non-targets (if we were sub-selecting)
+                // In this case targets = activeDays, but logic holds.
+                activeDays.forEach(day => {
+                    const key = `${day.x},${day.y}`;
+                    const hitDist = hitMap.get(key);
                     
-                    // Trigger slightly before arrival
-                    let trigger = Math.max(0, arrivalPct - 0.005); 
-                    // Finish fading relatively quickly
-                    let finish = trigger + 0.02;
-                    
-                    // Safety: Encapsulate animation within 0.9 to allow reset at end
-                    if (finish > 0.9) finish = 0.9;
-                    if (trigger >= finish) trigger = finish - 0.001;
+                    if (hitDist !== undefined) {
+                        const arrivalPct = hitDist / totalDistance;
+                         // Trigger slightly before arrival to account for snake head size
+                        let trigger = Math.max(0, arrivalPct - 0.001); 
+                        // INSTANT disappearance: finish is trigger + tiny epsilon
+                        let finish = trigger + 0.001;
+                        
+                        // Safety caps
+                        if (finish > 0.95) finish = 0.95; 
+                        if (trigger >= finish) trigger = finish - 0.0001;
 
-                    eatenCells += `
-                        <rect x="${info.t.x}" y="${info.t.y}" width="${cellW}" height="${cellW}" rx="2" fill="${bg}" opacity="0">
-                            <animate 
-                                attributeName="opacity" 
-                                values="0;0;1;1;0" 
-                                keyTimes="0;${trigger.toFixed(3)};${finish.toFixed(3)};0.95;1" 
-                                dur="${duration}s" 
-                                repeatCount="indefinite" 
-                            />
-                        </rect>
-                    `;
+                        eatenCells += `
+                            <rect x="${day.x}" y="${day.y}" width="${cellW}" height="${cellW}" rx="2" fill="${bg}" opacity="0">
+                                <animate 
+                                    attributeName="opacity" 
+                                    values="0;0;1;1;0" 
+                                    keyTimes="0;${trigger.toFixed(4)};${finish.toFixed(4)};0.98;1" 
+                                    dur="${duration}s" 
+                                    repeatCount="indefinite" 
+                                    calcMode="discrete" 
+                                />
+                            </rect>
+                        `;
+                    }
                 });
                 
             } else {
