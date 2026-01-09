@@ -1,10 +1,13 @@
 'use client';
 
-import { Code2, Copy, Layers } from 'lucide-react';
+import { Code2, Copy, Layers, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { FaGithub, FaSpotify } from 'react-icons/fa'; // Import brand icons
 
+
+
 export default function Home() {
+  const [showHelp, setShowHelp] = useState(false);
   const [params, setParams] = useState<any>({
     template: 'spotify',
     title: 'Never Gonna Give You Up',
@@ -162,7 +165,7 @@ export default function Home() {
                 </h1>
             </div>
             <div className="flex items-center gap-4 text-sm text-neutral-400">
-                <a href="https://github.com/AdielsonMedeiros/Readme-UI" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Documentation</a>
+                <button onClick={() => setShowHelp(true)} className="hover:text-white transition-colors">How to use</button>
                 <a href="https://github.com/AdielsonMedeiros/Readme-UI" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a>
                 <a 
                     href="https://vercel.com/new/clone?repository-url=https://github.com/AdielsonMedeiros/Readme-UI" 
@@ -899,6 +902,58 @@ export default function Home() {
              </div>
         </div>
       </div>
+      {/* Help Modal */}
+      {showHelp && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+            <div className="bg-neutral-900 border border-neutral-800 p-8 rounded-2xl max-w-lg w-full relative shadow-2xl animate-in fade-in zoom-in duration-200">
+                <button 
+                    onClick={() => setShowHelp(false)} 
+                    className="absolute top-4 right-4 text-neutral-500 hover:text-white transition-colors"
+                >
+                    <X className="w-6 h-6" />
+                </button>
+                
+                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                    🚀 Quick Start Guide
+                </h2>
+                
+                <div className="space-y-6 text-neutral-300">
+                    <div className="flex gap-4">
+                        <div className="w-8 h-8 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center shrink-0 font-bold">1</div>
+                        <div>
+                            <h3 className="font-bold text-white mb-1">Choose a Template</h3>
+                            <p className="text-sm text-neutral-400">Pick a widget from the configuration panel on the left (Spotify, 3D Graph, etc).</p>
+                        </div>
+                    </div>
+
+                     <div className="flex gap-4">
+                        <div className="w-8 h-8 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center shrink-0 font-bold">2</div>
+                        <div>
+                            <h3 className="font-bold text-white mb-1">Customize It</h3>
+                            <p className="text-sm text-neutral-400">Enter your username, change themes, or adjust colors until it looks perfect.</p>
+                        </div>
+                    </div>
+
+                     <div className="flex gap-4">
+                        <div className="w-8 h-8 rounded-full bg-purple-500/20 text-purple-500 flex items-center justify-center shrink-0 font-bold">3</div>
+                        <div>
+                            <h3 className="font-bold text-white mb-1">Copy & Paste</h3>
+                            <p className="text-sm text-neutral-400">Click the <span className="inline-flex items-center gap-1 bg-neutral-800 px-2 py-0.5 rounded text-xs text-white"><Copy className="w-3 h-3"/> Copy Markdown</span> button and paste it into your GitHub Profile README.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-neutral-800 flex justify-end">
+                    <button 
+                        onClick={() => setShowHelp(false)}
+                        className="bg-white text-black px-6 py-2 rounded-full font-medium hover:bg-neutral-200 transition-colors"
+                    >
+                        Got it!
+                    </button>
+                </div>
+            </div>
+        </div>
+      )}
     </main>
   );
 }
