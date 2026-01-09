@@ -255,100 +255,6 @@ export async function GET(req: NextRequest) {
         });
     }
 
-    // --- Handler: Music Visualizer (SVG) ---
-    if (templateName === 'music') {
-        const width = Number(props.width) || 500;
-        const height = Number(props.height) || 150;
-        const barColor = String(props.barColor || '#1db954');
-        const track = String(props.trackName || 'Midnight City');
-        const artist = String(props.artist || 'M83');
-        const theme = String(props.theme || 'dark');
-        const isDark = theme === 'dark';
-        const bg = isDark ? '#121212' : '#ffffff';
-        const textMain = isDark ? '#ffffff' : '#000000';
-        const textSub = isDark ? '#b3b3b3' : '#666666';
-
-        // Generate animated bars - V4 FORCE UPDATE
-        const bars = Array.from({ length: 40 }).map((_, i) => {
-             // Height: 4px to 14px range.
-             // BaseY: 135px. Top Y will be ~121px. Text is at ~75px. Gap of ~45px. Safe.
-             const h = 4 + Math.random() * 10;
-             const dur = 0.8 + Math.random() * 0.6;
-             const baseY = 135;
-             
-             return `
-                <rect x="${110 + i * 9}" y="${baseY - 4}" width="6" height="4" fill="${barColor}" rx="2">
-                    <animate attributeName="height" values="4;${h};4" dur="${dur}s" repeatCount="indefinite" />
-                    <animate attributeName="y" values="${baseY - 4};${baseY - h};${baseY - 4}" dur="${dur}s" repeatCount="indefinite" />
-                </rect>
-             `;
-        }).join('\n');
-
-        const svg = `
-            <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-                <rect width="100%" height="100%" fill="${bg}" rx="12" stroke="#333" stroke-width="1"/>
-                
-                <!-- Cover Art -->
-                <rect x="20" y="35" width="80" height="80" rx="4" fill="#333" />
-                <text x="60" y="85" font-size="30" text-anchor="middle" fill="#666">🎵</text>
-
-                <!-- Text Info -->
-                <text x="120" y="55" font-family="sans-serif" font-weight="bold" font-size="18" fill="${textMain}">${track}</text>
-                <text x="120" y="75" font-family="sans-serif" font-size="14" fill="${textSub}">${artist}</text>
-
-                <!-- Bars -->
-                ${bars}
-            </svg>
-        `;
-        return new Response(svg, { headers: { 'Content-Type': 'image/svg+xml' } });
-    }
-
-    // --- Handler: Activity Graph 3D (SVG) ---
-    if (templateName === 'activity') {
-        const width = 600;
-        const height = 300;
-        const theme = String(props.theme || 'dark');
-        const bg = theme === 'dark' ? '#0d1117' : '#ffffff';
-        
-        // Generate pseudo-random contributions
-        // Isometric projection: x' = x - z, y' = y + (x+z)/2
-        const polies: string[] = [];
-        
-        for (let x = 0; x < 15; x++) {
-            for (let z = 0; z < 10; z++) {
-                const count = Math.floor(Math.random() * 10);
-                const h = count * 6; // Height of bar
-                const color = count === 0 ? '#161b22' : (count < 4 ? '#0e4429' : (count < 7 ? '#26a641' : '#39d353'));
-                
-                // Iso logic simplified
-                const tileW = 24;
-                const originX = 300;
-                const originY = 50;
-                
-                const isoX = originX + (x - z) * tileW;
-                const isoY = originY + (x + z) * (tileW * 0.6);
-                
-                // Draw pseudo-3d cube top
-                polies.push(`
-                    <path d="M${isoX} ${isoY - h} L${isoX + tileW} ${isoY + tileW*0.6 - h} L${isoX} ${isoY + tileW*1.2 - h} L${isoX - tileW} ${isoY + tileW*0.6 - h} Z" fill="${count > 0 ? (count > 6 ? '#4ac26b' : '#39d353') : '#21262d'}"/>
-                    <path d="M${isoX - tileW} ${isoY + tileW*0.6 - h} L${isoX} ${isoY + tileW*1.2 - h} L${isoX} ${isoY + tileW*1.2} L${isoX - tileW} ${isoY + tileW*0.6} Z" fill="${count > 0 ? '#1e7e34' : '#161b22'}"/>
-                    <path d="M${isoX} ${isoY + tileW*1.2 - h} L${isoX + tileW} ${isoY + tileW*0.6 - h} L${isoX + tileW} ${isoY + tileW*0.6} L${isoX} ${isoY + tileW*1.2} Z" fill="${count > 0 ? '#1a7f37' : '#0d1117'}"/>
-                `);
-            }
-        }
-        
-        const svg = `
-            <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-                <rect width="100%" height="100%" fill="${bg}" />
-                <text x="20" y="30" fill="#8b949e" font-family="sans-serif" font-size="14">Contribution Skyline (3D)</text>
-                <g transform="translate(0, 50)">
-                   ${polies.join('\n')}
-                </g>
-            </svg>
-        `;
-        return new Response(svg, { headers: { 'Content-Type': 'image/svg+xml' } });
-    }
-
 
     // --- Handler: Snake Game (Authentic GitHub Style) ---
     if (templateName === 'snake') {
@@ -768,6 +674,21 @@ export async function GET(req: NextRequest) {
                 } catch(e) { console.error(e); }
             }
         } catch (e) { console.error(e); }
+    }
+
+    // --- Handler: 3D Activity Graph ---
+    if (templateName === 'activity') {
+        const username = props.username ? String(props.username) : 'AdielsonMedeiros';
+        try {
+            const res = await fetch(`https://github-contributions-api.jogruber.de/v4/${username}?y=last`);
+            if (res.ok) {
+                const data = await res.json();
+                // Pass the last 150 days to avoid cluttering the 3D view too much, or filter as needed handled in component
+                props.contributions = data.contributions; 
+            }
+        } catch (e) {
+            console.error('Activity Graph Fetch Error:', e);
+        }
     }
 
     // Default: Render React Component to SVG (ImageResponse)

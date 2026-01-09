@@ -68,7 +68,37 @@ export default function Home() {
   useEffect(() => {
     setLoading(true);
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-    const query = new URLSearchParams(debouncedParams as any).toString();
+    
+    // Filter params based on active template to keep URLs clean
+    const relevantKeys: Record<string, string[]> = {
+        spotify: ['template', 'title', 'artist', 'progress', 'status', 'coverUrl', 'duration', 'theme'],
+        github: ['template', 'username', 'token', 'accent', 'theme', 'width', 'height'],
+        stack: ['template', 'title', 'skills', 'theme'],
+        wave: ['template', 'text', 'subtitle', 'gradient', 'theme'],
+        social: ['template', 'github', 'linkedin', 'twitter', 'email', 'website', 'theme'],
+        quote: ['template', 'quote', 'author', 'theme'],
+        project: ['template', 'repo', 'name', 'description', 'stars', 'forks', 'theme'],
+        typing: ['template', 'lines', 'theme'],
+        joke: ['template', 'joke', 'punchline', 'theme'],
+        hacking: ['template', 'username', 'theme'],
+        weather: ['template', 'city', 'theme'],
+        music: ['template', 'trackName', 'artist', 'barColor', 'theme'],
+        activity: ['template', 'username', 'theme'],
+        snake: ['template', 'username', 'speed', 'color', 'theme'], // Include speed/color for future proofing
+        visitors: ['template', 'username', 'count', 'label', 'theme']
+    };
+
+    const currentTemplate = debouncedParams.template || 'spotify';
+    const keysToKeep = relevantKeys[currentTemplate] || Object.keys(debouncedParams);
+    
+    const filteredParams: any = {};
+    keysToKeep.forEach(key => {
+        if (debouncedParams[key] !== undefined && debouncedParams[key] !== '') {
+            filteredParams[key] = debouncedParams[key];
+        }
+    });
+
+    const query = new URLSearchParams(filteredParams).toString();
     setUrl(`${baseUrl}/api/render?${query}`);
   }, [debouncedParams]);
 
@@ -362,6 +392,7 @@ export default function Home() {
                                 </div>
                                 <span className={`text-xs font-medium ${params.template === 'visitors' ? 'text-white' : 'text-neutral-400'}`}>Views</span>
                             </button>
+
                         </div>
                     </div>
 
@@ -709,6 +740,8 @@ export default function Home() {
                             </div>
                         </div>
                     )}
+
+
 
                     {/* GitHub Specific Controls */}
                     {params.template === 'github' && (

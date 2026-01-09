@@ -10,10 +10,14 @@ Built with **Next.js 14**, **TailwindCSS**, and **Satori**, it turns React compo
 
 ## ✨ Features
 
-- **🐍 Contribution Snake:** A fully synchronized Snake game that "eats" your GitHub contributions.
-- **🎵 Spotify Card:** Glassmorphism-style now-playing widget.
-- **📊 GitHub Stats:** Comprehensive user statistics with a premium design.
-- **⚡ Zero Latency:** Runs on Vercel Edge Functions for instant rendering.
+- **🐍 Snake Game**: A playable snake game that eats your GitHub contributions.
+  - Usage: `?template=snake&username=YOUR_USER&speed=110&color=green`
+- **🎵 Music Visualizer**: A sleek "Now Playing" card with an animated bar visualizer.
+  - Usage: `?template=music&trackName=Song&artist=Artist&barColor=1ED760`
+- **🧊 3D Contribution Skyline**: An isometric 3D view of your GitHub contribution graph.
+  - Usage: `?template=activity&username=YOUR_USER&theme=dark`
+- **📊 GitHub Stats**: Classic stats card with a modern design.
+- **⚡ Tech Stack**: Showcase your skills with icons.
 - **🛠️ Live Playground:** Visual editor to customize and preview your widgets.
 
 ---
