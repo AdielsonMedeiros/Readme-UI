@@ -31,7 +31,163 @@ export async function GET(req: NextRequest) {
       }
     });
 
+    // --- Special Handler: Animated Typing SVG ---
+    if (templateName === 'typing') {
+        const lines = (props.lines as string || 'Full Stack Developer|Open Source Enthusiast').split('|');
+        const theme = props.theme as string || 'dark';
+        const isDark = theme === 'dark';
+        const width = Number(props.width) || 600;
+        const height = Number(props.height) || 100;
+        
+        const textColor = isDark ? '#e6edf3' : '#24292f';
+        const accentColor = isDark ? '#58a6ff' : '#0969da';
+        const cursorColor = '#1db954';
+        
+        // Calculate animation timings
+        const charsPerSecond = 10;
+        const pauseBetweenLines = 1.5; // seconds
+        
+        let totalDuration = 0;
+        const lineAnimations = lines.map((line, i) => {
+            const typeDuration = line.length / charsPerSecond;
+            const startTime = totalDuration;
+            totalDuration += typeDuration + pauseBetweenLines;
+            return { line, startTime, typeDuration };
+        });
+        
+        // Generate SVG with CSS animations
+        const svg = `
+<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+  <style>
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .line {
+      font-family: 'Segoe UI', Ubuntu, Sans-Serif;
+      font-weight: 600;
+      fill: ${textColor};
+    }
+    .line-0 { font-size: 28px; fill: ${textColor}; }
+    .line-1 { font-size: 20px; fill: ${accentColor}; }
+    .cursor {
+      animation: blink 0.7s infinite;
+      fill: ${cursorColor};
+    }
+    .typing-container {
+      overflow: hidden;
+      display: inline-block;
+      animation: typing 2s steps(40) forwards;
+    }
+  </style>
+  
+  ${isDark ? '' : '<rect width="100%" height="100%" fill="#ffffff"/>'}
+  
+  <g transform="translate(${width/2}, ${height/2})">
+    ${lines.map((line, i) => `
+      <text 
+        class="line line-${i}" 
+        text-anchor="middle" 
+        y="${i === 0 ? -10 : 20}"
+        style="animation: fadeIn 0.5s ease ${i * 0.5}s forwards; opacity: 0;"
+      >
+        ${line}
+      </text>
+    `).join('')}
+    
+    <!-- Cursor -->
+    <rect 
+      class="cursor" 
+      x="${Math.max(...lines.map(l => l.length)) * 4}" 
+      y="${lines.length > 1 ? 5 : -25}" 
+      width="3" 
+      height="24"
+    />
+  </g>
+</svg>`;
+
+        return new Response(svg, {
+            headers: {
+                'Content-Type': 'image/svg+xml',
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+            },
+        });
+    }
+
     // --- Dynamic Data Fetching ---
+
+    // Project Showcase: Fetch real repo data from GitHub
+    if (templateName === 'project' && props.repo) {
+        try {
+            const repoPath = String(props.repo); // format: "username/repo-name"
+            const headers: HeadersInit = { 'User-Agent': 'Readme-UI' };
+            if (props.token) {
+                headers['Authorization'] = `Bearer ${props.token}`;
+            }
+            
+            const repoRes = await fetch(`https://api.github.com/repos/${repoPath}`, { headers });
+            
+            if (repoRes.ok) {
+                const data = await repoRes.json();
+                props.name = data.name;
+                props.description = data.description || 'No description';
+                props.stars = data.stargazers_count;
+                props.forks = data.forks_count;
+                props.language = data.language || 'Unknown';
+                
+                // Language colors mapping
+                const langColors: Record<string, string> = {
+                    'TypeScript': '#3178c6',
+                    'JavaScript': '#f1e05a',
+                    'Python': '#3572A5',
+                    'Java': '#b07219',
+                    'Go': '#00ADD8',
+                    'Rust': '#dea584',
+                    'Ruby': '#701516',
+                    'PHP': '#4F5D95',
+                    'C#': '#178600',
+                    'C++': '#f34b7d',
+                    'C': '#555555',
+                    'Swift': '#F05138',
+                    'Kotlin': '#A97BFF',
+                };
+                props.languageColor = langColors[data.language] || '#8b949e';
+            }
+        } catch (e) {
+            console.error('[Project] Failed to fetch repo data:', e);
+        }
+    }
+
+    // Visitor Counter: Fetch real stats from GitHub profile
+    if (templateName === 'visitors' && props.username) {
+        try {
+            const username = String(props.username);
+            const headers: HeadersInit = { 'User-Agent': 'Readme-UI' };
+            if (props.token) {
+                headers['Authorization'] = `Bearer ${props.token}`;
+            }
+            
+            // Fetch user profile to get followers as "views" proxy
+            const userRes = await fetch(`https://api.github.com/users/${username}`, { headers });
+            
+            if (userRes.ok) {
+                const userData = await userRes.json();
+                // Use followers + public repos as engagement metric
+                props.count = userData.followers + userData.public_repos;
+                props.label = props.label || 'Profile Engagement';
+            }
+        } catch (e) {
+            console.error('[Visitors] Failed to fetch profile data:', e);
+        }
+    }
 
     // Spotify: Fetch cover image server-side to avoid CORS issues
     if (templateName === 'spotify' && props.coverUrl) {

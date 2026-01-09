@@ -190,7 +190,7 @@ export default function Home() {
                                 }`}
                             >
                                 <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'wave' ? 'bg-purple-500/20 text-purple-500' : 'bg-neutral-800 text-neutral-400'}`}>
-                                    <span className="text-lg">🌊</span>
+                                    <span className={`text-lg ${params.template === 'wave' ? '' : 'grayscale opacity-50'}`}>🌊</span>
                                 </div>
                                 <span className={`text-xs font-medium ${params.template === 'wave' ? 'text-white' : 'text-neutral-400'}`}>Wave</span>
                             </button>
@@ -204,7 +204,7 @@ export default function Home() {
                                 }`}
                             >
                                 <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'social' ? 'bg-cyan-500/20 text-cyan-500' : 'bg-neutral-800 text-neutral-400'}`}>
-                                    <span className="text-lg">🔗</span>
+                                    <span className={`text-lg ${params.template === 'social' ? '' : 'grayscale opacity-50'}`}>🔗</span>
                                 </div>
                                 <span className={`text-xs font-medium ${params.template === 'social' ? 'text-white' : 'text-neutral-400'}`}>Social</span>
                             </button>
@@ -221,6 +221,76 @@ export default function Home() {
                                     <FaSpotify className="w-4 h-4" />
                                 </div>
                                 <span className={`text-xs font-medium ${params.template === 'spotify' ? 'text-white' : 'text-neutral-400'}`}>Spotify</span>
+                            </button>
+
+                            <button
+                                onClick={() => setParams({ ...params, template: 'quote' })}
+                                className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                                    params.template === 'quote' 
+                                    ? 'bg-neutral-800 border-blue-400 ring-1 ring-blue-400' 
+                                    : 'bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700'
+                                }`}
+                            >
+                                <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'quote' ? 'bg-blue-400/20 text-blue-400' : 'bg-neutral-800 text-neutral-400'}`}>
+                                    <span className={`text-lg ${params.template === 'quote' ? '' : 'grayscale opacity-50'}`}>💬</span>
+                                </div>
+                                <span className={`text-xs font-medium ${params.template === 'quote' ? 'text-white' : 'text-neutral-400'}`}>Quote</span>
+                            </button>
+
+                            <button
+                                onClick={() => setParams({ ...params, template: 'project', name: 'my-project' })}
+                                className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                                    params.template === 'project' 
+                                    ? 'bg-neutral-800 border-yellow-500 ring-1 ring-yellow-500' 
+                                    : 'bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700'
+                                }`}
+                            >
+                                <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'project' ? 'bg-yellow-500/20 text-yellow-500' : 'bg-neutral-800 text-neutral-400'}`}>
+                                    <span className={`text-lg ${params.template === 'project' ? '' : 'grayscale opacity-50'}`}>🏆</span>
+                                </div>
+                                <span className={`text-xs font-medium ${params.template === 'project' ? 'text-white' : 'text-neutral-400'}`}>Project</span>
+                            </button>
+
+                            <button
+                                onClick={() => setParams({ ...params, template: 'typing', lines: 'Full Stack Developer|Open Source Enthusiast' })}
+                                className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                                    params.template === 'typing' 
+                                    ? 'bg-neutral-800 border-emerald-500 ring-1 ring-emerald-500' 
+                                    : 'bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700'
+                                }`}
+                            >
+                                <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'typing' ? 'bg-emerald-500/20 text-emerald-500' : 'bg-neutral-800 text-neutral-400'}`}>
+                                    <span className={`text-lg ${params.template === 'typing' ? '' : 'grayscale opacity-50'}`}>⌨️</span>
+                                </div>
+                                <span className={`text-xs font-medium ${params.template === 'typing' ? 'text-white' : 'text-neutral-400'}`}>Typing</span>
+                            </button>
+
+                            <button
+                                onClick={() => setParams({ ...params, template: 'joke' })}
+                                className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                                    params.template === 'joke' 
+                                    ? 'bg-neutral-800 border-orange-500 ring-1 ring-orange-500' 
+                                    : 'bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700'
+                                }`}
+                            >
+                                <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'joke' ? 'bg-orange-500/20 text-orange-500' : 'bg-neutral-800 text-neutral-400'}`}>
+                                    <span className={`text-lg ${params.template === 'joke' ? '' : 'grayscale opacity-50'}`}>😂</span>
+                                </div>
+                                <span className={`text-xs font-medium ${params.template === 'joke' ? 'text-white' : 'text-neutral-400'}`}>Joke</span>
+                            </button>
+
+                            <button
+                                onClick={() => setParams({ ...params, template: 'visitors', count: 1234 })}
+                                className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                                    params.template === 'visitors' 
+                                    ? 'bg-neutral-800 border-lime-500 ring-1 ring-lime-500' 
+                                    : 'bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700'
+                                }`}
+                            >
+                                <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'visitors' ? 'bg-lime-500/20 text-lime-500' : 'bg-neutral-800 text-neutral-400'}`}>
+                                    <span className={`text-lg ${params.template === 'visitors' ? '' : 'grayscale opacity-50'}`}>👁️</span>
+                                </div>
+                                <span className={`text-xs font-medium ${params.template === 'visitors' ? 'text-white' : 'text-neutral-400'}`}>Views</span>
                             </button>
                         </div>
                     </div>
@@ -397,6 +467,100 @@ export default function Home() {
                             <div className="space-y-2">
                                 <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Website</label>
                                 <input type="url" name="website" value={params.website || ''} onChange={handleChange} placeholder="https://mysite.com" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-500 outline-none transition-all" />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Quote Card Controls */}
+                    {params.template === 'quote' && (
+                        <div className="space-y-3">
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Quote Text</label>
+                                <textarea name="quote" value={params.quote || ''} onChange={handleChange} placeholder="Leave empty for random quote" className="w-full h-20 bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 outline-none transition-all resize-none" />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Author</label>
+                                <input type="text" name="author" value={params.author || ''} onChange={handleChange} placeholder="Author name" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 outline-none transition-all" />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Project Showcase Controls */}
+                    {params.template === 'project' && (
+                        <div className="space-y-3">
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">GitHub Repo (Auto-fetch)</label>
+                                <input type="text" name="repo" value={params.repo || ''} onChange={handleChange} placeholder="username/repo-name" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+                                <p className="text-xs text-neutral-500">Enter username/repo to fetch data automatically (e.g., AdielsonMedeiros/Readme-UI)</p>
+                            </div>
+                            <div className="border-t border-neutral-800 pt-3">
+                                <p className="text-xs text-neutral-500 mb-3">Or customize manually:</p>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Project Name</label>
+                                    <input type="text" name="name" value={params.name || ''} onChange={handleChange} placeholder="my-awesome-project" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Description</label>
+                                <textarea name="description" value={params.description || ''} onChange={handleChange} placeholder="A fantastic project..." className="w-full h-16 bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all resize-none" />
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Stars</label>
+                                    <input type="number" name="stars" value={params.stars || ''} onChange={handleChange} placeholder="Auto" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Forks</label>
+                                    <input type="number" name="forks" value={params.forks || ''} onChange={handleChange} placeholder="Auto" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Typing Text Controls */}
+                    {params.template === 'typing' && (
+                        <div className="space-y-3">
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Text Lines (Separate with |)</label>
+                                <textarea name="lines" value={params.lines || 'Full Stack Developer|Open Source Enthusiast'} onChange={handleChange} placeholder="Line 1|Line 2|Line 3" className="w-full h-20 bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 outline-none transition-all resize-none" />
+                                <p className="text-xs text-neutral-500">Use | to separate multiple lines</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Dev Joke Controls */}
+                    {params.template === 'joke' && (
+                        <div className="space-y-3">
+                            <p className="text-xs text-neutral-500">🎲 Leave empty for a random programming joke!</p>
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Custom Joke</label>
+                                <input type="text" name="joke" value={params.joke || ''} onChange={handleChange} placeholder="Why do programmers..." className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-500 outline-none transition-all" />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Punchline</label>
+                                <input type="text" name="punchline" value={params.punchline || ''} onChange={handleChange} placeholder="Because..." className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-500 outline-none transition-all" />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Visitor Counter Controls */}
+                    {params.template === 'visitors' && (
+                        <div className="space-y-3">
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">GitHub Username (Auto-fetch)</label>
+                                <input type="text" name="username" value={params.username || ''} onChange={handleChange} placeholder="AdielsonMedeiros" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-lime-500 outline-none transition-all" />
+                                <p className="text-xs text-neutral-500">Shows followers + repos as engagement metric</p>
+                            </div>
+                            <div className="border-t border-neutral-800 pt-3">
+                                <p className="text-xs text-neutral-500 mb-3">Or set manually:</p>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Count</label>
+                                    <input type="number" name="count" value={params.count || ''} onChange={handleChange} placeholder="Auto" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-lime-500 outline-none transition-all" />
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Label</label>
+                                <input type="text" name="label" value={params.label || 'Profile Engagement'} onChange={handleChange} placeholder="Profile Views" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-lime-500 outline-none transition-all" />
                             </div>
                         </div>
                     )}
