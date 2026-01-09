@@ -21,6 +21,7 @@ export interface GithubStatsProps {
   joinedDate?: string;
   languages?: string; // JSON string
   topics?: string; // JSON string
+  accent?: string;
 }
 
 const calculateRank = ({ stars, followers, repos, forks, prs, contributions }: any) => {
@@ -55,7 +56,8 @@ export const GithubStats: React.FC<GithubStatsProps> = ({
   blog,
   joinedDate,
   languages,
-  topics
+  topics,
+  accent = 'blue'
 }) => {
   const isDark = theme === 'dark';
   const bgColor = isDark ? '#0d1117' : '#ffffff';
@@ -63,15 +65,30 @@ export const GithubStats: React.FC<GithubStatsProps> = ({
   const borderColor = isDark ? '#30363d' : '#e1e4e8';
   const secondaryText = isDark ? '#8b949e' : '#586069';
 
+  // Accent Colors Map
+  const accents: Record<string, string> = {
+      blue: '#3178c6', // Default TS Blue
+      purple: '#8a63d2',
+      green: '#2ea043',
+      orange: '#f0883e',
+      pink: '#db61a2',
+      red: '#da3633',
+      cyan: '#39c5cf',
+      yellow: '#d29922'
+  };
+  
+  const mainColor = accents[accent.toLowerCase()] || accents['blue'];
+
   const parsedLanguages = languages ? JSON.parse(languages) : [];
   const parsedTopics = topics ? JSON.parse(topics) : [];
   
   const totalLangCount = parsedLanguages.reduce((acc: number, l: any) => acc + l.count, 0);
   const rank = calculateRank({ stars, followers, repos, forks, prs, contributions });
 
-
-  // Language Colors
-  const colors = ['#3178c6', '#f1e05a', '#e34c26', '#563d7c', '#2b7489', '#f0db4f'];
+  // Language Colors (First one gets accent if valid, others rotate)
+  // We keep standard colors for variety, but we could enforce adherence if needed.
+  // Let's replace the first color in the rotation with our Main Accent to set the theme.
+  const colors = [mainColor, '#f1e05a', '#e34c26', '#563d7c', '#2b7489', '#f0db4f'];
   
   // Rank Colors
   const rankColors: Record<string, string> = {
@@ -172,7 +189,7 @@ export const GithubStats: React.FC<GithubStatsProps> = ({
         )}
 
         {/* Topics */}
-        {parsedTopics.length > 0 ? (
+        {parsedTopics.length > 0 && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '24px' }}>
                 {parsedTopics.map((topic: string) => (
                     <div key={topic} style={{
@@ -188,10 +205,6 @@ export const GithubStats: React.FC<GithubStatsProps> = ({
                         #{topic}
                     </div>
                 ))}
-            </div>
-        ) : (
-            <div style={{ marginBottom: '24px', fontSize: '12px', color: secondaryText, fontStyle: 'italic' }}>
-                No topics found (Add tags to your repos!)
             </div>
         )}
 

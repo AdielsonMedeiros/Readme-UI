@@ -19,6 +19,10 @@ export async function GET(req: NextRequest) {
     const props: Record<string, string | number> = {};
     searchParams.forEach((value, key) => {
       if (key === 'template') return;
+      if (key === 'accent') {
+          props[key] = value;
+          return;
+      }
       // Simple number parsing
       if (!isNaN(Number(value)) && value.trim() !== '') {
         props[key] = Number(value);

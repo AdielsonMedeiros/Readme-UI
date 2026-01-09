@@ -16,7 +16,8 @@ export default function Home() {
     height: 500,
     theme: 'dark',
     username: '',
-    token: ''
+    token: '',
+    accent: 'blue'
   });
 
   const [url, setUrl] = useState('');
@@ -70,7 +71,7 @@ export default function Home() {
     setUrl(`${baseUrl}/api/render?${query}`);
   }, [debouncedParams]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setParams((prev: any) => ({ ...prev, [name]: value }));
   };
@@ -178,6 +179,20 @@ export default function Home() {
                                 </div>
                                 <span className={`text-sm font-medium ${params.template === 'github' ? 'text-white' : 'text-neutral-400'}`}>GitHub</span>
                             </button>
+
+                             <button
+                                onClick={() => setParams({ ...params, template: 'stack' })}
+                                className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-all ${
+                                    params.template === 'stack' 
+                                    ? 'bg-neutral-800 border-blue-500 ring-1 ring-blue-500' 
+                                    : 'bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700'
+                                }`}
+                            >
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${params.template === 'stack' ? 'bg-blue-500/20 text-blue-500' : 'bg-neutral-800 text-neutral-400'}`}>
+                                    <Layers className="w-5 h-5" />
+                                </div>
+                                <span className={`text-sm font-medium ${params.template === 'stack' ? 'text-white' : 'text-neutral-400'}`}>Tech Stack</span>
+                            </button>
                         </div>
                     </div>
 
@@ -245,6 +260,21 @@ export default function Home() {
                         </>
                     )}
 
+                    {/* Tech Stack Controls */}
+                    {params.template === 'stack' && (
+                        <div className="space-y-2">
+                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Skills (Comma Separated)</label>
+                            <textarea 
+                                name="skills"
+                                value={params.skills || 'react,typescript,nextdotjs,tailwindcss,nodedotjs,docker'}
+                                onChange={handleChange}
+                                className="w-full h-24 bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
+                                placeholder="react, typescript, ..."
+                            />
+                            <p className="text-xs text-neutral-500">Use slugs from simpleicons.org (e.g., nextdotjs, nodedotjs)</p>
+                        </div>
+                    )}
+
                     {/* GitHub Specific Controls */}
                     {params.template === 'github' && (
                         <>
@@ -274,6 +304,25 @@ export default function Home() {
                                     className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none transition-all"
                                 />
                                 <p className="text-xs text-neutral-500">Provide a token to increase API rate limits (5000 req/hr).</p>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Accent Color</label>
+                                <select 
+                                    name="accent" 
+                                    value={params.accent || 'blue'}
+                                    onChange={handleChange}
+                                    className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none transition-all"
+                                >
+                                    <option value="blue">Blue (Default)</option>
+                                    <option value="purple">Purple</option>
+                                    <option value="green">Green</option>
+                                    <option value="orange">Orange</option>
+                                    <option value="pink">Pink</option>
+                                    <option value="red">Red</option>
+                                    <option value="cyan">Cyan</option>
+                                    <option value="yellow">Yellow</option>
+                                </select>
                             </div>
                         </>
                     )}
