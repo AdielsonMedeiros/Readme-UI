@@ -506,7 +506,7 @@ export async function GET(req: NextRequest) {
                 snakePath = pathStr.join(' ');
                 
                 // Constant speed 
-                const speed = 180; 
+                const speed = 110; // Faster (was 100)
                 duration = totalDistance / speed;
                 if (duration < 5) duration = 5; 
 
@@ -547,7 +547,7 @@ export async function GET(req: NextRequest) {
                 
             } else {
                  snakePath = "M15,60 L700,60";
-                 duration = 3;
+                 duration = 20; // Slower fallback
             }
 
         } catch (e) {
@@ -555,14 +555,30 @@ export async function GET(req: NextRequest) {
             gridCells.push(`<text x="20" y="50" fill="red">Error loading data</text>`);
         }
 
-        // 4. Render SVG
-        const snakeSegments = [
-            { id: 'h',  c: '#39d353', o: 1.0, d: 0 },
-            { id: 'b1', c: '#39d353', o: 0.8, d: 0.05 },
-            { id: 'b2', c: '#26a641', o: 0.6, d: 0.1 },
-            { id: 'b3', c: '#26a641', o: 0.4, d: 0.15 },
-            { id: 'b4', c: '#0e4429', o: 0.2, d: 0.2 },
+        // 4. Render Final SVG
+        // Create the snake body segments (Head + Body Parts) using the computed path
+        // Longer tail: 12 segments
+        // Time lag (d) adjusted for speed 110px/s. 
+        // We want ~8px gap. 8/110 = ~0.07s.
+        const segmentGap = 0.07; 
+        const snakeSegments = [];
+        
+        // Colors from Head to Tail
+        const tailColors = [
+            '#39d353', '#39d353', '#39d353', // Head area
+            '#26a641', '#26a641', '#26a641', // Mid body
+            '#006d32', '#006d32', '#006d32', // Lower body
+            '#0e4429', '#0e4429', '#0e4429'  // Tail tip
         ];
+
+        for(let i=0; i<12; i++) {
+            snakeSegments.push({
+                id: `s${i}`,
+                c: tailColors[i] || '#0e4429',
+                o: Math.max(0.4, 1 - (i * 0.05)), // Gradual opacity fade
+                d: i * segmentGap
+            });
+        }
         
         const snakeEls = snakeSegments.reverse().map(s => `
              <rect x="-5" y="-5" width="${cellW}" height="${cellW}" rx="2" fill="${s.c}" opacity="${s.o}">
@@ -580,7 +596,14 @@ export async function GET(req: NextRequest) {
                 ${snakeEls}
             </svg>
         `;
-         return new Response(svg, { headers: { 'Content-Type': 'image/svg+xml' } });
+         return new Response(svg, { 
+             headers: { 
+                 'Content-Type': 'image/svg+xml',
+                 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+                 'Pragma': 'no-cache',
+                 'Expires': '0',
+             } 
+         });
     }
 
     // --- Dynamic Data Fetching for other templates ---
