@@ -9,7 +9,7 @@ export interface TechStackProps {
 export const TechStack: React.FC<TechStackProps> = ({
   skills = "react,typescript,nextdotjs,tailwindcss,nodedotjs,docker",
   theme = 'dark',
-  title = "Tech Stack"
+  title
 }) => {
   const isDark = theme === 'dark';
   const bgColor = isDark ? '#0d1117' : '#ffffff';
@@ -43,9 +43,11 @@ export const TechStack: React.FC<TechStackProps> = ({
           color: textColor,
         }}
       >
-        <div style={{ display: 'flex', fontSize: '24px', fontWeight: 700, marginBottom: '24px', width: '100%', justifyContent: 'center' }}>
-          {title}
-        </div>
+        {title && (
+            <div style={{ display: 'flex', fontSize: '24px', fontWeight: 700, marginBottom: '24px', width: '100%', justifyContent: 'center' }}>
+            {title}
+            </div>
+        )}
 
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'center' }}>
           {skillList.map((skill) => (

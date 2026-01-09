@@ -153,7 +153,7 @@ export default function Home() {
                         <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider block">Choose Template</label>
                         <div className="grid grid-cols-2 gap-3">
                             <button
-                                onClick={() => setParams({ ...params, template: 'spotify' })}
+                                onClick={() => setParams({ ...params, template: 'spotify', title: 'Never Gonna Give You Up', artist: 'Rick Astley' })}
                                 className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-all ${
                                     params.template === 'spotify' 
                                     ? 'bg-neutral-800 border-green-500 ring-1 ring-green-500' 
@@ -167,7 +167,7 @@ export default function Home() {
                             </button>
 
                             <button
-                                onClick={() => setParams({ ...params, template: 'github' })}
+                                onClick={() => setParams({ ...params, template: 'github', title: '' })}
                                 className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-all ${
                                     params.template === 'github' 
                                     ? 'bg-neutral-800 border-white ring-1 ring-white' 
@@ -181,7 +181,7 @@ export default function Home() {
                             </button>
 
                              <button
-                                onClick={() => setParams({ ...params, template: 'stack' })}
+                                onClick={() => setParams({ ...params, template: 'stack', title: '' })}
                                 className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-all ${
                                     params.template === 'stack' 
                                     ? 'bg-neutral-800 border-blue-500 ring-1 ring-blue-500' 
@@ -262,16 +262,30 @@ export default function Home() {
 
                     {/* Tech Stack Controls */}
                     {params.template === 'stack' && (
-                        <div className="space-y-2">
-                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Skills (Comma Separated)</label>
-                            <textarea 
-                                name="skills"
-                                value={params.skills || 'react,typescript,nextdotjs,tailwindcss,nodedotjs,docker'}
-                                onChange={handleChange}
-                                className="w-full h-24 bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
-                                placeholder="react, typescript, ..."
-                            />
-                            <p className="text-xs text-neutral-500">Use slugs from simpleicons.org (e.g., nextdotjs, nodedotjs)</p>
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Stack Title (Optional)</label>
+                                <input 
+                                    type="text" 
+                                    name="title"
+                                    value={params.title || ''}
+                                    onChange={handleChange}
+                                    placeholder="My Tech Stack"
+                                    className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Skills (Comma Separated)</label>
+                                <textarea 
+                                    name="skills"
+                                    value={params.skills || 'react,typescript,nextdotjs,tailwindcss,nodedotjs,docker'}
+                                    onChange={handleChange}
+                                    className="w-full h-24 bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
+                                    placeholder="react, typescript, ..."
+                                />
+                                <p className="text-xs text-neutral-500">Use slugs from simpleicons.org (e.g., nextdotjs, nodedotjs)</p>
+                            </div>
                         </div>
                     )}
 
