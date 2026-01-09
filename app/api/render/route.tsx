@@ -32,6 +32,41 @@ export async function GET(req: NextRequest) {
     });
 
     // --- Dynamic Data Fetching ---
+
+    // Spotify: Fetch cover image server-side to avoid CORS issues
+    if (templateName === 'spotify' && props.coverUrl) {
+        try {
+            // Ensure URL is properly decoded (searchParams should handle this, but let's be safe)
+            const coverUrlStr = decodeURIComponent(String(props.coverUrl));
+            console.log('[Spotify] Fetching cover from:', coverUrlStr);
+            
+            const coverRes = await fetch(coverUrlStr, {
+                headers: { 'User-Agent': 'Readme-UI/1.0' }
+            });
+            
+            console.log('[Spotify] Cover response status:', coverRes.status);
+            
+            if (coverRes.ok) {
+                const arrayBuffer = await coverRes.arrayBuffer();
+                const uint8Array = new Uint8Array(arrayBuffer);
+                let binaryString = '';
+                for (let i = 0; i < uint8Array.length; i++) {
+                    binaryString += String.fromCharCode(uint8Array[i]);
+                }
+                const base64 = btoa(binaryString);
+                // Force JPEG - Spotify CDN always returns JPEG
+                props.coverUrl = `data:image/jpeg;base64,${base64}`;
+                console.log('[Spotify] Cover converted to base64, length:', base64.length);
+            } else {
+                console.warn('[Spotify] Cover fetch failed with status:', coverRes.status);
+                delete props.coverUrl; // Remove so fallback is used
+            }
+        } catch (e) {
+            console.error('[Spotify] Failed to fetch cover image:', e);
+            delete props.coverUrl; // Remove so fallback is used
+        }
+    }
+
     if (templateName === 'github' && props.username) {
         try {
             const headers: HeadersInit = { 
