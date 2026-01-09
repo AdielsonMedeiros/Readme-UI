@@ -162,11 +162,16 @@ export default function Home() {
                 </h1>
             </div>
             <div className="flex items-center gap-4 text-sm text-neutral-400">
-                <a href="#" className="hover:text-white transition-colors">Documentation</a>
-                <a href="#" className="hover:text-white transition-colors">GitHub</a>
-                <button className="bg-white text-black px-4 py-2 rounded-full font-medium hover:bg-neutral-200 transition-colors">
+                <a href="https://github.com/AdielsonMedeiros/Readme-UI" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Documentation</a>
+                <a href="https://github.com/AdielsonMedeiros/Readme-UI" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a>
+                <a 
+                    href="https://vercel.com/new/clone?repository-url=https://github.com/AdielsonMedeiros/Readme-UI" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="bg-white text-black px-4 py-2 rounded-full font-medium hover:bg-neutral-200 transition-colors"
+                >
                     Deploy your own
-                </button>
+                </a>
             </div>
         </div>
       </div>
