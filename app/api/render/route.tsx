@@ -592,16 +592,167 @@ export async function GET(req: NextRequest) {
 
     // --- Dynamic Data Fetching for other templates ---
 
-    // Hacking Terminal
-    if (templateName === 'hacking' && props.username) {
-        const username = String(props.username);
+    // --- Handler: Hacking Terminal (Animated) ---
+    if (templateName === 'hacking') {
+        const username = props.username ? String(props.username) : 'User';
+        let repoNames: string[] = ['sys-core', 'auth-module', 'neural-net'];
+
+        // Fetch real repos
         try {
-            const reposRes = await fetch(`https://api.github.com/users/${username}/repos?sort=pushed&per_page=5`, { headers });
+            const reposRes = await fetch(`https://api.github.com/users/${username}/repos?sort=pushed&per_page=3`, { headers });
             if (reposRes.ok) {
                 const reposData = await reposRes.json();
-                props.repos = reposData.map((r: any) => r.name);
+                if (reposData.length > 0) {
+                     repoNames = reposData.map((r: any) => r.name);
+                }
             }
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error('Hacking Repo Fetch Error:', e); }
+
+        const width = Number(props.width) || 600;
+        const height = Number(props.height) || 350;
+        
+        // Aesthetic Configuration
+        const bg = '#050505';
+        const cardBg = '#0c0c0c';
+        const borderColor = '#333333';
+        const textGreen = '#4af626';
+        const successGreen = '#ffffff'; // White for success standout or just bold green
+        
+        // Font settings
+        const fontSize = 14;
+        const lineHeight = 20;
+        const fontFamily = 'Consolas, Monaco, monospace';
+        
+        // Positioning
+        const startX = 40;
+        const startY = 70; // Header takes up space
+        
+        // Sequence generation
+        const sequence = [
+            { text: '> INITIALIZING_CONNECTION...', delay: 0 },
+            { text: `> TARGET: ${username}@github.com`, delay: 0.8 },
+            { text: '> BYPASSING_FIREWALL... ', delay: 1.6, suffix: '[SUCCESS]', suffixDelay: 2 },
+            { text: '> ACCESSING_MAINFRAME...', delay: 3.5 },
+            { text: '> FETCHING_REPOSITORIES...', delay: 4.2 },
+            // Repos
+            ...repoNames.map((r, i) => ({ text: `> DOWNLOADING_SOURCE: ${r}...`, delay: 5.0 + (i * 0.4) })),
+            { text: '> COMPILING_ASSETS...', delay: 6.5 },
+            { text: '> DEPLOYING_TO_PRODUCTION...', delay: 7.2 },
+            { text: '> SYSTEM_READY', delay: 8.0 }
+        ];
+
+        // Generate SVG Text Lines
+        const textElements = sequence.map((item, idx) => {
+            const y = startY + (idx * lineHeight);
+            
+            // Standard line animation
+            const mainAnim = `
+                <animate 
+                    attributeName="opacity" 
+                    from="0" 
+                    to="1" 
+                    begin="${item.delay}s" 
+                    dur="0.1s" 
+                    fill="freeze" 
+                />
+            `;
+
+            let content = item.text;
+            let suffixEl = '';
+            
+            if (item.suffix) {
+                // If there's a suffix like [SUCCESS] that appears later
+                // We render the main text, and a separate span for the suffix
+                // SVG <text> doesn't support <span> easily without tspan hell.
+                // Easier: Two separate text elements? Or tspan.
+                // Let's use tspan.
+                
+                // Note: tspan x can be relative? No, let's just make the suffix its own text element or tspan with absolute positioning assumption or simple flow
+                // Simple flow in SVG text is hard.
+                // Hack: Just write the whole line but animate the suffix opacity?
+                // Better: Split into two parts visually. 
+                // "BYPASSING_FIREWALL... " + "[SUCCESS]"
+                // We estimate width of part 1? Monospace font helps.
+                // Approx char width ~ 8.4px for 14px Consolas
+                const charW = fontSize * 0.61; 
+                const part1Width = item.text.length * charW;
+                
+                content = item.text;
+                
+                suffixEl = `
+                    <text x="${startX + part1Width}" y="${y}" fill="${successGreen}" font-size="${fontSize}" font-family="${fontFamily}" font-weight="bold" opacity="0">
+                        ${item.suffix}
+                        <animate attributeName="opacity" from="0" to="1" begin="${item.suffixDelay}s" dur="0.1s" fill="freeze" />
+                    </text>
+                `;
+            }
+
+            return `
+                <text x="${startX}" y="${y}" fill="${textGreen}" font-size="${fontSize}" font-family="${fontFamily}" opacity="0">
+                    ${content}
+                    ${mainAnim}
+                </text>
+                ${suffixEl}
+            `;
+        });
+        
+        // Blinking Cursor Logic
+        // Appears after last line
+        const lastValues = sequence[sequence.length-1];
+        const lastLineY = startY + (sequence.length * lineHeight);
+        const cursorDelay = lastValues.delay + 0.5;
+        
+        const cursorSvg = `
+            <g opacity="0">
+                <animate attributeName="opacity" from="0" to="1" begin="${cursorDelay}s" dur="0.1s" fill="freeze" />
+                <text x="${startX}" y="${lastLineY}" fill="#fff" font-size="${fontSize}" font-family="${fontFamily}">$</text>
+                <rect x="${startX + 15}" y="${lastLineY - 10}" width="10" height="15" fill="${textGreen}">
+                    <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite" />
+                </rect>
+            </g>
+        `;
+
+        const svg = `
+        <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+            <style>
+                .terminal-text { font-family: Consolas, Monaco, 'Courier New', monospace; }
+            </style>
+            
+            <!-- Bg -->
+            <rect width="100%" height="100%" fill="${bg}" />
+            
+            <!-- Window Card -->
+            <rect x="10" y="10" width="${width - 20}" height="${height - 20}" rx="10" fill="${cardBg}" stroke="${borderColor}" stroke-width="1" />
+            
+            <!-- Window Header -->
+            <rect x="11" y="11" width="${width - 22}" height="32" rx="10" fill="#111" />
+            <!-- Flatten bottom radius of header -->
+            <rect x="11" y="30" width="${width - 22}" height="15" fill="#111" />
+            <line x1="10" y1="43" x2="${width - 10}" y2="43" stroke="${borderColor}" stroke-width="1" />
+            
+            <!-- Buttons -->
+            <circle cx="35" cy="27" r="6" fill="#ff5f56" />
+            <circle cx="55" cy="27" r="6" fill="#ffbd2e" />
+            <circle cx="75" cy="27" r="6" fill="#27c93f" />
+            
+            <!-- Title -->
+            <text x="${width / 2}" y="31" text-anchor="middle" fill="#666" font-size="12" font-family="sans-serif">bash — ${username}</text>
+            
+            <!-- Content -->
+            <g class="terminal-text" style="filter: drop-shadow(0 0 2px rgba(74, 246, 38, 0.4));">
+                ${textElements.join('\n')}
+                ${cursorSvg}
+            </g>
+
+        </svg>
+        `;
+
+        return new Response(svg, {
+            headers: {
+                'Content-Type': 'image/svg+xml',
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+            },
+        });
     }
 
     // Weather Widget
