@@ -37,81 +37,166 @@ export async function GET(req: NextRequest) {
         const theme = props.theme as string || 'dark';
         const isDark = theme === 'dark';
         const width = Number(props.width) || 600;
-        const height = Number(props.height) || 100;
+        const height = Number(props.height) || 150;
         
+        const bgColor = isDark ? '#0d1117' : '#ffffff';
         const textColor = isDark ? '#e6edf3' : '#24292f';
         const accentColor = isDark ? '#58a6ff' : '#0969da';
         const cursorColor = '#1db954';
         
-        // Calculate animation timings
-        const charsPerSecond = 10;
-        const pauseBetweenLines = 1.5; // seconds
+        // Animation settings
+        const charDuration = 0.1; // seconds per character
+        const linePause = 1.5; // pause between lines
         
-        let totalDuration = 0;
-        const lineAnimations = lines.map((line, i) => {
-            const typeDuration = line.length / charsPerSecond;
-            const startTime = totalDuration;
-            totalDuration += typeDuration + pauseBetweenLines;
-            return { line, startTime, typeDuration };
+        // Cursor Animation Data
+        const cursorXValues: number[] = [];
+        const cursorYValues: number[] = [];
+        const keyTimes: number[] = [];
+        
+        // SVG Data
+        const linesSvg: string[] = [];
+        const clipPaths: string[] = [];
+        
+        let cursorTotalTime = 0;
+        
+        // Calculate total time first to normalize keyTimes
+        const totalAnimationDuration = lines.reduce((acc, line, idx) => {
+             const len = line.length;
+             return acc + (len * charDuration) + linePause;
+        }, 0);
+
+        // Reset for actual generation
+        let elapsedTime = 0;
+
+        lines.forEach((line, idx) => {
+            const lineId = `line${idx}`;
+            const lineLength = line.length;
+            const typingDuration = lineLength * charDuration;
+            const startTime = elapsedTime;
+            
+            const fontSize = idx === 0 ? 36 : 24;
+            const yPos = 55 + (idx * 40);
+            const cursorHeight = fontSize;
+            // Adjust cursor Y to be vertically centered on the line
+            // Text y is baseline. Rect y is top-left.
+            const cursorY = yPos - (cursorHeight * 0.8); 
+            
+            // Approximate text width
+            const charWidth = fontSize * 0.6;
+            const textWidth = lineLength * charWidth;
+            const startX = (width - textWidth) / 2;
+            const endX = startX + textWidth;
+
+            // ClipPath logic (keep existing)
+            clipPaths.push(`
+                <clipPath id="clip-${lineId}">
+                    <rect x="${startX}" y="${yPos - fontSize}" width="0" height="${fontSize + 10}">
+                        <animate 
+                            attributeName="width" 
+                            from="0" 
+                            to="${textWidth + 20}" 
+                            dur="${typingDuration}s" 
+                            begin="${startTime}s" 
+                            fill="freeze"
+                        />
+                    </rect>
+                </clipPath>
+            `);
+            
+            // Text Element (keep existing)
+            const fontWeight = idx === 0 ? 700 : 500;
+            const fillColor = idx === 0 ? textColor : accentColor;
+            linesSvg.push(`
+                <text 
+                    x="${width/2}" 
+                    y="${yPos}"
+                    text-anchor="middle"
+                    font-family="'Segoe UI', Ubuntu, system-ui, -apple-system, sans-serif"
+                    font-size="${fontSize}"
+                    font-weight="${fontWeight}"
+                    fill="${fillColor}"
+                    clip-path="url(#clip-${lineId})"
+                >
+                    ${line}
+                </text>
+            `);
+
+            // Cursor Logic points
+            // 1. Start of line typing
+            if (idx === 0) {
+                // Initial position
+                cursorXValues.push(startX);
+                cursorYValues.push(cursorY);
+                keyTimes.push(0);
+            } else {
+                // Instantly jump to next line start (at previous end time)
+                cursorXValues.push(startX);
+                cursorYValues.push(cursorY);
+                keyTimes.push(elapsedTime / totalAnimationDuration);
+            }
+
+            // 2. End of line typing
+            elapsedTime += typingDuration;
+            cursorXValues.push(endX);
+            cursorYValues.push(cursorY);
+            keyTimes.push(elapsedTime / totalAnimationDuration);
+
+            // 3. Pause (stay at end)
+            elapsedTime += linePause;
+            // If not last line, add hold point
+            if (idx < lines.length - 1) {
+                cursorXValues.push(endX);
+                cursorYValues.push(cursorY);
+                keyTimes.push(elapsedTime / totalAnimationDuration);
+            }
         });
+
+        // Ensure we end at 1
+        if (keyTimes[keyTimes.length - 1] !== 1) {
+            cursorXValues.push(cursorXValues[cursorXValues.length-1]);
+            cursorYValues.push(cursorYValues[cursorYValues.length-1]);
+            keyTimes.push(1);
+        }
+
+        const cursor = `
+            <rect width="3" height="32" fill="${cursorColor}">
+                <animate 
+                    attributeName="x" 
+                    values="${cursorXValues.join(';')}" 
+                    keyTimes="${keyTimes.join(';')}"
+                    dur="${totalAnimationDuration}s" 
+                    fill="freeze" 
+                />
+                <animate 
+                    attributeName="y" 
+                    values="${cursorYValues.join(';')}" 
+                    keyTimes="${keyTimes.join(';')}"
+                    dur="${totalAnimationDuration}s" 
+                    fill="freeze" 
+                />
+                <animate 
+                    attributeName="height" 
+                    values="${lines.map((_, i) => i === 0 ? 36 : 24).join(';')}" 
+                    dur="${totalAnimationDuration}s"
+                    fill="freeze"
+                    calcMode="discrete"
+                />
+                <animate 
+                    attributeName="opacity" 
+                    values="1;0;1" 
+                    dur="0.8s" 
+                    repeatCount="indefinite" 
+                />
+            </rect>
+        `;
         
-        // Generate SVG with CSS animations
-        const svg = `
-<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-  <style>
-    @keyframes typing {
-      from { width: 0; }
-      to { width: 100%; }
-    }
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    .line {
-      font-family: 'Segoe UI', Ubuntu, Sans-Serif;
-      font-weight: 600;
-      fill: ${textColor};
-    }
-    .line-0 { font-size: 28px; fill: ${textColor}; }
-    .line-1 { font-size: 20px; fill: ${accentColor}; }
-    .cursor {
-      animation: blink 0.7s infinite;
-      fill: ${cursorColor};
-    }
-    .typing-container {
-      overflow: hidden;
-      display: inline-block;
-      animation: typing 2s steps(40) forwards;
-    }
-  </style>
-  
-  ${isDark ? '' : '<rect width="100%" height="100%" fill="#ffffff"/>'}
-  
-  <g transform="translate(${width/2}, ${height/2})">
-    ${lines.map((line, i) => `
-      <text 
-        class="line line-${i}" 
-        text-anchor="middle" 
-        y="${i === 0 ? -10 : 20}"
-        style="animation: fadeIn 0.5s ease ${i * 0.5}s forwards; opacity: 0;"
-      >
-        ${line}
-      </text>
-    `).join('')}
-    
-    <!-- Cursor -->
-    <rect 
-      class="cursor" 
-      x="${Math.max(...lines.map(l => l.length)) * 4}" 
-      y="${lines.length > 1 ? 5 : -25}" 
-      width="3" 
-      height="24"
-    />
-  </g>
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+    <rect width="100%" height="100%" fill="${bgColor}"/>
+    <defs>
+        ${clipPaths.join('\n')}
+    </defs>
+    ${linesSvg.join('\n')}
+    ${cursor}
 </svg>`;
 
         return new Response(svg, {
