@@ -493,27 +493,33 @@ export default function Home() {
                                 <input type="text" name="repo" value={params.repo || ''} onChange={handleChange} placeholder="username/repo-name" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
                                 <p className="text-xs text-neutral-500">Enter username/repo to fetch data automatically (e.g., AdielsonMedeiros/Readme-UI)</p>
                             </div>
-                            <div className="border-t border-neutral-800 pt-3">
-                                <p className="text-xs text-neutral-500 mb-3">Or customize manually:</p>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Project Name</label>
-                                    <input type="text" name="name" value={params.name || ''} onChange={handleChange} placeholder="my-awesome-project" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Description</label>
-                                <textarea name="description" value={params.description || ''} onChange={handleChange} placeholder="A fantastic project..." className="w-full h-16 bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all resize-none" />
-                            </div>
-                            <div className="grid grid-cols-2 gap-3">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Stars</label>
-                                    <input type="number" name="stars" value={params.stars || ''} onChange={handleChange} placeholder="Auto" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Forks</label>
-                                    <input type="number" name="forks" value={params.forks || ''} onChange={handleChange} placeholder="Auto" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
-                                </div>
-                            </div>
+                            
+                            {/* Only show manual fields if repo is empty */}
+                            {!params.repo && (
+                                <>
+                                    <div className="border-t border-neutral-800 pt-3">
+                                        <p className="text-xs text-neutral-500 mb-3">Or customize manually:</p>
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Project Name</label>
+                                            <input type="text" name="name" value={params.name || ''} onChange={handleChange} placeholder="my-awesome-project" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Description</label>
+                                        <textarea name="description" value={params.description || ''} onChange={handleChange} placeholder="A fantastic project..." className="w-full h-16 bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all resize-none" />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Stars</label>
+                                            <input type="number" name="stars" value={params.stars || ''} onChange={handleChange} placeholder="0" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Forks</label>
+                                            <input type="number" name="forks" value={params.forks || ''} onChange={handleChange} placeholder="0" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+                                        </div>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     )}
 
@@ -551,13 +557,18 @@ export default function Home() {
                                 <input type="text" name="username" value={params.username || ''} onChange={handleChange} placeholder="AdielsonMedeiros" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-lime-500 outline-none transition-all" />
                                 <p className="text-xs text-neutral-500">Shows followers + repos as engagement metric</p>
                             </div>
-                            <div className="border-t border-neutral-800 pt-3">
-                                <p className="text-xs text-neutral-500 mb-3">Or set manually:</p>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Count</label>
-                                    <input type="number" name="count" value={params.count || ''} onChange={handleChange} placeholder="Auto" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-lime-500 outline-none transition-all" />
+                            
+                            {/* Only show manual field if username is empty */}
+                            {!params.username && (
+                                <div className="border-t border-neutral-800 pt-3">
+                                    <p className="text-xs text-neutral-500 mb-3">Or set manually:</p>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Count</label>
+                                        <input type="number" name="count" value={params.count || ''} onChange={handleChange} placeholder="1234" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-lime-500 outline-none transition-all" />
+                                    </div>
                                 </div>
-                            </div>
+                            )}
+                            
                             <div className="space-y-2">
                                 <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Label</label>
                                 <input type="text" name="label" value={params.label || 'Profile Engagement'} onChange={handleChange} placeholder="Profile Views" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-lime-500 outline-none transition-all" />
