@@ -255,6 +255,84 @@ export async function GET(req: NextRequest) {
         });
     }
 
+    // --- Handler: Music Visualizer (Animated SVG) ---
+    // Note: Re-implemented manually as SVG because ImageResponse does not support CSS animations
+    if (templateName === 'music') {
+        const width = Number(props.width) || 600;
+        const height = Number(props.height) || 150;
+        const barColor = String(props.barColor || '#1db954');
+        const track = String(props.trackName || 'Midnight City');
+        const artist = String(props.artist || 'M83');
+        const theme = String(props.theme || 'dark');
+        const isDark = theme === 'dark';
+        const bg = isDark ? '#0d1117' : '#ffffff';
+        const textMain = isDark ? '#e6edf3' : '#24292f';
+        const textSub = isDark ? '#8b949e' : '#586069';
+        const borderColor = isDark ? '#30363d' : '#e1e4e8';
+
+        // Dimensions
+        const padding = 24;
+        const coverSize = 80;
+        const contentLeft = padding + coverSize + 16;
+        const baseY = padding + coverSize; // Bottom of cover
+
+        // Generate 35 animated bars
+        const bars: string[] = [];
+        for (let i = 0; i < 35; i++) {
+            const maxH = 35; 
+            const minH = 4;
+            const dur = 0.7 + Math.random() * 0.5; // Random duration between 0.7s and 1.2s
+            const startX = contentLeft + (i * 9); // 6px bar + 3px gap
+            
+            // Random animation height target
+            const targetH = minH + Math.random() * (maxH - minH);
+            
+            // Calc Y positions for bottom-alignment
+            // y goes UP as height increases
+            const yMin = baseY - minH;
+            const yMax = baseY - targetH;
+
+            bars.push(`
+                <rect x="${startX}" y="${yMin}" width="6" height="${minH}" fill="${barColor}" rx="2" opacity="0.9">
+                    <animate attributeName="height" values="${minH};${targetH};${minH}" dur="${dur}s" repeatCount="indefinite" calcMode="spline" keySplines="0.5 0 0.5 1; 0.5 0 0.5 1" />
+                    <animate attributeName="y" values="${yMin};${yMax};${yMin}" dur="${dur}s" repeatCount="indefinite" calcMode="spline" keySplines="0.5 0 0.5 1; 0.5 0 0.5 1" />
+                </rect>
+            `);
+        }
+
+        const svg = `
+            <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+                <style>
+                    .track { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-weight: 600; font-size: 20px; fill: ${textMain}; }
+                    .artist { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-weight: 400; font-size: 15px; fill: ${textSub}; }
+                </style>
+                
+                <rect width="100%" height="100%" fill="${bg}" rx="12" stroke="${borderColor}" stroke-width="1"/>
+                
+                <!-- Album Cover -->
+                <rect x="${padding}" y="${padding}" width="${coverSize}" height="${coverSize}" rx="6" fill="#21262d" />
+                <!-- Generic Music Note Icon -->
+                <text x="${padding + 40}" y="${padding + 48}" font-size="32" text-anchor="middle" dominant-baseline="middle" fill="#8b949e">🎵</text>
+
+                <!-- Text Info -->
+                <text x="${contentLeft}" y="${padding + 25}" class="track">${track}</text>
+                <text x="${contentLeft}" y="${padding + 50}" class="artist">${artist}</text>
+
+                <!-- Visualizer Bars -->
+                <g>
+                    ${bars.join('\n')}
+                </g>
+            </svg>
+        `;
+
+        return new Response(svg, { 
+            headers: { 
+                'Content-Type': 'image/svg+xml',
+                'Cache-Control': 'no-cache, no-store, must-revalidate'
+            } 
+        });
+    }
+
 
     // --- Handler: Snake Game (Authentic GitHub Style) ---
     if (templateName === 'snake') {
