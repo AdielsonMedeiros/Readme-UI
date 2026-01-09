@@ -14,6 +14,8 @@ import { VisitorCounter } from "@/templates/VisitorCounter";
 import { WaveBanner } from "@/templates/WaveBanner";
 import { WeatherWidget } from "@/templates/WeatherWidget";
 
+import { LeetCodeStats } from "@/templates/LeetCodeStats";
+
 // Define the registry of available templates
 // Key is the ?template=XYZ identifier
 export const templateRegistry: Record<string, React.FC<any>> = {
@@ -33,6 +35,7 @@ export const templateRegistry: Record<string, React.FC<any>> = {
   snake: SnakeGame,
   music: MusicVisualizer,
   activity: ActivityGraph,
+  leetcode: LeetCodeStats,
 };
 
 export type TemplateKey = keyof typeof templateRegistry;

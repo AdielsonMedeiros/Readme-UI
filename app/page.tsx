@@ -85,7 +85,8 @@ export default function Home() {
         music: ['template', 'trackName', 'artist', 'barColor', 'theme'],
         activity: ['template', 'username', 'theme'],
         snake: ['template', 'username', 'speed', 'color', 'theme'], // Include speed/color for future proofing
-        visitors: ['template', 'username', 'count', 'label', 'theme']
+        visitors: ['template', 'username', 'count', 'label', 'theme'],
+        leetcode: ['template', 'username', 'theme']
     };
 
     const currentTemplate = debouncedParams.template || 'spotify';
@@ -391,6 +392,20 @@ export default function Home() {
                                     <span className={`text-lg ${params.template === 'visitors' ? '' : 'grayscale opacity-50'}`}>👁️</span>
                                 </div>
                                 <span className={`text-xs font-medium ${params.template === 'visitors' ? 'text-white' : 'text-neutral-400'}`}>Views</span>
+                            </button>
+
+                            <button
+                                onClick={() => setParams({ ...params, template: 'leetcode', username: 'AdielsonMedeiros' })}
+                                className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                                    params.template === 'leetcode' 
+                                    ? 'bg-neutral-800 border-yellow-500 ring-1 ring-yellow-500' 
+                                    : 'bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700'
+                                }`}
+                            >
+                                <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'leetcode' ? 'bg-yellow-500/20 text-yellow-500' : 'bg-neutral-800 text-neutral-400'}`}>
+                                    <span className={`text-lg ${params.template === 'leetcode' ? '' : 'grayscale opacity-50'}`}>🏆</span>
+                                </div>
+                                <span className={`text-xs font-medium ${params.template === 'leetcode' ? 'text-white' : 'text-neutral-400'}`}>LeetCode</span>
                             </button>
 
                         </div>
@@ -742,6 +757,18 @@ export default function Home() {
                     )}
 
 
+
+
+                    {/* LeetCode Stats Controls */}
+                    {params.template === 'leetcode' && (
+                        <div className="space-y-3">
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">LeetCode Username</label>
+                                <input type="text" name="username" value={params.username || ''} onChange={handleChange} placeholder="adielson" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
+                                <p className="text-xs text-neutral-500">Fetches live stats from LeetCode API</p>
+                            </div>
+                        </div>
+                    )}
 
                     {/* GitHub Specific Controls */}
                     {params.template === 'github' && (

@@ -16,6 +16,8 @@ Built with **Next.js 14**, **TailwindCSS**, and **Satori**, it turns React compo
   - Usage: `?template=music&trackName=Song&artist=Artist&barColor=1ED760`
 - **🧊 3D Contribution Skyline**: An isometric 3D view of your GitHub contribution graph.
   - Usage: `?template=activity&username=YOUR_USER&theme=dark`
+- **🏆 LeetCode Stats**: Show off your coding skills with live LeetCode stats.
+  - Usage: `?template=leetcode&username=YOUR_LEETCODE_USER`
 - **📊 GitHub Stats**: Classic stats card with a modern design.
 - **⚡ Tech Stack**: Showcase your skills with icons.
 - **🛠️ Live Playground:** Visual editor to customize and preview your widgets.

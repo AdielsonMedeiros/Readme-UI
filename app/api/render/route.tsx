@@ -691,6 +691,29 @@ export async function GET(req: NextRequest) {
         }
     }
 
+    // --- Handler: LeetCode Stats ---
+    if (templateName === 'leetcode') {
+        const username = props.username ? String(props.username) : 'AdielsonMedeiros'; // or 'adielson' if that's his leetcode
+        try {
+            // Using reliable proxy for edge compatibility
+            const res = await fetch(`https://leetcode-stats-api.herokuapp.com/${username}`);
+            if (res.ok) {
+                const data = await res.json();
+                if (data.status === 'success') {
+                     props.ranking = data.ranking;
+                     props.totalSolved = data.totalSolved;
+                     props.totalQuestions = data.totalQuestions;
+                     props.easySolved = data.easySolved;
+                     props.mediumSolved = data.mediumSolved;
+                     props.hardSolved = data.hardSolved;
+                     props.acceptanceRate = data.acceptanceRate;
+                }
+            }
+        } catch (e) {
+            console.error('LeetCode Fetch Error:', e);
+        }
+    }
+
     // Default: Render React Component to SVG (ImageResponse)
     
     // Load Font (Instrument Sans) - with fallback
