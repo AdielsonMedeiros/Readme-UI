@@ -9,7 +9,7 @@ import { FaGithub, FaSpotify } from 'react-icons/fa'; // Import brand icons
 export default function Home() {
   const [showHelp, setShowHelp] = useState(false);
   const [params, setParams] = useState<any>({
-    template: 'spotify',
+    template: '',
     title: 'Never Gonna Give You Up',
     artist: 'Rick Astley',
     progress: 33,
@@ -64,11 +64,9 @@ export default function Home() {
 
     return () => clearTimeout(loopTimeout);
   }, []);
-  
-  // Debounce params to avoid hitting GitHub API rate limits on every keystroke
-  const debouncedParams = useDebounce(params, 1000);
 
-  useEffect(() => {
+  // Manual generation handler
+  const handleGenerate = () => {
     setLoading(true);
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
     
@@ -94,19 +92,21 @@ export default function Home() {
         goodreads: ['template', 'goodreadsId', 'title', 'progress', 'coverUrl', 'theme', 'author']
     };
 
-    const currentTemplate = debouncedParams.template || 'spotify';
-    const keysToKeep = relevantKeys[currentTemplate] || Object.keys(debouncedParams);
+    const currentTemplate = params.template;
+    if (!currentTemplate) return;
+
+    const keysToKeep = relevantKeys[currentTemplate] || Object.keys(params);
     
     const filteredParams: any = {};
     keysToKeep.forEach(key => {
-        if (debouncedParams[key] !== undefined && debouncedParams[key] !== '') {
-            filteredParams[key] = debouncedParams[key];
+        if (params[key] !== undefined && params[key] !== '') {
+            filteredParams[key] = params[key];
         }
     });
 
     const query = new URLSearchParams(filteredParams).toString();
     setUrl(`${baseUrl}/api/render?${query}`);
-  }, [debouncedParams]);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -951,8 +951,18 @@ export default function Home() {
                             />
                         </div>
                     </div>
-                </div>
-            </div>
+                    
+                    <button 
+                         onClick={handleGenerate}
+                         disabled={!params.template}
+                         className="w-full mt-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl font-bold text-white shadow-lg hover:shadow-green-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+                     >
+                         <span className="flex items-center justify-center gap-2">
+                             <Layers className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
+                             Generate Widgets
+                         </span>
+                     </button>
+                    
         </div>
 
         {/* Preview Area */}
