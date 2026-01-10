@@ -74,7 +74,7 @@ export default function Home() {
     
     // Filter params based on active template to keep URLs clean
     const relevantKeys: Record<string, string[]> = {
-        spotify: ['template', 'title', 'artist', 'progress', 'status', 'coverUrl', 'duration', 'theme'],
+        spotify: ['template', 'title', 'artist', 'progress', 'status', 'coverUrl', 'duration', 'theme', 'width', 'height'],
         github: ['template', 'username', 'token', 'accent', 'theme', 'width', 'height'],
         stack: ['template', 'title', 'skills', 'theme'],
         wave: ['template', 'text', 'subtitle', 'gradient', 'theme'],
