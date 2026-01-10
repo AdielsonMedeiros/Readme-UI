@@ -1008,20 +1008,33 @@ export async function GET(req: NextRequest) {
             const iconMap: Record<string, string> = {};
 
             await Promise.all(skillList.map(async (skill) => {
+                let svgContent = '';
                 try {
-                    // Try simpleicons CDN first
-                    const res = await fetch(`https://cdn.simpleicons.org/${skill}`);
-                    if (res.ok) {
-                        const svgText = await res.text();
-                        // Convert SVG to Base64 to ensure Satori renders it
-                        const base64 = btoa(svgText);
-                        iconMap[skill] = `data:image/svg+xml;base64,${base64}`;
-                    } else {
-                       // Fallback or ignore
-                       console.warn(`Failed to fetch icon for ${skill}`);
+                    // Try simpleicons CDN first with headers
+                    const fetchOptions = { headers: { 'User-Agent': 'Readme-UI-Generator' } };
+                    let res = await fetch(`https://cdn.simpleicons.org/${skill}`, fetchOptions);
+                    
+                    if (!res.ok) {
+                        // Fallback to unpkg if CDN fails
+                         res = await fetch(`https://unpkg.com/simple-icons@v14.0.0/icons/${skill}.svg`, fetchOptions);
                     }
+
+                    if (res.ok) {
+                        svgContent = await res.text();
+                    } 
                 } catch (err) {
                     console.error(`Error fetching icon ${skill}`, err);
+                }
+
+                if (svgContent) {
+                     // Check if it is a valid SVG start
+                     if (!svgContent.includes('<svg')) {
+                         // Some CDNs might return a redirect or HTML on error
+                         return;
+                     }
+                     // Use Buffer for reliable base64 encoding in Node.js env
+                     const base64 = Buffer.from(svgContent).toString('base64');
+                     iconMap[skill] = `data:image/svg+xml;base64,${base64}`;
                 }
             }));
             
