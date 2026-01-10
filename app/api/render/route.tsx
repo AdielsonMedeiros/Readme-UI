@@ -985,21 +985,45 @@ export async function GET(req: NextRequest) {
 
 
     // --- Handler: Goodreads (Currently Reading) ---
-    if (templateName === 'goodreads') {
-        // Goodreads API is dead. We have to rely on passed props OR scraping.
-        // Scraping is risky in Edge runtime due to lack of DOM parser.
-        // We will respect passed props for now (title, author, cover, progress).
-        // If a user provides an RSS feed URL, we could attempt simple regex parsing.
-        if (props.feedUrl) { // e.g., https://www.goodreads.com/user/updates_rss/ID
-            try {
-                 const rssRes = await fetch(props.feedUrl);
-                 if(rssRes.ok) {
-                     const text = await rssRes.text();
-                     // extremely basic regex to find first "currently reading"
-                     // This is brittle but better than nothing for a demo
-                     // <item>...<title>User is currently reading Title</title>...<book_large_image_url>...</book_large_image_url>
+    // If goodreadsId is provided, fetching from public RSS feed.
+    const goodreadsId = props.goodreadsId || searchParams.get('goodreadsId');
+    if (templateName === 'goodreads' && goodreadsId) {
+        try {
+             // https://www.goodreads.com/review/list_rss/USER_ID?shelf=currently-reading
+             const feedUrl = `https://www.goodreads.com/review/list_rss/${goodreadsId}?shelf=currently-reading`;
+             const rssRes = await fetch(feedUrl, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+             
+             if(rssRes.ok) {
+                 const text = await rssRes.text();
+                 
+                 // Simple regex extraction for the FIRST item in the feed
+                 const itemMatch = text.match(/<item>([\s\S]*?)<\/item>/);
+                 if (itemMatch && itemMatch[1]) {
+                     const itemContent = itemMatch[1];
+                     
+                     // Extract Title
+                     const titleMatch = itemContent.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/) || itemContent.match(/<title>(.*?)<\/title>/);
+                     if (titleMatch) props.title = titleMatch[1];
+
+                     // Extract Author
+                     const authorMatch = itemContent.match(/<author_name><!\[CDATA\[(.*?)\]\]><\/author_name>/) || itemContent.match(/<author_name>(.*?)<\/author_name>/);
+                     if (authorMatch) props.author = authorMatch[1];
+
+                     // Extract Image (prefer large)
+                     const imgMatch = itemContent.match(/<book_large_image_url><!\[CDATA\[(.*?)\]\]><\/book_large_image_url>/) || 
+                                      itemContent.match(/<book_image_url><!\[CDATA\[(.*?)\]\]><\/book_image_url>/) ||
+                                      itemContent.match(/<book_large_image_url>(.*?)<\/book_large_image_url>/) ||
+                                      itemContent.match(/<book_image_url>(.*?)<\/book_image_url>/);
+                     
+                     if (imgMatch) props.coverUrl = imgMatch[1];
+
+                     // RSS doesn't reliably give progress %. 
+                     // We set it to undefined to indicate "Just Reading" state in UI.
+                     props.progress = undefined; 
                  }
-            } catch(e) {}
+             }
+        } catch(e) {
+            console.error('Goodreads RSS Fetch Error', e);
         }
     }
 

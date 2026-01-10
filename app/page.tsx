@@ -91,7 +91,7 @@ export default function Home() {
         visitors: ['template', 'username', 'count', 'label', 'theme'],
         leetcode: ['template', 'username', 'theme'],
         wakatime: ['template', 'theme', 'api_url'],
-        goodreads: ['template', 'title', 'progress', 'coverUrl', 'theme', 'author', 'feedUrl']
+        goodreads: ['template', 'goodreadsId', 'title', 'progress', 'coverUrl', 'theme', 'author']
     };
 
     const currentTemplate = debouncedParams.template || 'spotify';
@@ -819,11 +819,27 @@ export default function Home() {
                     {/* Goodreads Controls */}
                     {params.template === 'goodreads' && (
                         <div className="space-y-3">
-                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Book Title</label>
-                                <input type="text" name="title" value={params.title || ''} onChange={handleChange} placeholder="Title" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-700 outline-none transition-all" />
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Goodreads User ID (Automagical ✨)</label>
+                                <input type="text" name="goodreadsId" value={params.goodreadsId || ''} onChange={handleChange} placeholder="e.g., 12345678" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-700 outline-none transition-all" />
+                                <p className="text-xs text-neutral-500">Found in your profile URL (goodreads.com/user/show/<b>12345</b>-name). If set, updates automatically!</p>
                             </div>
-                             <div className="space-y-2">
+
+                            {!params.goodreadsId && (
+                                <>
+                                    <div className="border-t border-neutral-800 my-2"></div>
+                                    <p className="text-xs text-neutral-500 mb-2">Or configure manually:</p>
+                                    
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Book Title</label>
+                                        <input type="text" name="title" value={params.title || ''} onChange={handleChange} placeholder="Title" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-700 outline-none transition-all" />
+                                    </div>
+                                </>
+                            )}
+                             
+                            {!params.goodreadsId && (
+                                <>
+                                    <div className="space-y-2">
                                 <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Author</label>
                                 <input type="text" name="author" value={params.author || ''} onChange={handleChange} placeholder="Author" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-700 outline-none transition-all" />
                             </div>
@@ -844,6 +860,8 @@ export default function Home() {
                                 <input type="text" name="coverUrl" value={params.coverUrl || ''} onChange={handleChange} placeholder="https://..." className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-700 outline-none transition-all" />
                                 <p className="text-xs text-neutral-500">Right-click a book cover image online &gt; "Copy image address" and paste here.</p>
                             </div>
+                            </>
+                            )}
                         </div>
                     )}
 

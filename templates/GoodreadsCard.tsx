@@ -14,7 +14,7 @@ export const GoodreadsCard: React.FC<GoodreadsCardProps> = ({
   coverUrl = "https://placehold.co/100x150/png", // Reliable placeholder
   title = "The Pragmatic Programmer",
   author = "Andy Hunt",
-  progress = 42,
+  progress, // Optional now
   theme = 'dark'
 }) => {
   const isDark = theme === 'dark';
@@ -23,6 +23,10 @@ export const GoodreadsCard: React.FC<GoodreadsCardProps> = ({
   const accentColor = isDark ? '#d4a373' : '#a05e2b';
   const secondaryText = isDark ? '#a89080' : '#8c7b70';
 
+  // Fallback for demo if no props passed at all, but respecting null/undefined if explicitly passed (except undefined triggers default)
+  // Let's handle generic default logic inside:
+  const displayTitle = title || "No Title";
+  
   return (
     <div style={{
       display: 'flex',
@@ -63,23 +67,25 @@ export const GoodreadsCard: React.FC<GoodreadsCardProps> = ({
                 </span>
                 
                 <span style={{ fontSize: '18px', fontWeight: 'bold', color: textColor, lineHeight: '1.2', marginBottom: '6px' }}>
-                    {title}
+                    {displayTitle}
                 </span>
                 
                 <span style={{ fontSize: '14px', color: secondaryText, fontStyle: 'italic', marginBottom: '20px' }}>
                     by {author}
                 </span>
 
-                {/* Progress Bar */}
-                <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                         <span style={{ fontSize: '12px', fontWeight: 'bold', color: textColor }}>{progress}%</span>
-                         <span style={{ fontSize: '12px', color: secondaryText }}>Progress</span>
-                     </div>
-                     <div style={{ display: 'flex', width: '100%', height: '6px', backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)', borderRadius: '3px' }}>
-                         <div style={{ display: 'flex', width: `${progress}%`, height: '100%', backgroundColor: accentColor, borderRadius: '3px' }} />
-                     </div>
-                </div>
+                {/* Progress Bar (Only if progress is provided) */}
+                {typeof progress === 'number' && (
+                    <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                            <span style={{ fontSize: '12px', fontWeight: 'bold', color: textColor }}>{progress}%</span>
+                            <span style={{ fontSize: '12px', color: secondaryText }}>Progress</span>
+                        </div>
+                        <div style={{ display: 'flex', width: '100%', height: '6px', backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)', borderRadius: '3px' }}>
+                            <div style={{ display: 'flex', width: `${progress}%`, height: '100%', backgroundColor: accentColor, borderRadius: '3px' }} />
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     </div>
