@@ -1041,7 +1041,7 @@ export default function Home() {
              <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3 flex-1 min-w-0 bg-black/30 p-3 rounded-lg border border-neutral-800 w-full sm:w-auto">
                     <Code2 className="w-4 h-4 text-neutral-500 shrink-0" />
-                    <code className="text-xs text-neutral-400 font-mono truncate select-all">
+                    <code className="text-xs text-neutral-400 font-mono break-all whitespace-pre-wrap select-all">
                         ![ReadMe-UI]({url})
                     </code>
                 </div>
