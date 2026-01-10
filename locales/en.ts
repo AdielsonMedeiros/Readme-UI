@@ -165,6 +165,14 @@ export const en = {
         text: "For the Spotify widget to show \"Now Playing\" in real-time, you currently need to set the song manually in this generator.",
         note: "(Full OAuth integration coming soon!)"
     },
+    githubToken: {
+        title: "How to get a GitHub Token",
+        step1: "Go to your GitHub Settings.",
+        step2: "Navigate to 'Developer settings' > 'Personal access tokens' > 'Tokens (classic)'.",
+        step3: "Click 'Generate new token (classic)'.",
+        step4: "Give it a name, set expiration, and check 'repo' scope (or leave scopes empty just for rate limit increase).",
+        step5: "Scroll down, generate the token, and copy the code starting with 'ghp_'."
+    },
     close: "Close"
   }
 };

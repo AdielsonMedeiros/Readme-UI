@@ -1000,6 +1000,12 @@ export default function Home() {
                                 <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider flex items-center">
                                     {t('templates.project.token')}
                                     <InfoTooltip text={t('templates.project.tokenHelp')} />
+                                    <button 
+                                        onClick={() => setShowHelp(true)}
+                                        className="ml-2 text-[10px] text-green-500 hover:text-green-400 underline transition-colors"
+                                    >
+                                        (Guia)
+                                    </button>
                                 </label>
                                 <input 
                                     type="password" 
@@ -1186,7 +1192,7 @@ export default function Home() {
       {/* Help Modal */}
       {showHelp && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
-            <div className="bg-neutral-900 border border-neutral-800 p-8 rounded-2xl max-w-lg w-full relative shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="bg-neutral-900 border border-neutral-800 p-8 rounded-2xl max-w-2xl w-full relative shadow-2xl animate-in fade-in zoom-in duration-200">
                 <button 
                     onClick={() => setShowHelp(false)} 
                     className="absolute top-4 right-4 text-neutral-500 hover:text-white transition-colors"
@@ -1198,7 +1204,7 @@ export default function Home() {
                     {t('help.configure')}
                 </h2>
                 
-                <div className="space-y-6 text-neutral-300 max-h-[60vh] overflow-y-auto pr-2">
+                <div className="space-y-6 text-neutral-300 max-h-[60vh] overflow-y-auto pr-4 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-700 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-neutral-600">
                     {/* Basic Steps */}
                     <div className="space-y-2">
                         <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2">{t('help.quickStart.title')}</h3>
@@ -1224,6 +1230,18 @@ export default function Home() {
                             <li>{t('help.wakatime.step2')}</li>
                             <li>{t('help.wakatime.step3')}</li>
                             <li>{t('help.wakatime.step4')}</li>
+                        </ol>
+                    </div>
+
+                    {/* GitHub Token Guide */}
+                    <div className="space-y-2">
+                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2 flex items-center gap-2">{t('help.githubToken.title')}</h3>
+                        <ol className="list-decimal list-inside text-sm text-neutral-400 space-y-1 ml-1">
+                            <li>{t('help.githubToken.step1')}</li>
+                            <li>{t('help.githubToken.step2')}</li>
+                            <li>{t('help.githubToken.step3')}</li>
+                            <li>{t('help.githubToken.step4')}</li>
+                            <li>{t('help.githubToken.step5')}</li>
                         </ol>
                     </div>
 

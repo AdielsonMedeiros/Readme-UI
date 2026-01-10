@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Typing SVG](https://readme-typing-svg.herokuapp.com/?color=6A5ACD&size=35&center=true&vCenter=true&width=1000&lines=Hello,+I'm+Adielson+Medeiros;Software+Engineer;Full+Stack+Developer;Welcome+to+my+GitHub!+:%29)](https://git.io/typing-svg)
+[![Typing SVG](https://readme-typing-svg.herokuapp.com/?color=6A5ACD&size=35&center=true&vCenter=true&width=1000&lines=Hello,+I'm+Adielson+Medeiros;Software+Engineer;Welcome+to+my+GitHub!+:%29)](https://git.io/typing-svg)
 
 </div>
 
@@ -26,36 +26,36 @@
   <img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW/giphy.gif" width="40"> About Me
 </h2>
 
-<div align="center">
+
   
 ```javascript
-const adielson = {
-    location: "Brazil 🇧🇷",
-    education: "Systems Analysis and Development @ Unicesumar",
-    currentFocus: "Software Engineering",
-    
-    code: ["JavaScript", "Java", "C", "TypeScript", "Python"],
-    technologies: {
-        frontEnd: {
-            js: ["React", "React Native"],
-            css: ["TailwindCSS", "Bootstrap", "Styled Components"]
-        },
-        backEnd: {
-            js: ["Node.js", "Express"],
-            java: ["Spring Boot"]
-        },
-        databases: ["PostgreSQL", "MySQL", "MongoDB", "Firebase"],
-        cloud: ["AWS"],
-        tools: ["Git", "Docker", "VS Code"]
-    },
-    
-    currentlyLearning: ["Software Architecture", "Cloud Computing", "System Design"],
-    
-    funFact: "Programming is not just my job, it's my lifestyle! 💻"
-};
+                        const adielson = {
+                            location: "Brazil 🇧🇷",
+                            education: "Systems Analysis and Development @ Unicesumar",
+                            currentFocus: "Software Engineering",
+                            
+                            code: ["JavaScript", "Java", "C", "TypeScript", "Python"],
+                            technologies: {
+                                frontEnd: {
+                                    js: ["React", "React Native"],
+                                    css: ["TailwindCSS", "Bootstrap", "Styled Components"]
+                                },
+                                backEnd: {
+                                    js: ["Node.js", "Express"],
+                                    java: ["Spring Boot"]
+                                },
+                                databases: ["PostgreSQL", "MySQL", "MongoDB", "Firebase"],
+                                cloud: ["AWS"],
+                                tools: ["Git", "Docker", "VS Code"]
+                            },
+                            
+                            currentlyLearning: ["Software Architecture", "Cloud Computing", "System Design"],
+                            
+                            funFact: "Programming is not just my job, it's my lifestyle! 💻"
+                      };
 ```
 
-</div>
+
 
 <br>
 
@@ -77,7 +77,7 @@ const adielson = {
 
 <div align="center">
 
-### 💻 Frontendvg
+### 💻 Frontend
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
@@ -128,16 +128,16 @@ const adielson = {
 
 <div align="center">
 
-**Full Stack Developer** @ Pitanga Tech (Freelance)
+**Software Engineer** @ Pitanga Tech 
 `React` `TypeScript` `Node.js` `Express` `Firebase`
 
-**Full Stack Developer** @ ASTRAN (Freelance)
+**Software Engineer** @ ASTRAN 
 `React` `Vite` `Node.js` `AI Integration`
 
-**Full Stack Developer** @ Romão Advogados (Freelance)
+**Software Engineer** @ Romão Advogados 
 `Angular 21` `NestJS` `PostgreSQL` `Cloudflare R2`
 
-**Software Developer** @ LFG Advocacia (Freelance)
+**Software Developer** @ LFG Advocacia 
 `Python` `Flask` `JavaScript` `WhatsApp API`
 
 </div>

@@ -3,7 +3,76 @@ import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
 import satori from 'satori';
 
-export const runtime = 'edge';
+
+
+const generateErrorResponse = (message: string, width: number, height: number, format: string | null) => {
+    // Styling for error container
+    const errorStyle = `
+        display: flex;
+        width: 100%;
+        height: 100%;
+        background-color: #0d1117;
+        color: #ff5555;
+        align-items: center;
+        justify-content: center;
+        font-family: monospace;
+        font-size: 14px;
+        padding: 20px;
+        text-align: center;
+        border: 1px solid #30363d;
+        border-radius: 8px;
+        box-sizing: border-box;
+    `;
+
+    if (format === 'svg') {
+         const svgError = `
+            <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+                <foreignObject width="100%" height="100%">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="${errorStyle}">
+                        <div style="max-width: 100%; word-wrap: break-word;">
+                            <h3 style="margin: 0 0 8px 0; color: #ff5555; font-size: 16px;">Generation Error</h3>
+                            <p style="margin: 0; color: #8b949e; line-height: 1.4;">${message}</p>
+                        </div>
+                    </div>
+                </foreignObject>
+            </svg>
+        `;
+        return new Response(svgError, {
+            headers: {
+                'Content-Type': 'image/svg+xml',
+                'Cache-Control': 'no-store, must-revalidate'
+            }
+        });
+    }
+
+    return new ImageResponse(
+        (
+            <div style={{ display: 'flex', width: '100%', height: '100%', backgroundColor: '#0d1117', color: '#ff5555', alignItems: 'center', justifyContent: 'center', fontFamily: 'monospace', flexDirection: 'column', padding: 20, textAlign: 'center' }}>
+                <div style={{ fontSize: 18, marginBottom: 8, fontWeight: 'bold' }}>Generation Error</div>
+                <div style={{ fontSize: 14, color: '#8b949e' }}>{message}</div>
+            </div>
+        ),
+        { 
+            width, 
+            height,
+            headers: { 'Cache-Control': 'no-store, must-revalidate' }
+        }
+    );
+};
+
+const checkGitHubError = (res: Response) => {
+    if (!res.ok) {
+        if (res.status === 403 || res.status === 429) {
+             throw new Error("GitHub API Rate Limit Exceeded. Please add a Token in the configuration.");
+        }
+        if (res.status === 401) {
+             throw new Error("Invalid GitHub Token. Please check your credentials.");
+        }
+        if (res.status === 404) {
+             throw new Error("GitHub Resource not found. Check username/repo.");
+        }
+    }
+};
 
 export async function GET(req: NextRequest) {
 
@@ -603,13 +672,19 @@ export async function GET(req: NextRequest) {
         // Fetch real repos
         try {
             const reposRes = await fetch(`https://api.github.com/users/${username}/repos?sort=pushed&per_page=3`, { headers });
+            checkGitHubError(reposRes);
             if (reposRes.ok) {
                 const reposData = await reposRes.json();
                 if (reposData.length > 0) {
                      repoNames = reposData.map((r: any) => r.name);
                 }
             }
-        } catch (e) { console.error('Hacking Repo Fetch Error:', e); }
+        } catch (e: any) { 
+            if (e.message?.includes('GitHub')) {
+                return generateErrorResponse(e.message, Number(props.width)||600, Number(props.height)||350, searchParams.get('format'));
+            }
+            console.error('Hacking Repo Fetch Error:', e); 
+        }
 
         const width = Number(props.width) || 600;
         const height = Number(props.height) || 350;
@@ -794,6 +869,7 @@ export async function GET(req: NextRequest) {
             if (props.token) headers['Authorization'] = `Bearer ${props.token}`;
             
             const repoRes = await fetch(`https://api.github.com/repos/${repoPath}`, { headers });
+            checkGitHubError(repoRes);
             if (repoRes.ok) {
                 const data = await repoRes.json();
                 props.name = data.name;
@@ -802,7 +878,12 @@ export async function GET(req: NextRequest) {
                 props.forks = data.forks_count;
                 props.language = data.language || 'Unknown';
             }
-        } catch (e) { console.error(e); }
+        } catch (e: any) { 
+            if (e.message?.includes('GitHub')) {
+                return generateErrorResponse(e.message, Number(props.width)||400, Number(props.height)||150, searchParams.get('format'));
+            }
+            console.error(e); 
+        }
     }
 
     // Visitors
@@ -813,12 +894,18 @@ export async function GET(req: NextRequest) {
             if (props.token) headers['Authorization'] = `Bearer ${props.token}`;
             
             const userRes = await fetch(`https://api.github.com/users/${username}`, { headers });
+            checkGitHubError(userRes);
             if (userRes.ok) {
                 const userData = await userRes.json();
                 props.count = userData.followers + userData.public_repos;
                 props.label = props.label || 'Profile Engagement';
             }
-        } catch (e) { console.error(e); }
+        } catch (e: any) { 
+            if (e.message?.includes('GitHub')) {
+                return generateErrorResponse(e.message, Number(props.width)||400, Number(props.height)||100, searchParams.get('format'));
+            }
+            console.error(e); 
+        }
     }
 
     // Spotify
@@ -844,6 +931,7 @@ export async function GET(req: NextRequest) {
             if (props.token) headers['Authorization'] = `Bearer ${props.token}`;
 
             const ghRes = await fetch(`https://api.github.com/users/${props.username}`, { headers });
+            checkGitHubError(ghRes);
             if (ghRes.ok) {
                 const ghData = await ghRes.json();
                 props.name = ghData.name || ghData.login;
@@ -905,7 +993,12 @@ export async function GET(req: NextRequest) {
                     }
                 } catch(e) { console.error(e); }
             }
-        } catch (e) { console.error(e); }
+        } catch (e: any) { 
+            if (e.message?.includes('GitHub')) {
+                return generateErrorResponse(e.message, Number(props.width)||460, Number(props.height)||200, searchParams.get('format'));
+            }
+            console.error(e); 
+        }
     }
 
     // --- Handler: 3D Activity Graph ---
@@ -1088,17 +1181,61 @@ export async function GET(req: NextRequest) {
         );
     } catch (renderErr: any) {
         console.error('Render error:', renderErr);
+        
+        const format = searchParams.get('format');
+        const errorMessage = renderErr.message || 'Unknown Error';
+
+        // Styling for error container
+        const errorStyle = `
+            display: flex;
+            width: 100%;
+            height: 100%;
+            background-color: #0d1117;
+            color: #ff5555;
+            align-items: center;
+            justify-content: center;
+            font-family: monospace;
+            font-size: 16px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+        `;
+
+        if (format === 'svg') {
+            // Return raw SVG for errors if requested format is SVG
+             const svgError = `
+                <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+                    <foreignObject width="100%" height="100%">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="${errorStyle}">
+                            <div>
+                                <h3 style="margin: 0 0 8px 0; color: #ff5555;">Generation Error</h3>
+                                <p style="margin: 0; color: #8b949e;">${errorMessage}</p>
+                            </div>
+                        </div>
+                    </foreignObject>
+                </svg>
+            `;
+            return new Response(svgError, {
+                headers: {
+                    'Content-Type': 'image/svg+xml',
+                    'Cache-Control': 'no-store, must-revalidate'
+                }
+            });
+        }
+
         return new ImageResponse(
             (
-                <div style={{ display: 'flex', width: '100%', height: '100%', backgroundColor: '#000', color: '#fff', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>
-                    Render Error: {renderErr.message}
+                <div style={{ display: 'flex', width: '100%', height: '100%', backgroundColor: '#0d1117', color: '#ff5555', alignItems: 'center', justifyContent: 'center', fontFamily: 'monospace', flexDirection: 'column', padding: 20, textAlign: 'center' }}>
+                    <div style={{ fontSize: 18, marginBottom: 8, fontWeight: 'bold' }}>Generation Error</div>
+                    <div style={{ fontSize: 14, color: '#8b949e' }}>{errorMessage}</div>
                 </div>
             ),
             { 
                 width, 
                 height,
                 headers: {
-                    'Cache-Control': 'no-store, must-revalidate' // Don't cache errors
+                    'Cache-Control': 'no-store, must-revalidate'
                 }
             }
         );

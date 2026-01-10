@@ -166,6 +166,14 @@ export const pt: Translations = {
         text: "Para o widget do Spotify mostrar \"Tocando Agora\" em tempo real, você atualmente precisa definir a música manualmente neste gerador.",
         note: "(Integração OAuth completa em breve!)"
     },
+    githubToken: {
+        title: "Como obter um Token GitHub",
+        step1: "Acesse suas configurações do GitHub (Settings).",
+        step2: "Vá em 'Developer settings' > 'Personal access tokens' > 'Tokens (classic)'.",
+        step3: "Clique em 'Generate new token (classic)'.",
+        step4: "Dê um nome, defina a expiração e marque a caixa 'repo' (ou deixe sem escopos apenas para aumentar o limite).",
+        step5: "Role até o final, gere o token e copie o código que começa com 'ghp_'."
+    },
     close: "Fechar"
   }
 };
