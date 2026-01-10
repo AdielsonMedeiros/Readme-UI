@@ -1007,27 +1007,48 @@ export async function GET(req: NextRequest) {
             const skillList = String(props.skills).split(',').map(s => s.trim()).filter(Boolean);
             const iconMap: Record<string, string> = {};
 
-            await Promise.all(skillList.map(async (skill) => {
+            // Get theme to decide fallback color logic
+            const isDark = (props.theme !== 'light');
+
+            await Promise.all(skillList.map(async (rawSkill) => {
+                const skill = rawSkill.trim();
+                // Robust slug normalization for CDNs
+                const slug = skill.toLowerCase()
+                     .replace(/\+/g, 'plus')
+                     .replace(/#/g, 'sharp')
+                     .replace(/\./g, 'dot'); 
+                
                 let svgContent = '';
                 try {
-                    // Try simpleicons CDN first with headers
-                    const fetchOptions = { headers: { 'User-Agent': 'Readme-UI-Generator' } };
-                    let res = await fetch(`https://cdn.simpleicons.org/${skill}`, fetchOptions);
+                    const headers = { 'User-Agent': 'Mozilla/5.0 (compatible; Readme-UI)' };
                     
-                    if (!res.ok) {
-                        // Fallback to unpkg if CDN fails
-                         res = await fetch(`https://unpkg.com/simple-icons@v14.0.0/icons/${skill}.svg`, fetchOptions);
-                    }
-
+                    // 1. Try SimpleIcons CDN (Preferred - Colors)
+                    let res = await fetch(`https://cdn.simpleicons.org/${slug}`, { headers });
+                    
                     if (res.ok) {
                         svgContent = await res.text();
-                    } 
+                    } else {
+                        // 2. Fallback to JSDelivr (Reliable - Monochrome)
+                        const fallbackUrl = `https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/${slug}.svg`;
+                        res = await fetch(fallbackUrl, { headers });
+                        if (res.ok) {
+                            svgContent = await res.text();
+                            // Invert color for dark mode if using monochrome fallback
+                            if (isDark && svgContent.includes('<svg')) {
+                                svgContent = svgContent.replace('<svg', '<svg fill="#ffffff"');
+                            }
+                        }
+                    }
                 } catch (err) {
-                    console.error(`Error fetching icon ${skill}`, err);
+                    console.error(`[Stack] Error ${slug}`, err);
                 }
 
-                if (svgContent) {
-                     // Check if it is a valid SVG start
+                if (svgContent && svgContent.includes('<svg')) {
+                     const base64 = Buffer.from(svgContent).toString('base64');
+                     // Use original skill key for frontend mapping
+                     iconMap[skill] = `data:image/svg+xml;base64,${base64}`;
+                }
+            }));
                      if (!svgContent.includes('<svg')) {
                          // Some CDNs might return a redirect or HTML on error
                          return;
