@@ -15,8 +15,8 @@ export default function Home() {
     progress: 33,
     status: 'Listening on Spotify',
     coverUrl: '',
-    width: 480,
-    height: 160,
+    width: 460,
+    height: 135,
     theme: 'dark',
     username: '',
     token: '',
@@ -244,7 +244,7 @@ export default function Home() {
                             </button>
 
                             <button
-                                onClick={() => setParams({ ...params, template: 'spotify', title: 'Never Gonna Give You Up', artist: 'Rick Astley', width: 480, height: 160 })}
+                                onClick={() => setParams({ ...params, template: 'spotify', title: 'Never Gonna Give You Up', artist: 'Rick Astley', width: 460, height: 135 })}
                                 className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
                                     params.template === 'spotify' 
                                     ? 'bg-neutral-800 border-green-500 ring-1 ring-green-500' 
