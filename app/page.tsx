@@ -444,6 +444,8 @@ export default function Home() {
                         </div>
                     </div>
 
+                    {params.template && (
+                        <>
                     <div className="space-y-2">
                         <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Theme</label>
                         <select 
@@ -951,6 +953,8 @@ export default function Home() {
                             />
                         </div>
                     </div>
+                        </>
+                    )}
                     
                     <button 
                          onClick={handleGenerate}
