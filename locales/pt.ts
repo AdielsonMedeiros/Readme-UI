@@ -32,16 +32,20 @@ export const pt: Translations = {
     darkMode: "Modo Escuro",
     lightMode: "Modo Claro",
     width: "Largura",
+    widthHelp: "Largura da imagem gerada em pixels. Padrão é 460px.",
     height: "Altura",
+    heightHelp: "Altura da imagem gerada em pixels. Padrão é 135px.",
     style: "Estilo"
   },
   templates: {
     spotify: {
       status: "Texto de Status",
+      statusHelp: "Texto exibido abaixo do título da música (ex: 'Ouvindo no Spotify').",
       songTitle: "Nome da Música",
       artist: "Artista",
       progress: "Progresso",
       duration: "Duração (segundos)",
+      durationHelp: "Duração total da música em segundos para calcular a barra de progresso.",
       durationDesc: "Duração total (ex: 210 = 3:30)"
     },
     goodreads: {
@@ -59,10 +63,12 @@ export const pt: Translations = {
     },
     weather: {
       location: "Localização",
+      locationHelp: "Nome da cidade (ex: São Paulo) ou CEP para buscar dados do clima.",
       locationDesc: "Nome da cidade (ex: São Paulo) ou CEP"
     },
     wakatime: {
       url: "URL JSON Pública (Opcional)",
+      urlHelp: "Sua URL JSON pública do WakaTime. Vá em Configurações > Perfil para copiar.",
       urlDesc: "Habilite \"Share coding activity\" no WakaTime para obter isto."
     },
     devJoke: {
@@ -89,6 +95,7 @@ export const pt: Translations = {
         stars: "Estrelas",
         forks: "Forks",
         token: "Token GitHub (Opcional)",
+        tokenHelp: "Um Token de Acesso Pessoal (clássico) com permissões de leitura. Aumenta limites da API.",
         tokenDesc: "Forneça um token para aumentar os limites da API (5000 req/hr)."
     },
     typing: {

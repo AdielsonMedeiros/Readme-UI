@@ -1,8 +1,9 @@
 'use client';
 
-import { Code2, Copy, HelpCircle, Layers, X } from 'lucide-react';
+import { ChevronDown, Code2, Copy, HelpCircle, Layers, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { FaGithub, FaSpotify } from 'react-icons/fa'; // Import brand icons
+import { InfoTooltip } from '../components/InfoTooltip';
 import { useTranslation } from '../contexts/LanguageContext';
 
 export default function Home() {
@@ -109,6 +110,7 @@ export default function Home() {
 
     // Add random seed to force refresh
     filteredParams['_t'] = Date.now();
+    filteredParams['format'] = 'svg';
 
     const query = new URLSearchParams(filteredParams).toString();
     setUrl(`${baseUrl}/api/render?${query}`);
@@ -495,15 +497,18 @@ export default function Home() {
                         <>
                     <div className="space-y-2">
                         <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('sidebar.theme')}</label>
-                        <select 
-                            name="theme" 
-                            value={params.theme || 'dark'}
-                            onChange={handleChange}
-                            className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none transition-all"
-                        >
-                            <option value="dark">{t('sidebar.darkMode')}</option>
-                            <option value="light">{t('sidebar.lightMode')}</option>
-                        </select>
+                        <div className="relative">
+                            <select 
+                                name="theme" 
+                                value={params.theme || 'dark'}
+                                onChange={handleChange}
+                                className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 pr-10 focus:ring-2 focus:ring-green-500 outline-none transition-all appearance-none text-white cursor-pointer"
+                            >
+                                <option value="dark">{t('sidebar.darkMode')}</option>
+                                <option value="light">{t('sidebar.lightMode')}</option>
+                            </select>
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" />
+                        </div>
                     </div>
 
                     {/* Spotify Specific Controls */}
@@ -794,7 +799,10 @@ export default function Home() {
                     {params.template === 'weather' && (
                         <div className="space-y-3">
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.weather.location')}</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider flex items-center">
+                                    {t('templates.weather.location')}
+                                    <InfoTooltip text={t('templates.weather.locationHelp')} />
+                                </label>
                                 <input type="text" name="city" value={params.city || ''} onChange={handleChange} placeholder="San Francisco" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 outline-none transition-all" />
                                 <p className="text-xs text-neutral-500">{t('templates.weather.locationDesc')}</p>
                             </div>
@@ -861,8 +869,11 @@ export default function Home() {
                     {params.template === 'wakatime' && (
                         <div className="space-y-3">
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.wakatime.url')}</label>
-                                <input type="text" name="api_url" value={params.api_url || ''} onChange={handleChange} placeholder="https://wakatime.com/share/@user/stats.json" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-600 outline-none transition-all" />
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider flex items-center">
+                                    {t('templates.wakatime.url')}
+                                    <InfoTooltip text={t('templates.wakatime.urlHelp')} />
+                                </label>
+                                <input type="text" name="api_url" value={params.api_url || ''} onChange={handleChange} placeholder="https://wakatime.com/share/@user/..." className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-600 outline-none transition-all" />
                                 <p className="text-xs text-neutral-500">{t('templates.wakatime.urlDesc')}</p>
                             </div>
                         </div>
@@ -950,7 +961,10 @@ export default function Home() {
                             </div>
                             
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.project.token')}</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider flex items-center">
+                                    {t('templates.project.token')}
+                                    <InfoTooltip text={t('templates.project.tokenHelp')} />
+                                </label>
                                 <input 
                                     type="password" 
                                     name="token"
@@ -964,28 +978,34 @@ export default function Home() {
 
                             <div className="space-y-2">
                                 <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('sidebar.accent')}</label>
-                                <select 
-                                    name="accent" 
-                                    value={params.accent || 'blue'}
-                                    onChange={handleChange}
-                                    className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none transition-all"
-                                >
-                                    <option value="blue">{t('colors.blue')} ({t('common.default')})</option>
-                                    <option value="purple">{t('colors.purple')}</option>
-                                    <option value="green">{t('colors.green')}</option>
-                                    <option value="orange">{t('colors.orange')}</option>
-                                    <option value="pink">{t('colors.pink')}</option>
-                                    <option value="red">{t('colors.red')}</option>
-                                    <option value="cyan">{t('colors.cyan')}</option>
-                                    <option value="yellow">{t('colors.yellow')}</option>
-                                </select>
+                                <div className="relative">
+                                    <select 
+                                        name="accent" 
+                                        value={params.accent || 'blue'}
+                                        onChange={handleChange}
+                                        className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 pr-10 focus:ring-2 focus:ring-green-500 outline-none transition-all appearance-none text-white cursor-pointer"
+                                    >
+                                        <option value="blue">{t('colors.blue')} ({t('common.default')})</option>
+                                        <option value="purple">{t('colors.purple')}</option>
+                                        <option value="green">{t('colors.green')}</option>
+                                        <option value="orange">{t('colors.orange')}</option>
+                                        <option value="pink">{t('colors.pink')}</option>
+                                        <option value="red">{t('colors.red')}</option>
+                                        <option value="cyan">{t('colors.cyan')}</option>
+                                        <option value="yellow">{t('colors.yellow')}</option>
+                                    </select>
+                                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" />
+                                </div>
                             </div>
                         </>
                     )}
 
                      <div className="grid grid-cols-2 gap-4 border-t border-neutral-800 pt-4 mt-4">
                         <div className="space-y-2">
-                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('sidebar.width')}</label>
+                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider flex items-center">
+                                {t('sidebar.width')}
+                                <InfoTooltip text={t('sidebar.widthHelp')} />
+                            </label>
                             <input 
                                 type="number" 
                                 name="width"
@@ -995,7 +1015,10 @@ export default function Home() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('sidebar.height')}</label>
+                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider flex items-center">
+                                {t('sidebar.height')}
+                                <InfoTooltip text={t('sidebar.heightHelp')} />
+                            </label>
                             <input 
                                 type="number" 
                                 name="height"
@@ -1124,13 +1147,7 @@ export default function Home() {
                     </div>
 
                     {/* Spotify Guide */}
-                    <div className="space-y-2">
-                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2 flex items-center gap-2">{t('help.spotify.title')}</h3>
-                        <p className="text-sm text-neutral-400">
-                             {t('help.spotify.text')}
-                             <br/><span className="italic text-xs opacity-70">{t('help.spotify.note')}</span>
-                        </p>
-                    </div>
+
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-neutral-800 flex justify-end">

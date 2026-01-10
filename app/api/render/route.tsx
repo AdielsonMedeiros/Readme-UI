@@ -1,6 +1,7 @@
 import { templateRegistry } from '@/lib/registry';
 import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
+import satori from 'satori';
 
 export const runtime = 'edge';
 
@@ -1057,6 +1058,28 @@ export async function GET(req: NextRequest) {
                 data: fontData,
                 style: 'normal',
             }];
+        }
+
+        const format = searchParams.get('format');
+        if (format === 'svg' && fontData) {
+            const svg = await satori(
+                <Component {...props} />,
+                {
+                    width,
+                    height,
+                    fonts: [{
+                        name: 'Instrument Sans',
+                        data: fontData,
+                        style: 'normal'
+                    }]
+                }
+            );
+            return new Response(svg, {
+                headers: {
+                    'Content-Type': 'image/svg+xml',
+                    'Cache-Control': 'public, max-age=14400, s-maxage=14400, stale-while-revalidate=600',
+                }
+            });
         }
 
         return new ImageResponse(

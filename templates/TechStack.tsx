@@ -6,6 +6,7 @@ export interface TechStackProps {
   title?: string;
   width?: number;
   height?: number;
+  animated?: boolean;
 }
 
 export const TechStack: React.FC<TechStackProps> = ({
@@ -13,7 +14,8 @@ export const TechStack: React.FC<TechStackProps> = ({
   theme = 'dark',
   title,
   width,
-  height
+  height,
+  animated = true
 }) => {
   const isTiny = (width && width < 300) || (height && height < 150);
   const isSmall = !isTiny && ((width && width < 500) || (height && height < 300));
@@ -56,6 +58,20 @@ export const TechStack: React.FC<TechStackProps> = ({
           overflow: 'hidden'
         }}
       >
+        {animated && (
+            <style>
+            {`
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .icon-fade {
+                    opacity: 0;
+                    animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+                }
+            `}
+            </style>
+        )}
         {title && !isTiny && (
             <div style={{ display: 'flex', fontSize: isSmall ? '18px' : '24px', fontWeight: 700, marginBottom: isSmall ? '12px' : '24px', width: '100%', justifyContent: 'center' }}>
             {title}
@@ -63,9 +79,12 @@ export const TechStack: React.FC<TechStackProps> = ({
         )}
 
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'center' }}>
-          {skillList.map((skill) => (
+          {skillList.map((skill, index) => {
+            const delay = index * 100;
+            return (
             <div 
                 key={skill}
+                className={animated ? "icon-fade" : ""}
                 style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -76,15 +95,11 @@ export const TechStack: React.FC<TechStackProps> = ({
                     border: `1px solid ${borderColor}`,
                     borderRadius: isTiny ? '8px' : '12px',
                     width: `${cardSize}px`,
-                    height: `${cardSize}px`
+                    height: `${cardSize}px`,
+                    animationDelay: animated ? `${delay}ms` : undefined
                 }}
             >
-                {/* 
-                   Using simpleicons.org CDN. 
-                   Satori supports remote images. 
-                   We default color to 'white' or 'black' depending on theme if specific color not requested, 
-                   but simpleicons default colors are usually best.
-                */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
                     src={`https://cdn.simpleicons.org/${skill}`} 
                     width={iconSize} 
@@ -97,7 +112,8 @@ export const TechStack: React.FC<TechStackProps> = ({
                     </span>
                 )}
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

@@ -30,16 +30,20 @@ export const en = {
     darkMode: "Dark Mode",
     lightMode: "Light Mode",
     width: "Width",
+    widthHelp: "Width of the generated image in pixels. Default is 460px.",
     height: "Height",
+    heightHelp: "Height of the generated image in pixels. Default is 135px.",
     style: "Style"
   },
   templates: {
     spotify: {
       status: "Status Text",
+      statusHelp: "Text displayed below the song title (e.g., 'Listening on Spotify').",
       songTitle: "Song Title",
       artist: "Artist",
       progress: "Progress",
       duration: "Duration (seconds)",
+      durationHelp: "Total duration of the song in seconds to calculate the progress bar.",
       durationDesc: "Total song length (e.g., 210 = 3:30)"
     },
     goodreads: {
@@ -57,10 +61,12 @@ export const en = {
     },
     weather: {
       location: "Location",
+      locationHelp: "City name (e.g., London) or Zip Code to fetch weather data.",
       locationDesc: "City name (e.g., London) or Zip Code"
     },
     wakatime: {
       url: "Public JSON URL (Optional)",
+      urlHelp: "Your WakaTime public JSON URL. Go to Settings > Profile to copy it.",
       urlDesc: "Enable \"Share coding activity\" in WakaTime to get this."
     },
     devJoke: {
@@ -88,6 +94,7 @@ export const en = {
         stars: "Stars",
         forks: "Forks",
         token: "GitHub Token (Optional)",
+        tokenHelp: "A Personal Access Token (classic) with 'repo' read permissions. Increases API limits.",
         tokenDesc: "Provide a token to increase API rate limits (5000 req/hr)."
     },
     typing: {
