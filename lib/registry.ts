@@ -1,4 +1,5 @@
 import { ActivityGraph } from "@/templates/ActivityGraph";
+import { CodeSnippet } from "@/templates/CodeSnippet";
 
 import { DevJoke } from "@/templates/DevJoke";
 import { GithubStats } from "@/templates/GithubStats";
@@ -12,6 +13,7 @@ import { SnakeGame } from "@/templates/SnakeGame";
 import { SocialLinks } from "@/templates/SocialLinks";
 import { SpotifyCard } from "@/templates/SpotifyCard";
 import { TechStack } from "@/templates/TechStack";
+import { TopLanguages } from "@/templates/TopLanguages";
 import { TypingText } from "@/templates/TypingText";
 import { VisitorCounter } from "@/templates/VisitorCounter";
 import { WakaTimeStats } from "@/templates/WakaTimeStats";
@@ -40,6 +42,8 @@ export const templateRegistry: Record<string, React.FC<any>> = {
   leetcode: LeetCodeStats,
   wakatime: WakaTimeStats,
   goodreads: GoodreadsCard,
+  snippet: CodeSnippet,
+  languages: TopLanguages,
 };
 
 export type TemplateKey = keyof typeof templateRegistry;

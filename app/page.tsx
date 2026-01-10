@@ -17,7 +17,7 @@ export default function Home() {
     status: 'Listening on Spotify',
     coverUrl: '',
     width: 460,
-    height: 135,
+    height: 200,
     theme: 'dark',
     username: '',
     token: '',
@@ -96,7 +96,9 @@ export default function Home() {
         visitors: ['template', 'username', 'count', 'label', 'theme'],
         leetcode: ['template', 'username', 'theme'],
         wakatime: ['template', 'theme', 'api_url'],
-        goodreads: ['template', 'goodreadsId', 'title', 'progress', 'coverUrl', 'theme', 'author']
+        goodreads: ['template', 'goodreadsId', 'title', 'progress', 'coverUrl', 'theme', 'author'],
+        snippet: ['template', 'code', 'title', 'language', 'theme', 'width', 'height'],
+        languages: ['template', 'langs', 'theme', 'width', 'bg']
     };
 
     const currentTemplate = params.template;
@@ -494,6 +496,34 @@ export default function Home() {
                                     <span className={`text-lg ${params.template === 'goodreads' ? '' : 'grayscale opacity-50'}`}>📚</span>
                                 </div>
                                 <span className={`text-xs font-medium ${params.template === 'goodreads' ? 'text-white' : 'text-neutral-400'}`}>Goodreads</span>
+                            </button>
+
+                            <button
+                                onClick={() => setParams({ ...params, template: 'snippet', code: 'const me = {\n  role: "Dev"\n};', title: 'AboutMe.js' })}
+                                className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                                    params.template === 'snippet' 
+                                    ? 'bg-neutral-800 border-pink-500 ring-1 ring-pink-500' 
+                                    : 'bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700'
+                                }`}
+                            >
+                                <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'snippet' ? 'bg-pink-500/20 text-pink-500' : 'bg-neutral-800 text-neutral-400'}`}>
+                                    <span className={`text-lg ${params.template === 'snippet' ? '' : 'grayscale opacity-50'}`}>📝</span>
+                                </div>
+                                <span className={`text-xs font-medium ${params.template === 'snippet' ? 'text-white' : 'text-neutral-400'}`}>Snippet</span>
+                            </button>
+
+                            <button
+                                onClick={() => setParams({ ...params, template: 'languages', langs: 'TypeScript:60,JavaScript:30,CSS:10' })}
+                                className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                                    params.template === 'languages' 
+                                    ? 'bg-neutral-800 border-indigo-500 ring-1 ring-indigo-500' 
+                                    : 'bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700'
+                                }`}
+                            >
+                                <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'languages' ? 'bg-indigo-500/20 text-indigo-500' : 'bg-neutral-800 text-neutral-400'}`}>
+                                    <span className={`text-lg ${params.template === 'languages' ? '' : 'grayscale opacity-50'}`}>📊</span>
+                                </div>
+                                <span className={`text-xs font-medium ${params.template === 'languages' ? 'text-white' : 'text-neutral-400'}`}>Langs</span>
                             </button>
 
                         </div>
@@ -1004,6 +1034,51 @@ export default function Home() {
                                 </div>
                             </div>
                         </>
+                    )}
+
+                    {/* Snippet Inputs */}
+                    {params.template === 'snippet' && (
+                        <>
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Title</label>
+                                <input 
+                                    type="text" 
+                                    name="title"
+                                    value={params.title}
+                                    onChange={handleChange}
+                                    className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none transition-all"
+                                    placeholder="AboutMe.js"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider flex items-center gap-2">
+                                    Code
+                                    <span className="text-[10px] normal-case opacity-60">(JSON or JS Object format)</span>
+                                </label>
+                                <textarea 
+                                    name="code"
+                                    value={params.code}
+                                    onChange={handleChange}
+                                    className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none transition-all min-h-[100px] font-mono text-sm"
+                                    placeholder="const data = { ... }"
+                                />
+                            </div>
+                        </>
+                    )}
+
+                    {/* Languages Inputs */}
+                    {params.template === 'languages' && (
+                         <div className="space-y-2">
+                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Languages (Name:Percent,Name:Percent)</label>
+                            <input 
+                                type="text" 
+                                name="langs"
+                                value={params.langs}
+                                onChange={handleChange}
+                                className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none transition-all font-mono text-sm"
+                                placeholder="TypeScript:60,JavaScript:30"
+                            />
+                        </div>
                     )}
 
                      <div className="grid grid-cols-2 gap-4 border-t border-neutral-800 pt-4 mt-4">
