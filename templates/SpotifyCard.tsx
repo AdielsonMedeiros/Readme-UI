@@ -23,20 +23,23 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
   width,
   height
 }) => {
-  const containerPadding = 12;
-  const gap = 12;
+  const isCompact = width ? width < 250 : false;
+  const containerPadding = isCompact ? 8 : 12;
+  const gap = isCompact ? 8 : 12;
   
   // Responsive calculations
   const availableHeight = (height || 135) - (containerPadding * 2);
   const availableWidth = (width || 460) - (containerPadding * 2);
   
-  // Compact mode: if width is very small, hide text and just show art
-  const isCompact = width ? width < 250 : false;
-  
   // Image size logic
-  // If compact, use max available space (square). If standard, cap at 100px or available height.
-  const maxImgSize = isCompact ? Math.min(availableWidth, availableHeight) : 100;
-  const imgSize = Math.min(maxImgSize, availableHeight);
+  // If compact, scale image down to fit alongside text (e.g. 35% of width or height), but min 20px.
+  // Standard mode: cap at 100px.
+  const maxImgSize = isCompact 
+    ? Math.min(availableWidth * 0.4, availableHeight) 
+    : 100;
+    
+  // Ensure image isn't too huge in tiny widgets but big enough to be seen
+  const imgSize = Math.max(20, Math.min(maxImgSize, availableHeight));
 
   const isDark = theme === 'dark';
   
@@ -78,11 +81,11 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: isCompact ? 'center' : 'flex-start',
+        justifyContent: 'flex-start',
         width: '100%',
         height: '100%',
-        padding: '12px',
-        gap: '12px',
+        padding: `${containerPadding}px`,
+        gap: `${gap}px`,
         background: bgGradient,
         border: `1px solid ${cardBorder}`,
         borderRadius: '8px',
@@ -125,11 +128,12 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
         
         {/* Track Info */}
         <div style={{ 
-          display: isCompact ? 'none' : 'flex', 
+          display: 'flex', 
           flexDirection: 'column', 
           flex: 1, 
-          gap: '4px', 
-          minWidth: 0 
+          gap: isCompact ? '2px' : '4px', 
+          minWidth: 0,
+          justifyContent: 'center' 
         }}>
           {/* Status with Spotify Icon */}
           <div style={{ 
@@ -139,15 +143,18 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
             marginBottom: '2px'
           }}>
             {/* Spotify Icon */}
-            <svg width="14" height="14" viewBox="0 0 24 24" fill={spotifyGreen}>
+            <svg width={isCompact ? "10" : "14"} height={isCompact ? "10" : "14"} viewBox="0 0 24 24" fill={spotifyGreen}>
               <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
             </svg>
             <span style={{ 
-              fontSize: '10px', 
-              color: spotifyGreen, 
-              fontWeight: 600, 
-              letterSpacing: '0.5px', 
-              textTransform: 'uppercase' 
+                fontSize: isCompact ? '8px' : '10px', 
+                color: spotifyGreen, 
+                fontWeight: 600, 
+                letterSpacing: '0.5px', 
+                textTransform: 'uppercase',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
             }}>
               {status}
             </span>
@@ -155,8 +162,7 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
           
           {/* Title */}
           <div style={{ 
-            display: 'flex',
-            fontSize: '18px', 
+            fontSize: isCompact ? '12px' : '18px', 
             fontWeight: 700, 
             color: textColor, 
             lineHeight: 1.2,
@@ -169,10 +175,9 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
           
           {/* Artist */}
           <div style={{ 
-            display: 'flex',
-            fontSize: '13px', 
+            fontSize: isCompact ? '10px' : '13px', 
             color: subTextColor, 
-            marginBottom: '12px',
+            marginBottom: isCompact ? '6px' : '12px',
             fontWeight: 500,
             whiteSpace: 'nowrap',
             overflow: 'hidden',
