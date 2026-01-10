@@ -523,17 +523,22 @@ export default function Home() {
                                 />
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Progress (%)</label>
-                                <input 
-                                    type="range" 
-                                    name="progress"
-                                    min="0"
-                                    max="100"
-                                    value={params.progress}
-                                    onChange={(e) => setParams({...params, progress: Number(e.target.value)})}
-                                    className="w-full h-2 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-green-500"
-                                />
+                            <div className="space-y-3 pt-2">
+                                <div className="flex justify-between items-end">
+                                    <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Progress</label>
+                                    <span className="text-xs font-bold text-green-500 bg-green-500/10 px-2 py-0.5 rounded">{params.progress}%</span>
+                                </div>
+                                <div className="relative w-full h-6 flex items-center">
+                                    <input 
+                                        type="range" 
+                                        name="progress"
+                                        min="0"
+                                        max="100"
+                                        value={params.progress}
+                                        onChange={(e) => setParams({...params, progress: Number(e.target.value)})}
+                                        className="absolute w-full h-2 bg-neutral-700 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500/50 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-green-500 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-neutral-900 hover:[&::-webkit-slider-thumb]:scale-110 [&::-webkit-slider-thumb]:transition-transform"
+                                    />
+                                </div>
                             </div>
 
                             <div className="space-y-2">
