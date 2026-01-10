@@ -57,9 +57,7 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({
             
             <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <span style={{ fontSize: '24px', fontWeight: 700, color: '#fff' }}>{city}</span>
-                <span style={{ fontSize: '18px', fontWeight: 500, color: 'rgba(255,255,255,0.8)' }}>
-                    {condition} • Coding Mode
-                </span>
+
             </div>
         </div>
 
