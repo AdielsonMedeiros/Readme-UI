@@ -64,7 +64,7 @@ export const WakaTimeStats: React.FC<WakaTimeStatsProps> = ({
                 <span style={{ color: dimColor }}>{lang.time} ({lang.percent}%)</span>
             </div>
             
-            <div style={{ width: '100%', height: '6px', backgroundColor: isDark ? '#21262d' : '#eaeef2', borderRadius: '3px', overflow: 'hidden' }}>
+            <div style={{ display: 'flex', width: '100%', height: '6px', backgroundColor: isDark ? '#21262d' : '#eaeef2', borderRadius: '3px', overflow: 'hidden' }}>
                 <div style={{ width: `${lang.percent}%`, height: '100%', backgroundColor: lang.color || '#888', borderRadius: '3px' }} />
             </div>
 
