@@ -209,8 +209,8 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
             display: 'flex', 
             flexDirection: 'row', 
             justifyContent: 'space-between', 
-            marginTop: '6px', 
-            fontSize: '10px', 
+            marginTop: isCompact ? '3px' : '6px', 
+            fontSize: isCompact ? '8px' : '10px', 
             color: metaColor,
             fontWeight: 500
           }}>
