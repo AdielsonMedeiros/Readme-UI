@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronDown, Code2, Copy, HelpCircle, Layers, X } from 'lucide-react';
+import { AlertCircle, CheckCircle, ChevronDown, Code2, Copy, HelpCircle, Layers, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { FaGithub, FaSpotify } from 'react-icons/fa'; // Import brand icons
 import { InfoTooltip } from '../components/InfoTooltip';
@@ -27,6 +27,12 @@ export default function Home() {
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [titleText, setTitleText] = useState('Readme-UI');
+  const [toast, setToast] = useState<{show: boolean, message: string, type: 'success' | 'error'}>({ show: false, message: '', type: 'success' });
+
+  const showToastFunc = (message: string, type: 'success' | 'error' = 'success') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast(prev => ({ ...prev, show: false })), 3000);
+  };
 
   // Typing effect
   useEffect(() => {
@@ -128,7 +134,7 @@ export default function Home() {
     if (navigator.clipboard && window.isSecureContext) {
         try {
             await navigator.clipboard.writeText(markdown);
-            alert('Copied Markdown to clipboard!');
+            showToastFunc(t('common.copied'), 'success');
             return;
         } catch (err) {
             console.error('Clipboard API failed:', err);
@@ -153,7 +159,7 @@ export default function Home() {
         document.body.removeChild(textArea);
         
         if (successful) {
-            alert('Copied Markdown to clipboard!');
+            showToastFunc(t('common.copied'), 'success');
         } else {
             prompt("Copy this manually:", markdown);
         }
@@ -1159,6 +1165,14 @@ export default function Home() {
                     </button>
                 </div>
             </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {toast.show && (
+        <div className="fixed bottom-6 right-6 bg-neutral-800 border border-neutral-700 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-in fade-in slide-in-from-bottom-4 z-[200]">
+            {toast.type === 'success' ? <CheckCircle className="w-5 h-5 text-green-500" /> : <AlertCircle className="w-5 h-5 text-red-500" />}
+            <span className="font-medium text-sm">{toast.message}</span>
         </div>
       )}
     </main>
