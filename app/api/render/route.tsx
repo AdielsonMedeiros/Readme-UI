@@ -980,26 +980,7 @@ export async function GET(req: NextRequest) {
         } catch (e) { console.error('WakaTime Fetch Error', e); }
     }
 
-    // --- Handler: Blog Posts (Dev.to) ---
-    if (templateName === 'blog') {
-        const username = props.username ? String(props.username) : 'adielsonmedeiros'; // Dev.to username
-        try {
-            const devToRes = await fetch(`https://dev.to/api/articles?username=${username}&per_page=3`);
-            if (devToRes.ok) {
-                const posts = await devToRes.json();
-                if (Array.isArray(posts)) {
-                    props.posts = posts.map((p: any) => ({
-                        title: p.title,
-                        date: new Date(p.published_timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-                        url: p.url,
-                        views: p.public_reactions_count * 10 // Approximation as views aren't public in API, using reactions as proxy or random
-                    }));
-                }
-            }
-        } catch (e) {
-             console.error('Dev.to Fetch Error', e);
-        }
-    }
+
 
     // --- Handler: Goodreads (Currently Reading) ---
     if (templateName === 'goodreads') {

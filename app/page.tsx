@@ -91,7 +91,6 @@ export default function Home() {
         visitors: ['template', 'username', 'count', 'label', 'theme'],
         leetcode: ['template', 'username', 'theme'],
         wakatime: ['template', 'theme', 'api_url'],
-        blog: ['template', 'username', 'theme'],
         goodreads: ['template', 'title', 'progress', 'coverUrl', 'theme', 'author', 'feedUrl']
     };
 
@@ -426,19 +425,7 @@ export default function Home() {
                                 <span className={`text-xs font-medium ${params.template === 'wakatime' ? 'text-white' : 'text-neutral-400'}`}>WakaTime</span>
                             </button>
 
-                            <button
-                                onClick={() => setParams({ ...params, template: 'blog', username: 'adielsonmedeiros' })}
-                                className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
-                                    params.template === 'blog' 
-                                    ? 'bg-neutral-800 border-black ring-1 ring-white' 
-                                    : 'bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700'
-                                }`}
-                            >
-                                <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'blog' ? 'bg-white text-black' : 'bg-neutral-800 text-neutral-400'}`}>
-                                    <span className={`text-lg ${params.template === 'blog' ? '' : 'grayscale opacity-50'}`}>📝</span>
-                                </div>
-                                <span className={`text-xs font-medium ${params.template === 'blog' ? 'text-white' : 'text-neutral-400'}`}>Blog</span>
-                            </button>
+
 
                             <button
                                 onClick={() => setParams({ ...params, template: 'goodreads', title: 'The Pragmatic Programmer', progress: 42 })}
@@ -827,15 +814,7 @@ export default function Home() {
                         </div>
                     )}
 
-                    {/* Blog Post Controls */}
-                    {params.template === 'blog' && (
-                        <div className="space-y-3">
-                            <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Dev.to Username</label>
-                                <input type="text" name="username" value={params.username || ''} onChange={handleChange} placeholder="ben" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-white outline-none transition-all" />
-                            </div>
-                        </div>
-                    )}
+
 
                     {/* Goodreads Controls */}
                     {params.template === 'goodreads' && (

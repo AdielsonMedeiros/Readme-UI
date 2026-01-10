@@ -1,5 +1,5 @@
 import { ActivityGraph } from "@/templates/ActivityGraph";
-import { BlogPosts } from "@/templates/BlogPosts";
+
 import { DevJoke } from "@/templates/DevJoke";
 import { GithubStats } from "@/templates/GithubStats";
 import { GoodreadsCard } from "@/templates/GoodreadsCard";
@@ -39,7 +39,6 @@ export const templateRegistry: Record<string, React.FC<any>> = {
   activity: ActivityGraph,
   leetcode: LeetCodeStats,
   wakatime: WakaTimeStats,
-  blog: BlogPosts,
   goodreads: GoodreadsCard,
 };
 
