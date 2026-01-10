@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://gitruby.vercel.app'), // Base URL for relative images
   title: {
     default: "GitRuby - Dynamic GitHub README Widgets",
     template: "%s | GitRuby"
