@@ -32,7 +32,9 @@ export async function GET(req: NextRequest) {
     });
 
     // Setup headers for external API calls
-    const token = searchParams.get('token');
+    // PRIORITY: Query Param > Env Var. 
+    // WARNING: Query params are public in READMEs. Use env var in production!
+    const token = searchParams.get('token') || process.env.GITHUB_TOKEN;
     const headers: HeadersInit = {
         'User-Agent': 'Readme-UI-Generator',
         'Accept': 'application/vnd.github.v3+json',
@@ -1017,7 +1019,13 @@ export async function GET(req: NextRequest) {
     const height = Number(searchParams.get('height')) || 400;
 
     try {
-        const options: any = { width, height };
+        const options: any = { 
+            width, 
+            height,
+            headers: {
+                'Cache-Control': 'public, max-age=14400, s-maxage=14400, stale-while-revalidate=600',
+            }
+        };
 
         if (fontData) {
             options.fonts = [{
@@ -1039,7 +1047,13 @@ export async function GET(req: NextRequest) {
                     Render Error: {renderErr.message}
                 </div>
             ),
-            { width, height }
+            { 
+                width, 
+                height,
+                headers: {
+                    'Cache-Control': 'no-store, must-revalidate' // Don't cache errors
+                }
+            }
         );
     }
 }
