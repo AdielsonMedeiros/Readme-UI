@@ -8,6 +8,8 @@ export interface SpotifyCardProps {
   status?: string;
   theme?: 'dark' | 'light';
   duration?: number;
+  width?: number;
+  height?: number;
 }
 
 export const SpotifyCard: React.FC<SpotifyCardProps> = ({
@@ -17,8 +19,25 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
   progress = 33,
   status = "Listening on Spotify",
   theme = 'dark',
-  duration = 210
+  duration = 210,
+  width,
+  height
 }) => {
+  const containerPadding = 12;
+  const gap = 12;
+  
+  // Responsive calculations
+  const availableHeight = (height || 135) - (containerPadding * 2);
+  const availableWidth = (width || 460) - (containerPadding * 2);
+  
+  // Compact mode: if width is very small, hide text and just show art
+  const isCompact = width ? width < 250 : false;
+  
+  // Image size logic
+  // If compact, use max available space (square). If standard, cap at 100px or available height.
+  const maxImgSize = isCompact ? Math.min(availableWidth, availableHeight) : 100;
+  const imgSize = Math.min(maxImgSize, availableHeight);
+
   const isDark = theme === 'dark';
   
   // Calculate time strings
@@ -59,6 +78,7 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: isCompact ? 'center' : 'flex-start',
         width: '100%',
         height: '100%',
         padding: '12px',
@@ -77,8 +97,8 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
-          height: '100px',
-          width: '100px',
+          height: `${imgSize}px`,
+          width: `${imgSize}px`,
           maxHeight: '100%',
           borderRadius: '8px',
           overflow: 'hidden',
@@ -104,7 +124,13 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
         </div>
         
         {/* Track Info */}
-        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, gap: '4px', minWidth: 0 }}>
+        <div style={{ 
+          display: isCompact ? 'none' : 'flex', 
+          flexDirection: 'column', 
+          flex: 1, 
+          gap: '4px', 
+          minWidth: 0 
+        }}>
           {/* Status with Spotify Icon */}
           <div style={{ 
             display: 'flex', 

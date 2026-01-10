@@ -8,6 +8,8 @@ export interface GoodreadsCardProps {
   totalPage?: number;
   currentPage?: number;
   theme?: 'dark' | 'light';
+  width?: number;
+  height?: number;
 }
 
 export const GoodreadsCard: React.FC<GoodreadsCardProps> = ({
@@ -15,8 +17,22 @@ export const GoodreadsCard: React.FC<GoodreadsCardProps> = ({
   title = "The Pragmatic Programmer",
   author = "Andy Hunt",
   progress, // Optional now
-  theme = 'dark'
+  theme = 'dark',
+  width,
+  height
 }) => {
+  const containerPadding = 24;
+  
+  // Responsive / Compact Logic
+  const availableHeight = (height || 200) - (containerPadding * 2);
+  const isCompact = width ? width < 300 : false;
+  
+  // Calculate Book Cover Dimensions (Ratio 2:3)
+  // If standard mode, max height 150px. If compact, use full available height.
+  const targetHeight = isCompact ? availableHeight : Math.min(150, availableHeight);
+  const imgHeight = Math.max(targetHeight, 20); // minimal safety
+  const imgWidth = imgHeight * (2/3);
+
   const isDark = theme === 'dark';
   const bgColor = isDark ? '#2b1a13' : '#f4ecd8'; // book-ish warm dark/light tones
   const textColor = isDark ? '#eaddcf' : '#4a3b32';
@@ -43,14 +59,14 @@ export const GoodreadsCard: React.FC<GoodreadsCardProps> = ({
         {/* Background Texture/Gradient */}
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `linear-gradient(135deg, ${bgColor} 0%, ${isDark ? '#1a0f0a' : '#e6dabb'} 100%)`, zIndex: '0' }} />
 
-        <div style={{ display: 'flex', padding: '24px', width: '100%', zIndex: '1', alignItems: 'center' }}>
+        <div style={{ display: 'flex', padding: '24px', width: '100%', height: '100%', zIndex: '1', alignItems: 'center', justifyContent: isCompact ? 'center' : 'flex-start' }}>
             {/* Book Cover */}
             <div style={{ 
                 display: 'flex',
-                width: '100px',
-                height: '150px',
+                width: `${imgWidth}px`,
+                height: `${imgHeight}px`,
                 maxHeight: '100%',
-                borderRadius: '4px', 
+                borderRadius: '4px',  
                 overflow: 'hidden', 
                 boxShadow: '0 8px 16px rgba(0,0,0,0.3)', 
                 marginRight: '24px',
@@ -62,7 +78,7 @@ export const GoodreadsCard: React.FC<GoodreadsCardProps> = ({
             </div>
 
             {/* Info */}
-            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'center' }}>
+            <div style={{ display: isCompact ? 'none' : 'flex', flexDirection: 'column', flex: 1, justifyContent: 'center' }}>
                 <span style={{ fontSize: '10px', color: accentColor, textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '1px', fontWeight: 'bold' }}>
                     Currently Reading
                 </span>
