@@ -1038,21 +1038,19 @@ export default function Home() {
                 )}
              </div>
 
-             <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3 w-full">
-                    <div className="p-2 bg-neutral-800 rounded-lg shrink-0">
-                        <Code2 className="w-5 h-5 text-neutral-400" />
-                    </div>
-                    <code className="text-sm text-neutral-300 font-mono break-all whitespace-pre-wrap">
-                        ![My Widget]({url})
+             <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3 flex-1 min-w-0 bg-black/30 p-3 rounded-lg border border-neutral-800 w-full sm:w-auto">
+                    <Code2 className="w-4 h-4 text-neutral-500 shrink-0" />
+                    <code className="text-xs text-neutral-400 font-mono truncate select-all">
+                        ![ReadMe-UI]({url})
                     </code>
                 </div>
                 <button 
                     onClick={copyToClipboard}
-                    className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg font-medium transition-all shadow-lg shadow-green-900/20"
+                    className="group flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white px-5 py-2.5 rounded-lg font-bold transition-all shadow-lg shadow-green-900/20 hover:shadow-green-500/30 active:scale-95 whitespace-nowrap shrink-0 w-full sm:w-auto justify-center"
                 >
-                    <Copy className="w-4 h-4" />
-                    Copy Markdown
+                    <Copy className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                    <span>Copy Markdown</span>
                 </button>
              </div>
         </div>
