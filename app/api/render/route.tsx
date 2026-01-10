@@ -2,6 +2,7 @@ import { popularIcons } from '@/lib/icons';
 import { templateRegistry } from '@/lib/registry';
 import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
+import { Buffer } from 'node:buffer';
 import satori from 'satori';
 
 
