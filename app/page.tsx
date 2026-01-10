@@ -1,12 +1,12 @@
 'use client';
 
-import { Code2, Copy, Layers, X } from 'lucide-react';
+import { Code2, Copy, HelpCircle, Layers, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { FaGithub, FaSpotify } from 'react-icons/fa'; // Import brand icons
-
-
+import { useTranslation } from '../contexts/LanguageContext';
 
 export default function Home() {
+  const { t, language, setLanguage } = useTranslation();
   const [showHelp, setShowHelp] = useState(false);
   const [params, setParams] = useState<any>({
     template: '',
@@ -169,13 +169,32 @@ export default function Home() {
             <div className="flex items-center gap-2">
                 <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-neutral-400 font-mono">
                     {titleText}<span className="animate-pulse">_</span>
-                     <span className="text-xs text-neutral-500 border border-neutral-700 px-2 py-0.5 rounded-full ml-4 font-sans align-middle">Beta</span>
+                     <span className="hidden sm:inline-block text-xs text-neutral-500 border border-neutral-700 px-2 py-0.5 rounded-full ml-4 font-sans align-middle">Beta</span>
                 </h1>
             </div>
             <div className="flex items-center gap-4 text-sm text-neutral-400">
-                <button onClick={() => setShowHelp(true)} className="hover:text-white transition-colors">How to use</button>
-                <a href="https://github.com/AdielsonMedeiros/Readme-UI" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a>
-
+                <div className="flex items-center border border-neutral-700 rounded overflow-hidden h-6">
+                    <button 
+                        onClick={() => setLanguage('en')} 
+                        className={`px-2 h-full flex items-center transition-colors text-xs font-medium ${language === 'en' ? 'bg-neutral-700 text-white' : 'hover:bg-neutral-800 hover:text-white'}`}
+                    >
+                        EN
+                    </button>
+                    <button 
+                        onClick={() => setLanguage('pt')} 
+                        className={`px-2 h-full flex items-center transition-colors text-xs font-medium ${language === 'pt' ? 'bg-neutral-700 text-white' : 'hover:bg-neutral-800 hover:text-white'}`}
+                    >
+                        PT
+                    </button>
+                </div>
+                <button onClick={() => setShowHelp(true)} className="hover:text-white transition-colors flex items-center" title={t('help.title')}>
+                    <span className="hidden sm:inline">{t('help.title')}</span>
+                    <HelpCircle className="w-5 h-5 sm:hidden" />
+                </button>
+                <a href="https://github.com/AdielsonMedeiros/Readme-UI" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center" title="GitHub">
+                    <span className="hidden sm:inline">GitHub</span>
+                    <FaGithub className="w-5 h-5 sm:hidden" />
+                </a>
             </div>
         </div>
       </div>
@@ -186,12 +205,12 @@ export default function Home() {
             <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-2xl">
                 <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                     <Layers className="w-5 h-5 text-green-400" />
-                    Configuration
+                    {t('sidebar.configuration')}
                 </h2>
                 
                 <div className="space-y-4">
                     <div className="space-y-4">
-                        <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider block">Choose Template</label>
+                        <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider block">{t('common.chooseTemplate')}</label>
                         
                         {/* Selected Template Header */}
                         {params.template && (
@@ -201,7 +220,7 @@ export default function Home() {
                                          <Layers className="w-4 h-4 text-white" />
                                      </div>
                                      <div>
-                                         <p className="text-xs text-neutral-400 uppercase tracking-wider font-semibold">Selected Template</p>
+                                         <p className="text-xs text-neutral-400 uppercase tracking-wider font-semibold">{t('common.selectedTemplate')}</p>
                                          <p className="text-white font-bold capitalize">{params.template}</p>
                                      </div>
                                  </div>
@@ -209,7 +228,7 @@ export default function Home() {
                                      onClick={() => setParams({ ...params, template: '' })}
                                      className="text-xs font-medium text-neutral-400 hover:text-white underline decoration-neutral-600 underline-offset-4 transition-colors"
                                  >
-                                     Change
+                                     {t('common.changeTemplate')}
                                  </button>
                              </div>
                         )}
@@ -475,15 +494,15 @@ export default function Home() {
                     {params.template && (
                         <>
                     <div className="space-y-2">
-                        <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Theme</label>
+                        <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('sidebar.theme')}</label>
                         <select 
                             name="theme" 
                             value={params.theme || 'dark'}
                             onChange={handleChange}
                             className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none transition-all"
                         >
-                            <option value="dark">Dark Mode</option>
-                            <option value="light">Light Mode</option>
+                            <option value="dark">{t('sidebar.darkMode')}</option>
+                            <option value="light">{t('sidebar.lightMode')}</option>
                         </select>
                     </div>
 
@@ -491,7 +510,7 @@ export default function Home() {
                     {params.template === 'spotify' && (
                         <>
                              <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Status Text</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.spotify.status')}</label>
                                 <input 
                                     type="text" 
                                     name="status"
@@ -502,7 +521,7 @@ export default function Home() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Song Title</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.spotify.songTitle')}</label>
                                 <input 
                                     type="text" 
                                     name="title"
@@ -513,7 +532,7 @@ export default function Home() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Artist</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.spotify.artist')}</label>
                                 <input 
                                     type="text" 
                                     name="artist"
@@ -525,7 +544,7 @@ export default function Home() {
 
                             <div className="space-y-3 pt-2">
                                 <div className="flex justify-between items-end">
-                                    <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Progress</label>
+                                    <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.spotify.progress')}</label>
                                     <span className="text-xs font-bold text-green-500 bg-green-500/10 px-2 py-0.5 rounded">{params.progress}%</span>
                                 </div>
                                 <div className="relative w-full h-6 flex items-center">
@@ -542,7 +561,7 @@ export default function Home() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Duration (seconds)</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.spotify.duration')}</label>
                                 <input 
                                     type="number" 
                                     name="duration"
@@ -551,7 +570,7 @@ export default function Home() {
                                     placeholder="210"
                                     className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none transition-all"
                                 />
-                                <p className="text-xs text-neutral-500">Total song length (e.g., 210 = 3:30)</p>
+                                <p className="text-xs text-neutral-500">{t('templates.spotify.durationDesc')}</p>
                             </div>
                         </>
                     )}
@@ -560,7 +579,7 @@ export default function Home() {
                     {params.template === 'stack' && (
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Stack Title (Optional)</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.techStack.title')}</label>
                                 <input 
                                     type="text" 
                                     name="title"
@@ -572,7 +591,7 @@ export default function Home() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Skills (Comma Separated)</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.techStack.skills')}</label>
                                 <textarea 
                                     name="skills"
                                     value={params.skills || 'react,typescript,nextdotjs,tailwindcss,nodedotjs,docker'}
@@ -580,7 +599,7 @@ export default function Home() {
                                     className="w-full h-24 bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
                                     placeholder="react, typescript, ..."
                                 />
-                                <p className="text-xs text-neutral-500">Use slugs from simpleicons.org (e.g., nextdotjs, nodedotjs)</p>
+                                <p className="text-xs text-neutral-500">{t('templates.techStack.skillsDesc')}</p>
                             </div>
                         </div>
                     )}
@@ -589,7 +608,7 @@ export default function Home() {
                     {params.template === 'wave' && (
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Main Text</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.wave.text')}</label>
                                 <input 
                                     type="text" 
                                     name="text"
@@ -600,7 +619,7 @@ export default function Home() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Subtitle</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.wave.subtitle')}</label>
                                 <input 
                                     type="text" 
                                     name="subtitle"
@@ -633,23 +652,23 @@ export default function Home() {
                     {params.template === 'social' && (
                         <div className="space-y-3">
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">GitHub Username</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.social.github')}</label>
                                 <input type="text" name="github" value={params.github || ''} onChange={handleChange} placeholder="username" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-500 outline-none transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">LinkedIn</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.social.linkedin')}</label>
                                 <input type="text" name="linkedin" value={params.linkedin || ''} onChange={handleChange} placeholder="linkedin-username" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-500 outline-none transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Twitter/X</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.social.twitter')}</label>
                                 <input type="text" name="twitter" value={params.twitter || ''} onChange={handleChange} placeholder="@username" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-500 outline-none transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Email</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.social.email')}</label>
                                 <input type="email" name="email" value={params.email || ''} onChange={handleChange} placeholder="email@example.com" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-500 outline-none transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Website</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.social.website')}</label>
                                 <input type="url" name="website" value={params.website || ''} onChange={handleChange} placeholder="https://mysite.com" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-500 outline-none transition-all" />
                             </div>
                         </div>
@@ -659,11 +678,11 @@ export default function Home() {
                     {params.template === 'quote' && (
                         <div className="space-y-3">
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Quote Text</label>
-                                <textarea name="quote" value={params.quote || ''} onChange={handleChange} placeholder="Leave empty for random quote" className="w-full h-20 bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 outline-none transition-all resize-none" />
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.quote.text')}</label>
+                                <textarea name="quote" value={params.quote || ''} onChange={handleChange} placeholder={t('templates.quote.placeholder')} className="w-full h-20 bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 outline-none transition-all resize-none" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Author</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.quote.author')}</label>
                                 <input type="text" name="author" value={params.author || ''} onChange={handleChange} placeholder="Author name" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 outline-none transition-all" />
                             </div>
                         </div>
@@ -673,32 +692,32 @@ export default function Home() {
                     {params.template === 'project' && (
                         <div className="space-y-3">
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">GitHub Repo (Auto-fetch)</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.project.repo')}</label>
                                 <input type="text" name="repo" value={params.repo || ''} onChange={handleChange} placeholder="username/repo-name" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
-                                <p className="text-xs text-neutral-500">Enter username/repo to fetch data automatically (e.g., AdielsonMedeiros/Readme-UI)</p>
+                                <p className="text-xs text-neutral-500">{t('templates.project.repoDesc')}</p>
                             </div>
                             
                             {/* Only show manual fields if repo is empty */}
                             {!params.repo && (
                                 <>
                                     <div className="border-t border-neutral-800 pt-3">
-                                        <p className="text-xs text-neutral-500 mb-3">Or customize manually:</p>
+                                        <p className="text-xs text-neutral-500 mb-3">{t('templates.project.manual')}</p>
                                         <div className="space-y-2">
-                                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Project Name</label>
+                                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.project.name')}</label>
                                             <input type="text" name="name" value={params.name || ''} onChange={handleChange} placeholder="my-awesome-project" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Description</label>
+                                        <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.project.description')}</label>
                                         <textarea name="description" value={params.description || ''} onChange={handleChange} placeholder="A fantastic project..." className="w-full h-16 bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all resize-none" />
                                     </div>
                                     <div className="grid grid-cols-2 gap-3">
                                         <div className="space-y-2">
-                                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Stars</label>
+                                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.project.stars')}</label>
                                             <input type="number" name="stars" value={params.stars || ''} onChange={handleChange} placeholder="0" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Forks</label>
+                                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.project.forks')}</label>
                                             <input type="number" name="forks" value={params.forks || ''} onChange={handleChange} placeholder="0" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
                                         </div>
                                     </div>
@@ -711,9 +730,9 @@ export default function Home() {
                     {params.template === 'typing' && (
                         <div className="space-y-3">
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Text Lines (Separate with |)</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.typing.lines')}</label>
                                 <textarea name="lines" value={params.lines || 'Full Stack Developer|Open Source Enthusiast'} onChange={handleChange} placeholder="Line 1|Line 2|Line 3" className="w-full h-20 bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 outline-none transition-all resize-none" />
-                                <p className="text-xs text-neutral-500">Use | to separate multiple lines</p>
+                                <p className="text-xs text-neutral-500">{t('templates.typing.linesDesc')}</p>
                             </div>
                         </div>
                     )}
@@ -721,13 +740,13 @@ export default function Home() {
                     {/* Dev Joke Controls */}
                     {params.template === 'joke' && (
                         <div className="space-y-3">
-                            <p className="text-xs text-neutral-500">🎲 Leave empty for a random programming joke!</p>
+                            <p className="text-xs text-neutral-500">{t('templates.joke.desc')}</p>
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Custom Joke</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.joke.custom')}</label>
                                 <input type="text" name="joke" value={params.joke || ''} onChange={handleChange} placeholder="Why do programmers..." className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-500 outline-none transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Punchline</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.joke.punchline')}</label>
                                 <input type="text" name="punchline" value={params.punchline || ''} onChange={handleChange} placeholder="Because..." className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-500 outline-none transition-all" />
                             </div>
                         </div>
@@ -737,24 +756,24 @@ export default function Home() {
                     {params.template === 'visitors' && (
                         <div className="space-y-3">
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">GitHub Username (Auto-fetch)</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.visitors.username')}</label>
                                 <input type="text" name="username" value={params.username || ''} onChange={handleChange} placeholder="AdielsonMedeiros" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-lime-500 outline-none transition-all" />
-                                <p className="text-xs text-neutral-500">Shows followers + repos as engagement metric</p>
+                                <p className="text-xs text-neutral-500">{t('templates.visitors.usernameDesc')}</p>
                             </div>
                             
                             {/* Only show manual field if username is empty */}
                             {!params.username && (
                                 <div className="border-t border-neutral-800 pt-3">
-                                    <p className="text-xs text-neutral-500 mb-3">Or set manually:</p>
+                                    <p className="text-xs text-neutral-500 mb-3">{t('templates.visitors.manual')}</p>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Count</label>
+                                        <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.visitors.count')}</label>
                                         <input type="number" name="count" value={params.count || ''} onChange={handleChange} placeholder="1234" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-lime-500 outline-none transition-all" />
                                     </div>
                                 </div>
                             )}
                             
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Label</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.visitors.label')}</label>
                                 <input type="text" name="label" value={params.label || 'Profile Engagement'} onChange={handleChange} placeholder="Profile Views" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-lime-500 outline-none transition-all" />
                             </div>
                         </div>
@@ -764,9 +783,9 @@ export default function Home() {
                     {params.template === 'hacking' && (
                         <div className="space-y-3">
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Target Username</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.hacking.username')}</label>
                                 <input type="text" name="username" value={params.username || ''} onChange={handleChange} placeholder="AdielsonMedeiros" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none transition-all" />
-                                <p className="text-xs text-neutral-500">Will fetch recent repos to "hack"</p>
+                                <p className="text-xs text-neutral-500">{t('templates.hacking.desc')}</p>
                             </div>
                         </div>
                     )}
@@ -775,9 +794,9 @@ export default function Home() {
                     {params.template === 'weather' && (
                         <div className="space-y-3">
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">City</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.weather.location')}</label>
                                 <input type="text" name="city" value={params.city || ''} onChange={handleChange} placeholder="San Francisco" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 outline-none transition-all" />
-                                <p className="text-xs text-neutral-500">Auto-fetches current weather from Open-Meteo</p>
+                                <p className="text-xs text-neutral-500">{t('templates.weather.locationDesc')}</p>
                             </div>
                         </div>
                     )}
@@ -786,15 +805,15 @@ export default function Home() {
                     {params.template === 'music' && (
                         <div className="space-y-3">
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Track Name</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.music.track')}</label>
                                 <input type="text" name="trackName" value={params.trackName || ''} onChange={handleChange} placeholder="Midnight City" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 outline-none transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Artist</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.music.artist')}</label>
                                 <input type="text" name="artist" value={params.artist || ''} onChange={handleChange} placeholder="M83" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 outline-none transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Bar Color</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.music.color')}</label>
                                 <input type="color" name="barColor" value={params.barColor || '#1db954'} onChange={handleChange} className="w-full h-8 rounded cursor-pointer" />
                             </div>
                         </div>
@@ -804,9 +823,9 @@ export default function Home() {
                     {params.template === 'activity' && (
                         <div className="space-y-3">
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Username</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.activity.username')}</label>
                                 <input type="text" name="username" value={params.username || ''} onChange={handleChange} placeholder="AdielsonMedeiros" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-600 outline-none transition-all" />
-                                <p className="text-xs text-neutral-500">Generates a 3D skyline of contributions</p>
+                                <p className="text-xs text-neutral-500">{t('templates.activity.desc')}</p>
                             </div>
                         </div>
                     )}
@@ -815,10 +834,10 @@ export default function Home() {
                     {params.template === 'snake' && (
                         <div className="space-y-3">
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">GitHub Username</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.snake.username')}</label>
                                 <input type="text" name="username" value={params.username || ''} onChange={handleChange} placeholder="AdielsonMedeiros" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-lime-400 outline-none transition-all" />
                                 <p className="text-xs text-neutral-500">
-                                    Why just an animation? The snake will eat your real recent commits!
+                                    {t('templates.snake.desc')}
                                 </p>
                             </div>
                         </div>
@@ -831,9 +850,9 @@ export default function Home() {
                     {params.template === 'leetcode' && (
                         <div className="space-y-3">
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">LeetCode Username</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.leetcode.username')}</label>
                                 <input type="text" name="username" value={params.username || ''} onChange={handleChange} placeholder="adielson" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
-                                <p className="text-xs text-neutral-500">Fetches live stats from LeetCode API</p>
+                                <p className="text-xs text-neutral-500">{t('templates.leetcode.desc')}</p>
                             </div>
                         </div>
                     )}
@@ -842,9 +861,9 @@ export default function Home() {
                     {params.template === 'wakatime' && (
                         <div className="space-y-3">
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Public JSON URL (Optional)</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.wakatime.url')}</label>
                                 <input type="text" name="api_url" value={params.api_url || ''} onChange={handleChange} placeholder="https://wakatime.com/share/@user/stats.json" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-600 outline-none transition-all" />
-                                <p className="text-xs text-neutral-500">Enable "Share coding activity" in WakaTime to get this.</p>
+                                <p className="text-xs text-neutral-500">{t('templates.wakatime.urlDesc')}</p>
                             </div>
                         </div>
                     )}
@@ -855,18 +874,18 @@ export default function Home() {
                     {params.template === 'goodreads' && (
                         <div className="space-y-3">
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Goodreads User ID (Automagical ✨)</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.goodreads.userId')}</label>
                                 <input type="text" name="goodreadsId" value={params.goodreadsId || ''} onChange={handleChange} placeholder="e.g., 12345678" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-700 outline-none transition-all" />
-                                <p className="text-xs text-neutral-500">Found in your profile URL (goodreads.com/user/show/<b>12345</b>-name). If set, updates automatically!</p>
+                                <p className="text-xs text-neutral-500">{t('templates.goodreads.userIdDesc')}</p>
                             </div>
 
                             {!params.goodreadsId && (
                                 <>
                                     <div className="border-t border-neutral-800 my-2"></div>
-                                    <p className="text-xs text-neutral-500 mb-2">Or configure manually:</p>
+                                    <p className="text-xs text-neutral-500 mb-2">{t('templates.goodreads.manualConfig')}</p>
                                     
                                     <div className="space-y-2">
-                                        <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Book Title</label>
+                                        <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.goodreads.bookTitle')}</label>
                                         <input type="text" name="title" value={params.title || ''} onChange={handleChange} placeholder="Title" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-700 outline-none transition-all" />
                                     </div>
                                 </>
@@ -875,12 +894,12 @@ export default function Home() {
                             {!params.goodreadsId && (
                                 <>
                                     <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Author</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.goodreads.author')}</label>
                                 <input type="text" name="author" value={params.author || ''} onChange={handleChange} placeholder="Author" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-700 outline-none transition-all" />
                             </div>
                             <div className="space-y-3 pt-2">
                                 <div className="flex justify-between items-end">
-                                    <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Progress</label>
+                                    <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.goodreads.progress')}</label>
                                     <div className="flex items-center gap-1 bg-neutral-800 px-2 py-1 rounded border border-neutral-700">
                                         <span className="text-sm font-bold text-amber-500">{params.progress || 0}</span>
                                         <span className="text-xs text-neutral-500">%</span>
@@ -931,7 +950,7 @@ export default function Home() {
                             </div>
                             
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">GitHub Token (Optional)</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('templates.project.token')}</label>
                                 <input 
                                     type="password" 
                                     name="token"
@@ -940,25 +959,25 @@ export default function Home() {
                                     onChange={handleChange}
                                     className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none transition-all"
                                 />
-                                <p className="text-xs text-neutral-500">Provide a token to increase API rate limits (5000 req/hr).</p>
+                                <p className="text-xs text-neutral-500">{t('templates.project.tokenDesc')}</p>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Accent Color</label>
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('sidebar.accent')}</label>
                                 <select 
                                     name="accent" 
                                     value={params.accent || 'blue'}
                                     onChange={handleChange}
                                     className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none transition-all"
                                 >
-                                    <option value="blue">Blue (Default)</option>
-                                    <option value="purple">Purple</option>
-                                    <option value="green">Green</option>
-                                    <option value="orange">Orange</option>
-                                    <option value="pink">Pink</option>
-                                    <option value="red">Red</option>
-                                    <option value="cyan">Cyan</option>
-                                    <option value="yellow">Yellow</option>
+                                    <option value="blue">{t('colors.blue')} ({t('common.default')})</option>
+                                    <option value="purple">{t('colors.purple')}</option>
+                                    <option value="green">{t('colors.green')}</option>
+                                    <option value="orange">{t('colors.orange')}</option>
+                                    <option value="pink">{t('colors.pink')}</option>
+                                    <option value="red">{t('colors.red')}</option>
+                                    <option value="cyan">{t('colors.cyan')}</option>
+                                    <option value="yellow">{t('colors.yellow')}</option>
                                 </select>
                             </div>
                         </>
@@ -966,7 +985,7 @@ export default function Home() {
 
                      <div className="grid grid-cols-2 gap-4 border-t border-neutral-800 pt-4 mt-4">
                         <div className="space-y-2">
-                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Width</label>
+                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('sidebar.width')}</label>
                             <input 
                                 type="number" 
                                 name="width"
@@ -976,7 +995,7 @@ export default function Home() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Height</label>
+                            <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">{t('sidebar.height')}</label>
                             <input 
                                 type="number" 
                                 name="height"
@@ -996,7 +1015,7 @@ export default function Home() {
                      >
                          <span className="flex items-center justify-center gap-2">
                              <Layers className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
-                             Generate Widgets
+                             {t('common.generate')}
                          </span>
                      </button>
                     
@@ -1013,7 +1032,7 @@ export default function Home() {
                 {loading && (
                     <div className="flex flex-col items-center gap-4 z-10">
                         <div className="w-12 h-12 border-4 border-neutral-700 border-t-green-500 rounded-full animate-spin"></div>
-                        <span className="text-neutral-400 text-sm">Generating preview...</span>
+                        <span className="text-neutral-400 text-sm">{t('common.loading')}</span>
                     </div>
                 )}
                 
@@ -1023,9 +1042,9 @@ export default function Home() {
                         <div className="w-16 h-16 bg-neutral-800 rounded-full flex items-center justify-center mb-2">
                             <Layers className="w-8 h-8 text-neutral-600" />
                         </div>
-                        <h3 className="text-xl font-bold text-white">Ready to Create?</h3>
+                        <h3 className="text-xl font-bold text-white">{t('common.ready')}</h3>
                         <p className="text-neutral-400 max-w-md">
-                            Select a template from the sidebar, customize your settings, and click <b>Generate Widgets</b> to see the magic happen!
+                            {t('common.readyDesc')}
                         </p>
                     </div>
                 )}
@@ -1055,7 +1074,7 @@ export default function Home() {
                     className="group flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white px-5 py-2.5 rounded-lg font-bold transition-all shadow-lg shadow-green-900/20 hover:shadow-green-500/30 active:scale-95 whitespace-nowrap shrink-0 w-full sm:w-auto justify-center"
                 >
                     <Copy className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                    <span>Copy Markdown</span>
+                    <span>{t('common.copy')}</span>
                 </button>
              </div>
         </div>
@@ -1072,44 +1091,44 @@ export default function Home() {
                 </button>
                 
                 <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                    How to Configure
+                    {t('help.configure')}
                 </h2>
                 
                 <div className="space-y-6 text-neutral-300 max-h-[60vh] overflow-y-auto pr-2">
                     {/* Basic Steps */}
                     <div className="space-y-2">
-                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2">1. Quick Start</h3>
-                        <p className="text-sm text-neutral-400">Select a template on the left, customize the fields, and click <b>Copy Markdown</b>. Paste the code into your GitHub Profile README.</p>
+                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2">{t('help.quickStart.title')}</h3>
+                        <p className="text-sm text-neutral-400">{t('help.quickStart.text')}</p>
                     </div>
 
                     {/* Goodreads Guide */}
                     <div className="space-y-2">
-                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2 flex items-center gap-2">Goodreads Auto-Updates</h3>
-                        <p className="text-sm text-neutral-400">To have your book update automatically:</p>
+                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2 flex items-center gap-2">{t('help.goodreads.title')}</h3>
+                        <p className="text-sm text-neutral-400">{t('help.goodreads.text')}</p>
                         <ol className="list-decimal list-inside text-sm text-neutral-400 space-y-1 ml-1">
-                            <li>Go to your <a href="https://www.goodreads.com" target="_blank" className="text-green-400 hover:underline">Goodreads Profile</a>.</li>
-                            <li>Look at the URL: <code>goodreads.com/user/show/<b>123456</b>-name</code>.</li>
-                            <li>Copy the number (<b>123456</b>) and paste it into the <b>Goodreads User ID</b> field.</li>
+                            <li>{t('help.goodreads.step1')}</li>
+                            <li>{t('help.goodreads.step2')}</li>
+                            <li>{t('help.goodreads.step3')}</li>
                         </ol>
                     </div>
 
                     {/* WakaTime Guide */}
                     <div className="space-y-2">
-                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2 flex items-center gap-2">WakaTime Stats</h3>
+                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2 flex items-center gap-2">{t('help.wakatime.title')}</h3>
                         <ol className="list-decimal list-inside text-sm text-neutral-400 space-y-1 ml-1">
-                            <li>Log in to WakaTime and go to <b>Settings &gt; Profile</b>.</li>
-                            <li>Check <b>"Display coding activity publicly"</b>.</li>
-                            <li>Change "Readable by" to <b>Everyone</b> for "Languages".</li>
-                            <li>Copy the <b>JSON URL</b> provided there and paste it into the widget.</li>
+                            <li>{t('help.wakatime.step1')}</li>
+                            <li>{t('help.wakatime.step2')}</li>
+                            <li>{t('help.wakatime.step3')}</li>
+                            <li>{t('help.wakatime.step4')}</li>
                         </ol>
                     </div>
 
                     {/* Spotify Guide */}
                     <div className="space-y-2">
-                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2 flex items-center gap-2">Spotify</h3>
+                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2 flex items-center gap-2">{t('help.spotify.title')}</h3>
                         <p className="text-sm text-neutral-400">
-                             For the Spotify widget to show "Now Playing" in real-time, you currently need to set the song manually in this generator. 
-                             <br/><span className="italic text-xs opacity-70">(Full OAuth integration coming soon!)</span>
+                             {t('help.spotify.text')}
+                             <br/><span className="italic text-xs opacity-70">{t('help.spotify.note')}</span>
                         </p>
                     </div>
                 </div>
@@ -1119,7 +1138,7 @@ export default function Home() {
                         onClick={() => setShowHelp(false)}
                         className="bg-white text-black px-6 py-2 rounded-full font-medium hover:bg-neutral-200 transition-colors"
                     >
-                        Got it!
+                        {t('help.close')}
                     </button>
                 </div>
             </div>

@@ -23,9 +23,11 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
   width,
   height
 }) => {
-  const isCompact = width ? width < 250 : false;
-  const containerPadding = isCompact ? 8 : 12;
-  const gap = isCompact ? 8 : 12;
+  const isCompact = (width && width < 250) || (height && height < 110);
+  const isSuperSlim = height && height < 80;
+  
+  const containerPadding = isSuperSlim ? 6 : (isCompact ? 8 : 12);
+  const gap = isSuperSlim ? 8 : (isCompact ? 8 : 12);
   
   // Responsive calculations
   const availableHeight = (height || 135) - (containerPadding * 2);
@@ -133,9 +135,10 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
           flex: 1, 
           gap: isCompact ? '2px' : '4px', 
           minWidth: 0,
-          justifyContent: 'center' 
+          justifyContent: isSuperSlim ? 'center' : 'center' 
         }}>
           {/* Status with Spotify Icon */}
+          {!isSuperSlim && (
           <div style={{ 
             display: 'flex', 
             alignItems: 'center',
@@ -159,6 +162,7 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
               {status}
             </span>
           </div>
+          )}
           
           {/* Title */}
           <div style={{ 
@@ -187,6 +191,7 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
           </div>
            
           {/* Progress Bar */}
+          {!isSuperSlim && (
           <div style={{ 
             display: 'flex', 
             width: '100%', 
@@ -203,8 +208,10 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
               borderRadius: '4px',
             }} />
           </div>
+          )}
           
           {/* Time */}
+          {!isSuperSlim && (
           <div style={{ 
             display: 'flex', 
             flexDirection: 'row', 
@@ -217,6 +224,7 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
             <span>{formatTime(currentMin, currentSec)}</span>
             <span>{formatTime(totalMin, totalSec)}</span>
           </div>
+          )}
         </div>
     </div>
   );

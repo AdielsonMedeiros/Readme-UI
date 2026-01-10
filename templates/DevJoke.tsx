@@ -4,6 +4,8 @@ export interface DevJokeProps {
   joke?: string;
   punchline?: string;
   theme?: 'dark' | 'light';
+  width?: number;
+  height?: number;
 }
 
 const defaultJokes = [
@@ -18,8 +20,23 @@ const defaultJokes = [
 export const DevJoke: React.FC<DevJokeProps> = ({
   joke,
   punchline,
-  theme = 'dark'
+  theme = 'dark',
+  width,
+  height
 }) => {
+  const isTiny = (width && width < 300) || (height && height < 180);
+  const isSmall = !isTiny && ((width && width < 450) || (height && height < 250));
+  
+  const extPadding = isTiny ? 8 : 24;
+  const intPadding = isTiny ? 12 : 28;
+  const headerGap = isTiny ? 6 : 10;
+  const headerMb = isTiny ? 8 : 20;
+  const jokeMb = isTiny ? 8 : 16;
+  
+  const emojiSize = isTiny ? 20 : 28;
+  const labelSize = isTiny ? 10 : 14;
+  const jokeSize = isTiny ? 14 : 18;
+  const punchSize = isTiny ? 12 : 16;
   const isDark = theme === 'dark';
   const bgColor = isDark ? '#0d1117' : '#ffffff';
   const textColor = isDark ? '#e6edf3' : '#24292f';
@@ -42,7 +59,7 @@ export const DevJoke: React.FC<DevJokeProps> = ({
         justifyContent: 'center',
         backgroundColor: bgColor,
         fontFamily: 'Instrument Sans, sans-serif',
-        padding: '24px',
+        padding: `${extPadding}px`,
         overflow: 'hidden'
       }}
     >
@@ -51,7 +68,7 @@ export const DevJoke: React.FC<DevJokeProps> = ({
           display: 'flex',
           flexDirection: 'column',
           width: '100%',
-          padding: '28px',
+          padding: `${intPadding}px`,
           backgroundColor: isDark ? '#161b22' : '#f6f8fa',
           border: `1px solid ${borderColor}`,
           borderRadius: '16px',
@@ -62,20 +79,22 @@ export const DevJoke: React.FC<DevJokeProps> = ({
         }}
       >
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-          <span style={{ fontSize: '28px' }}>😂</span>
-          <span style={{ fontSize: '14px', fontWeight: 600, color: accentColor, textTransform: 'uppercase', letterSpacing: '1px' }}>
-            Dev Joke
-          </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: `${headerGap}px`, marginBottom: `${headerMb}px` }}>
+          <span style={{ fontSize: `${emojiSize}px` }}>😂</span>
+          {!isTiny && (
+            <span style={{ fontSize: `${labelSize}px`, fontWeight: 600, color: accentColor, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Dev Joke
+            </span>
+          )}
         </div>
 
         {/* Joke */}
         <div style={{
           display: 'flex',
-          fontSize: '18px',
+          fontSize: `${jokeSize}px`,
           fontWeight: 600,
           color: textColor,
-          marginBottom: '16px',
+          marginBottom: `${jokeMb}px`,
           lineHeight: 1.5,
         }}>
           {selectedJoke}
@@ -84,10 +103,10 @@ export const DevJoke: React.FC<DevJokeProps> = ({
         {/* Punchline */}
         <div style={{
           display: 'flex',
-          fontSize: '16px',
+          fontSize: `${punchSize}px`,
           fontStyle: 'italic',
           color: secondaryText,
-          paddingLeft: '16px',
+          paddingLeft: isTiny ? '8px' : '16px',
           borderLeft: `3px solid ${accentColor}`,
         }}>
           {selectedPunchline}

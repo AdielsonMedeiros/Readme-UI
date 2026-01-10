@@ -4,13 +4,25 @@ export interface TechStackProps {
   skills?: string; // Comma separated: react,typescript,docker
   theme?: 'dark' | 'light';
   title?: string;
+  width?: number;
+  height?: number;
 }
 
 export const TechStack: React.FC<TechStackProps> = ({
   skills = "react,typescript,nextdotjs,tailwindcss,nodedotjs,docker",
   theme = 'dark',
-  title
+  title,
+  width,
+  height
 }) => {
+  const isTiny = (width && width < 300) || (height && height < 150);
+  const isSmall = !isTiny && ((width && width < 500) || (height && height < 300));
+  
+  const containerPadding = isTiny ? 8 : (isSmall ? 16 : 32);
+  const cardSize = isTiny ? 40 : (isSmall ? 80 : 100);
+  const iconSize = isTiny ? 24 : (isSmall ? 32 : 48);
+  const fontSize = isTiny ? 0 : 12; // 0 effectively hides it or use display none logic
+  
   const isDark = theme === 'dark';
   const bgColor = isDark ? '#0d1117' : '#ffffff';
   const textColor = isDark ? '#c9d1d9' : '#24292f';
@@ -35,7 +47,7 @@ export const TechStack: React.FC<TechStackProps> = ({
           display: 'flex',
           flexDirection: 'column',
           width: '100%',
-          padding: '32px',
+          padding: `${containerPadding}px`,
           backgroundColor: bgColor,
           border: `1px solid ${borderColor}`,
           borderRadius: '16px',
@@ -44,8 +56,8 @@ export const TechStack: React.FC<TechStackProps> = ({
           overflow: 'hidden'
         }}
       >
-        {title && (
-            <div style={{ display: 'flex', fontSize: '24px', fontWeight: 700, marginBottom: '24px', width: '100%', justifyContent: 'center' }}>
+        {title && !isTiny && (
+            <div style={{ display: 'flex', fontSize: isSmall ? '18px' : '24px', fontWeight: 700, marginBottom: isSmall ? '12px' : '24px', width: '100%', justifyContent: 'center' }}>
             {title}
             </div>
         )}
@@ -59,12 +71,12 @@ export const TechStack: React.FC<TechStackProps> = ({
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    padding: '16px',
+                    padding: isTiny ? '4px' : '16px',
                     backgroundColor: isDark ? '#161b22' : '#f6f8fa',
                     border: `1px solid ${borderColor}`,
-                    borderRadius: '12px',
-                    width: '100px',
-                    height: '100px'
+                    borderRadius: isTiny ? '8px' : '12px',
+                    width: `${cardSize}px`,
+                    height: `${cardSize}px`
                 }}
             >
                 {/* 
@@ -75,13 +87,15 @@ export const TechStack: React.FC<TechStackProps> = ({
                 */}
                 <img 
                     src={`https://cdn.simpleicons.org/${skill}`} 
-                    width={48} 
-                    height={48} 
+                    width={iconSize} 
+                    height={iconSize} 
                     alt={skill}
                 />
-                <span style={{ marginTop: '12px', fontSize: '12px', fontWeight: 500, textTransform: 'capitalize', color: isDark ? '#8b949e' : '#586069' }}>
-                    {skill.replace('dot', '.')}
-                </span>
+                {!isTiny && (
+                    <span style={{ marginTop: isSmall ? '8px' : '12px', fontSize: `${fontSize}px`, fontWeight: 500, textTransform: 'capitalize', color: isDark ? '#8b949e' : '#586069' }}>
+                        {skill.replace('dot', '.')}
+                    </span>
+                )}
             </div>
           ))}
         </div>
