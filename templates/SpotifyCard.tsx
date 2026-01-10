@@ -77,8 +77,9 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
-          width: '100px',
-          height: '100px',
+          height: '100%',
+          aspectRatio: '1',
+          maxHeight: '100px',
           borderRadius: '8px',
           overflow: 'hidden',
           boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
@@ -89,8 +90,6 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
             <img
               src={coverUrl}
               alt="Album Art"
-              width={100}
-              height={100}
               style={{
                 objectFit: 'cover',
                 width: '100%',

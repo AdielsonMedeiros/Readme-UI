@@ -47,8 +47,9 @@ export const GoodreadsCard: React.FC<GoodreadsCardProps> = ({
             {/* Book Cover */}
             <div style={{ 
                 display: 'flex',
-                width: '100px', 
-                height: '150px', 
+                height: '100%',
+                maxHeight: '150px',
+                aspectRatio: '2/3',
                 borderRadius: '4px', 
                 overflow: 'hidden', 
                 boxShadow: '0 8px 16px rgba(0,0,0,0.3)', 
@@ -57,7 +58,7 @@ export const GoodreadsCard: React.FC<GoodreadsCardProps> = ({
                 flexShrink: 0,
                 border: '1px solid rgba(255,255,255,0.1)'
             }}>
-                <img src={coverUrl} width="100" height="150" style={{ objectFit: 'cover' }} /> 
+                <img src={coverUrl} style={{ objectFit: 'cover', width: '100%', height: '100%' }} /> 
             </div>
 
             {/* Info */}
