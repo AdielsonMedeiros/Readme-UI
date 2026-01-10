@@ -1053,14 +1053,14 @@ export async function GET(req: NextRequest) {
                          // Some CDNs might return a redirect or HTML on error
                          return;
                      }
-                     // Use Buffer for reliable base64 encoding in Node.js env
                      const base64 = Buffer.from(svgContent).toString('base64');
+                     // Use original skill key for frontend mapping
                      iconMap[skill] = `data:image/svg+xml;base64,${base64}`;
                 }
             }));
             
             props.iconMap = iconMap;
-        } catch (e) { console.error('Stack Icon Fetch Error', e); }
+        } catch (e) { console.error('Stack Icon Setup Error', e); }
     }
 
     // --- Handler: 3D Activity Graph ---
