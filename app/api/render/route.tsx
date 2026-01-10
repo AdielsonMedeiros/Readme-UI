@@ -1,3 +1,4 @@
+import { popularIcons } from '@/lib/icons';
 import { templateRegistry } from '@/lib/registry';
 import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
