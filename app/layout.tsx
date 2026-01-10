@@ -13,8 +13,39 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Readme-UI",
-  description: "Dynamic widgets for your GitHub Profile README",
+  title: {
+    default: "GitRuby - Dynamic GitHub README Widgets",
+    template: "%s | GitRuby"
+  },
+  description: "Supercharge your GitHub Profile with dynamic, real-time widgets. Add Spotify, WakaTime, LeetCode stats, and more to your README in seconds.",
+  keywords: ["github", "readme", "widgets", "profile", "generator", "spotify", "wakatime", "leetcode", "dynamic"],
+  authors: [{ name: "Adielson Medeiros", url: "https://github.com/AdielsonMedeiros" }],
+  creator: "Adielson Medeiros",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://gitruby.vercel.app", // Assuming Vercel deployment, editable later
+    title: "GitRuby - Dynamic GitHub README Widgets",
+    description: "Create stunning, dynamic widgets for your GitHub profile. Spotify playing, WakaTime stats, and more.",
+    siteName: "GitRuby",
+    images: [
+      {
+        url: "/og-image.png", // We should create this or use a generic one
+        width: 1200,
+        height: 630,
+        alt: "GitRuby Preview",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GitRuby - Dynamic GitHub README Widgets",
+    description: "Make your GitHub Profile standout with dynamic animated widgets.",
+    creator: "@AdielsonMedeiros", // Placeholder if valid
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
