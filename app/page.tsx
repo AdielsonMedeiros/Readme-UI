@@ -186,7 +186,29 @@ export default function Home() {
                 <div className="space-y-4">
                     <div className="space-y-4">
                         <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider block">Choose Template</label>
-                        <div className="grid grid-cols-3 gap-3">
+                        
+                        {/* Selected Template Header */}
+                        {params.template && (
+                             <div className="flex items-center justify-between p-4 bg-neutral-800 rounded-xl border border-neutral-700 animate-in fade-in slide-in-from-top-4 duration-300">
+                                 <div className="flex items-center gap-3">
+                                     <div className="w-8 h-8 bg-neutral-700 rounded-full flex items-center justify-center">
+                                         <Layers className="w-4 h-4 text-white" />
+                                     </div>
+                                     <div>
+                                         <p className="text-xs text-neutral-400 uppercase tracking-wider font-semibold">Selected Template</p>
+                                         <p className="text-white font-bold capitalize">{params.template}</p>
+                                     </div>
+                                 </div>
+                                 <button 
+                                     onClick={() => setParams({ ...params, template: '' })}
+                                     className="text-xs font-medium text-neutral-400 hover:text-white underline decoration-neutral-600 underline-offset-4 transition-colors"
+                                 >
+                                     Change
+                                 </button>
+                             </div>
+                        )}
+
+                        <div className={`grid grid-cols-3 gap-3 transition-all duration-500 ease-in-out overflow-hidden ${params.template ? 'max-h-0 opacity-0 pointer-events-none' : 'max-h-[800px] opacity-100'}`}>
                             <button
                                 onClick={() => setParams({ ...params, template: 'github', title: '' })}
                                 className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
