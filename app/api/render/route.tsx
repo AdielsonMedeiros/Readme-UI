@@ -1001,6 +1001,34 @@ export async function GET(req: NextRequest) {
         }
     }
 
+    // Stack Icons Pre-fetching
+    if (templateName === 'stack' && props.skills) {
+        try {
+            const skillList = String(props.skills).split(',').map(s => s.trim()).filter(Boolean);
+            const iconMap: Record<string, string> = {};
+
+            await Promise.all(skillList.map(async (skill) => {
+                try {
+                    // Try simpleicons CDN first
+                    const res = await fetch(`https://cdn.simpleicons.org/${skill}`);
+                    if (res.ok) {
+                        const svgText = await res.text();
+                        // Convert SVG to Base64 to ensure Satori renders it
+                        const base64 = btoa(svgText);
+                        iconMap[skill] = `data:image/svg+xml;base64,${base64}`;
+                    } else {
+                       // Fallback or ignore
+                       console.warn(`Failed to fetch icon for ${skill}`);
+                    }
+                } catch (err) {
+                    console.error(`Error fetching icon ${skill}`, err);
+                }
+            }));
+            
+            props.iconMap = iconMap;
+        } catch (e) { console.error('Stack Icon Fetch Error', e); }
+    }
+
     // --- Handler: 3D Activity Graph ---
     if (templateName === 'activity') {
         const username = props.username ? String(props.username) : 'AdielsonMedeiros';

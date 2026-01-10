@@ -7,6 +7,7 @@ export interface TechStackProps {
   width?: number;
   height?: number;
   animated?: boolean;
+  iconMap?: Record<string, string>;
 }
 
 export const TechStack: React.FC<TechStackProps> = ({
@@ -15,7 +16,8 @@ export const TechStack: React.FC<TechStackProps> = ({
   title,
   width,
   height,
-  animated = true
+  animated = true,
+  iconMap
 }) => {
   const isTiny = (width && width < 300) || (height && height < 150);
   const isSmall = !isTiny && ((width && width < 500) || (height && height < 300));
@@ -88,7 +90,7 @@ export const TechStack: React.FC<TechStackProps> = ({
             >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
-                    src={`https://cdn.simpleicons.org/${skill}`} 
+                    src={iconMap && iconMap[skill] ? iconMap[skill] : `https://cdn.simpleicons.org/${skill}`} 
                     width={iconSize} 
                     height={iconSize} 
                     alt={skill}
