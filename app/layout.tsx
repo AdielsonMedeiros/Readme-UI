@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://gitruby.vercel.app'), // Base URL for relative images
+  metadataBase: new URL('https://readme-ui-pi.vercel.app'), // Base URL for relative images
   title: {
     default: "Readme-UI - Dynamic GitHub README Widgets",
     template: "%s | Readme-UI"
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://gitruby.vercel.app", // Assuming Vercel deployment, editable later
+    url: "https://readme-ui-pi.vercel.app", // Actual Production URL
     title: "Readme-UI - Dynamic GitHub README Widgets",
     description: "Create stunning, dynamic widgets for your GitHub profile. Spotify playing, WakaTime stats, and more.",
     siteName: "Readme-UI",
