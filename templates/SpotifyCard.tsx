@@ -61,11 +61,11 @@ export const SpotifyCard: React.FC<SpotifyCardProps> = ({
         alignItems: 'center',
         width: '100%',
         height: '100%',
-        padding: '12px',
+        padding: '0', // No padding needed if transparent
         gap: '12px',
-        background: bgGradient,
-        border: `1px solid ${cardBorder}`,
-        borderRadius: '8px',
+        background: 'transparent',
+        border: 'none',
+        borderRadius: '0',
         color: textColor,
         fontFamily: 'Instrument Sans, sans-serif',
         overflow: 'hidden'
