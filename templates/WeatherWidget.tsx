@@ -32,6 +32,7 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({
         fontFamily: 'Instrument Sans, sans-serif',
         padding: '0', // Full bleed
         background: bgGradient,
+        overflow: 'hidden'
       }}
     >
       <div
@@ -43,6 +44,8 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '40px',
+          flexWrap: 'wrap',
+          gap: '20px'
         }}
       >
         {/* Left: Temp & City */}

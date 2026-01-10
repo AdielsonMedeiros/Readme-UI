@@ -28,6 +28,7 @@ export const TypingText: React.FC<TypingTextProps> = ({
         backgroundColor: bgColor,
         fontFamily: 'Instrument Sans, sans-serif',
         padding: '24px',
+        overflow: 'hidden'
       }}
     >
       <div

@@ -45,6 +45,7 @@ export const SocialLinks: React.FC<SocialLinksProps> = ({
         backgroundColor: bgColor,
         fontFamily: 'Instrument Sans, sans-serif',
         padding: '24px',
+        overflow: 'hidden'
       }}
     >
       <div
@@ -61,6 +62,8 @@ export const SocialLinks: React.FC<SocialLinksProps> = ({
           boxShadow: isDark 
             ? '0 8px 24px rgba(0,0,0,0.4)' 
             : '0 8px 24px rgba(0,0,0,0.1)',
+          flexWrap: 'wrap',
+          overflow: 'hidden'
         }}
       >
         {socials.map((social) => (

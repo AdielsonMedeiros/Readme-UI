@@ -60,7 +60,8 @@ export const LeetCodeStats: React.FC<LeetCodeStatsProps> = ({
       boxSizing: 'border-box',
       alignItems: 'center',
       justifyContent: 'space-between', // Changed structure slightly to accommodate header
-      position: 'relative'
+      position: 'relative',
+      overflow: 'hidden'
     }}>
         {/* LeetCode Logo / Watermark (Optional) */}
         <div style={{ position: 'absolute', top: '15px', right: '15px', display: 'flex', opacity: 0.2 }}>

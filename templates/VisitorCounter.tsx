@@ -32,6 +32,7 @@ export const VisitorCounter: React.FC<VisitorCounterProps> = ({
         backgroundColor: bgColor,
         fontFamily: 'Instrument Sans, sans-serif',
         padding: '24px',
+        overflow: 'hidden'
       }}
     >
       <div

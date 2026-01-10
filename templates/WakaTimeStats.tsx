@@ -37,7 +37,8 @@ export const WakaTimeStats: React.FC<WakaTimeStatsProps> = ({
       fontFamily: 'Segoe UI, Ubuntu, sans-serif',
       padding: '20px',
       boxSizing: 'border-box',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      overflow: 'hidden'
     }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>

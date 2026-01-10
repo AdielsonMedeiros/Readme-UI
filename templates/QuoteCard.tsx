@@ -40,6 +40,7 @@ export const QuoteCard: React.FC<QuoteCardProps> = ({
         backgroundColor: bgColor,
         fontFamily: 'Instrument Sans, sans-serif',
         padding: '32px',
+        overflow: 'hidden'
       }}
     >
       <div
@@ -55,6 +56,7 @@ export const QuoteCard: React.FC<QuoteCardProps> = ({
             ? '0 16px 32px rgba(0,0,0,0.4)' 
             : '0 16px 32px rgba(0,0,0,0.1)',
           position: 'relative',
+          overflow: 'hidden'
         }}
       >
         {/* Quote Icon */}

@@ -43,6 +43,7 @@ export const DevJoke: React.FC<DevJokeProps> = ({
         backgroundColor: bgColor,
         fontFamily: 'Instrument Sans, sans-serif',
         padding: '24px',
+        overflow: 'hidden'
       }}
     >
       <div
@@ -57,6 +58,7 @@ export const DevJoke: React.FC<DevJokeProps> = ({
           boxShadow: isDark 
             ? '0 8px 24px rgba(0,0,0,0.4)' 
             : '0 8px 24px rgba(0,0,0,0.1)',
+          overflow: 'hidden'
         }}
       >
         {/* Header */}

@@ -32,7 +32,8 @@ export const MusicVisualizer: React.FC<MusicVisualizerProps> = ({
         gap: '20px',
         borderRadius: '12px',
         boxSizing: 'border-box',
-        alignItems: 'center'
+        alignItems: 'center',
+        overflow: 'hidden'
       }}
     >
         {/* Cover Art Placeholder */}
