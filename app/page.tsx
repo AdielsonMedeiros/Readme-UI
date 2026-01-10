@@ -406,7 +406,7 @@ export default function Home() {
                                 }`}
                             >
                                 <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'leetcode' ? 'bg-yellow-500/20 text-yellow-500' : 'bg-neutral-800 text-neutral-400'}`}>
-                                <span className={`text-lg ${params.template === 'leetcode' ? '' : 'grayscale opacity-50'}`}>🏆</span>
+                                <span className={`text-lg ${params.template === 'leetcode' ? '' : 'grayscale opacity-50'}`}>💩</span>
                                 </div>
                                 <span className={`text-xs font-medium ${params.template === 'leetcode' ? 'text-white' : 'text-neutral-400'}`}>LeetCode</span>
                             </button>
