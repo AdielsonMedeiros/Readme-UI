@@ -58,20 +58,7 @@ export const TechStack: React.FC<TechStackProps> = ({
           overflow: 'hidden'
         }}
       >
-        {animated && (
-            <style>
-            {`
-                @keyframes fadeIn {
-                    from { opacity: 0; transform: translateY(10px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-                .icon-fade {
-                    opacity: 0;
-                    animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-                }
-            `}
-            </style>
-        )}
+
         {title && !isTiny && (
             <div style={{ display: 'flex', fontSize: isSmall ? '18px' : '24px', fontWeight: 700, marginBottom: isSmall ? '12px' : '24px', width: '100%', justifyContent: 'center' }}>
             {title}
