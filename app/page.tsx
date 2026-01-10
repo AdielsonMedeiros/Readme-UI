@@ -844,7 +844,10 @@ export default function Home() {
                                 <input type="text" name="author" value={params.author || ''} onChange={handleChange} placeholder="Author" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-700 outline-none transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Progress (%)</label>
+                                <div className="flex justify-between">
+                                    <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Progress</label>
+                                    <span className="text-xs font-mono text-amber-500">{params.progress || 0}%</span>
+                                </div>
                                 <input 
                                     type="range" 
                                     name="progress"
@@ -852,7 +855,7 @@ export default function Home() {
                                     max="100"
                                     value={params.progress || 0}
                                     onChange={(e) => setParams({...params, progress: Number(e.target.value)})}
-                                    className="w-full h-2 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-amber-700"
+                                    className="w-full h-2 bg-neutral-700 rounded-lg appearance-none cursor-pointer accent-amber-500 hover:accent-amber-400 transition-all"
                                 />
                             </div>
                              <div className="space-y-2">
