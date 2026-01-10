@@ -244,7 +244,7 @@ export default function Home() {
                             </button>
 
                             <button
-                                onClick={() => setParams({ ...params, template: 'spotify', title: 'Never Gonna Give You Up', artist: 'Rick Astley' })}
+                                onClick={() => setParams({ ...params, template: 'spotify', title: 'Never Gonna Give You Up', artist: 'Rick Astley', width: 480, height: 160 })}
                                 className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
                                     params.template === 'spotify' 
                                     ? 'bg-neutral-800 border-green-500 ring-1 ring-green-500' 
@@ -957,7 +957,7 @@ export default function Home() {
 
         {/* Preview Area */}
         <div className="w-full lg:w-2/3 flex flex-col gap-6">
-             <div className="bg-neutral-900/50 border border-neutral-800 rounded-2xl p-8 shadow-2xl flex flex-col items-center justify-center min-h-[400px] relative overflow-hidden backdrop-blur-sm">
+             <div className="bg-neutral-900/50 border border-neutral-800 rounded-2xl p-8 shadow-2xl flex flex-col items-center justify-center min-h-[250px] relative overflow-hidden backdrop-blur-sm">
                 <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10 pointer-events-none"></div>
                 
                 {/* Loading State */}
