@@ -44,9 +44,6 @@ export const metadata: Metadata = {
     description: "Make your GitHub Profile standout with dynamic animated widgets.",
     creator: "@AdielsonMedeiros", // Placeholder if valid
   },
-  icons: {
-    icon: "/favicon.ico",
-  },
 };
 
 export default function RootLayout({
