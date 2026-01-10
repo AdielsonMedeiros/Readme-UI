@@ -37,11 +37,12 @@ export const GoodreadsCard: React.FC<GoodreadsCardProps> = ({
       filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.2))'
     }}>
         {/* Background Texture/Gradient */}
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `linear-gradient(135deg, ${bgColor} 0%, ${isDark ? '#1a0f0a' : '#e6dabb'} 100%)`, zIndex: 0 }} />
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `linear-gradient(135deg, ${bgColor} 0%, ${isDark ? '#1a0f0a' : '#e6dabb'} 100%)`, zIndex: '0' }} />
 
-        <div style={{ display: 'flex', padding: '24px', width: '100%', zIndex: 1, alignItems: 'center' }}>
+        <div style={{ display: 'flex', padding: '24px', width: '100%', zIndex: '1', alignItems: 'center' }}>
             {/* Book Cover */}
             <div style={{ 
+                display: 'flex',
                 width: '100px', 
                 height: '150px', 
                 borderRadius: '4px', 
@@ -52,7 +53,7 @@ export const GoodreadsCard: React.FC<GoodreadsCardProps> = ({
                 flexShrink: 0,
                 border: '1px solid rgba(255,255,255,0.1)'
             }}>
-                <img src={coverUrl} width={100} height={150} style={{ objectFit: 'cover' }} /> 
+                <img src={coverUrl} width="100" height="150" style={{ objectFit: 'cover' }} /> 
             </div>
 
             {/* Info */}
@@ -76,7 +77,7 @@ export const GoodreadsCard: React.FC<GoodreadsCardProps> = ({
                          <span style={{ fontSize: '12px', color: secondaryText }}>Progress</span>
                      </div>
                      <div style={{ display: 'flex', width: '100%', height: '6px', backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)', borderRadius: '3px' }}>
-                         <div style={{ width: `${progress}%`, height: '100%', backgroundColor: accentColor, borderRadius: '3px' }} />
+                         <div style={{ display: 'flex', width: `${progress}%`, height: '100%', backgroundColor: accentColor, borderRadius: '3px' }} />
                      </div>
                 </div>
             </div>
