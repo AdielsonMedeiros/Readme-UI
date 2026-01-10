@@ -1019,8 +1019,45 @@ export async function GET(req: NextRequest) {
                      .replace(/\./g, 'dot'); 
                 
                 let svgContent = '';
+
+                // 0. Try Local Map First (Instant & Robust)
+                // Need to import popularIcons, but for now we inline or require.
+                // Since this is a route file, dynamic require or importing at top level is best.
+                // Assuming we can't easily add top-level import in this edit step, we'll try to use a dynamic import or assuming it will be imported.
+                // Wait, I should add the import line at top of file separately? 
+                // No, I can't easily access top of file now.
+                // I will add the logic here assuming I can't import easily, but I CAN using require() if standard Node.
+                // Or better: I will replace the logic and rely on the fallback if local missing.
+                
+                // Ideally: import { popularIcons } from '@/lib/icons';
+                // But let's try to match slug against known ones if I can't import.
+                // Actually, I can just write the logic and you add `import { popularIcons } from '@/lib/icons'` at the top in next step?
+                // Or I can use `require` inside the function if it's Node environment.
+                
+                // Let's assume I will add `import` later.
+                // For this step, I'll modify the loop.
+                
+                // CHECK LOCAL MAP
+                // Note: I will add the import in a separate tool call to be safe or use full file view.
+                // But to make it work NOW in the block:
+                
+                // ... logic to check popularIcons[slug] ...
+                
+                // Wait, I need to know if I can access popularIcons.
+                // I will update the code to use it, and then I must add the import.
+                
+                // Actual implementation:
                 try {
-                    const headers = { 'User-Agent': 'Mozilla/5.0 (compatible; Readme-UI)' };
+                     const { popularIcons } = await import('@/lib/icons');
+                     if (popularIcons[slug]) {
+                         svgContent = popularIcons[slug];
+                     }
+                } catch (e) { /* ignore import error */ }
+
+                if (!svgContent) {
+                    try {
+                        const headers = { 'User-Agent': 'Mozilla/5.0 (compatible; Readme-UI)' };
+                        // ... existing fetch logic ...
                     
                     // 1. Try SimpleIcons CDN (Preferred - Colors)
                     let res = await fetch(`https://cdn.simpleicons.org/${slug}`, { headers });
@@ -1042,7 +1079,8 @@ export async function GET(req: NextRequest) {
                 } catch (err) {
                     console.error(`[Stack] Error ${slug}`, err);
                 }
-
+                }
+            
                 if (svgContent && svgContent.includes('<svg')) {
                      const base64 = Buffer.from(svgContent).toString('base64');
                      // Use original skill key for frontend mapping
