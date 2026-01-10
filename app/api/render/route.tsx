@@ -1049,15 +1049,7 @@ export async function GET(req: NextRequest) {
                      iconMap[skill] = `data:image/svg+xml;base64,${base64}`;
                 }
             }));
-                     if (!svgContent.includes('<svg')) {
-                         // Some CDNs might return a redirect or HTML on error
-                         return;
-                     }
-                     const base64 = Buffer.from(svgContent).toString('base64');
-                     // Use original skill key for frontend mapping
-                     iconMap[skill] = `data:image/svg+xml;base64,${base64}`;
-                }
-            }));
+
             
             props.iconMap = iconMap;
         } catch (e) { console.error('Stack Icon Setup Error', e); }
