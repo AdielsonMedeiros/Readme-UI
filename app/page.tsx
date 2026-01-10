@@ -95,7 +95,10 @@ export default function Home() {
     const currentTemplate = params.template;
     if (!currentTemplate) return;
 
-    const keysToKeep = relevantKeys[currentTemplate] || Object.keys(params);
+    // Always include width and height if they exist, plus the template-specific keys
+    const baseKeys = ['width', 'height'];
+    const specificKeys = relevantKeys[currentTemplate] || Object.keys(params);
+    const keysToKeep = Array.from(new Set([...baseKeys, ...specificKeys]));
     
     const filteredParams: any = {};
     keysToKeep.forEach(key => {
@@ -103,6 +106,9 @@ export default function Home() {
             filteredParams[key] = params[key];
         }
     });
+
+    // Add random seed to force refresh
+    filteredParams['_t'] = Date.now();
 
     const query = new URLSearchParams(filteredParams).toString();
     setUrl(`${baseUrl}/api/render?${query}`);
