@@ -1063,7 +1063,7 @@ export default function Home() {
                 </button>
                 
                 <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                    🛠️ How to Configure
+                    How to Configure
                 </h2>
                 
                 <div className="space-y-6 text-neutral-300 max-h-[60vh] overflow-y-auto pr-2">
@@ -1075,7 +1075,7 @@ export default function Home() {
 
                     {/* Goodreads Guide */}
                     <div className="space-y-2">
-                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2 flex items-center gap-2">📚 Goodreads Auto-Updates</h3>
+                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2 flex items-center gap-2">Goodreads Auto-Updates</h3>
                         <p className="text-sm text-neutral-400">To have your book update automatically:</p>
                         <ol className="list-decimal list-inside text-sm text-neutral-400 space-y-1 ml-1">
                             <li>Go to your <a href="https://www.goodreads.com" target="_blank" className="text-green-400 hover:underline">Goodreads Profile</a>.</li>
@@ -1086,7 +1086,7 @@ export default function Home() {
 
                     {/* WakaTime Guide */}
                     <div className="space-y-2">
-                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2 flex items-center gap-2">⌚ WakaTime Stats</h3>
+                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2 flex items-center gap-2">WakaTime Stats</h3>
                         <ol className="list-decimal list-inside text-sm text-neutral-400 space-y-1 ml-1">
                             <li>Log in to WakaTime and go to <b>Settings &gt; Profile</b>.</li>
                             <li>Check <b>"Display coding activity publicly"</b>.</li>
@@ -1097,7 +1097,7 @@ export default function Home() {
 
                     {/* Spotify Guide */}
                     <div className="space-y-2">
-                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2 flex items-center gap-2">🎵 Spotify</h3>
+                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2 flex items-center gap-2">Spotify</h3>
                         <p className="text-sm text-neutral-400">
                              For the Spotify widget to show "Now Playing" in real-time, you currently need to set the song manually in this generator. 
                              <br/><span className="italic text-xs opacity-70">(Full OAuth integration coming soon!)</span>
