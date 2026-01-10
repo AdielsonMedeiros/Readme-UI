@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL('https://gitruby.vercel.app'), // Base URL for relative images
   title: {
-    default: "GitRuby - Dynamic GitHub README Widgets",
-    template: "%s | GitRuby"
+    default: "Readme-UI - Dynamic GitHub README Widgets",
+    template: "%s | Readme-UI"
   },
   description: "Supercharge your GitHub Profile with dynamic, real-time widgets. Add Spotify, WakaTime, LeetCode stats, and more to your README in seconds.",
   keywords: ["github", "readme", "widgets", "profile", "generator", "spotify", "wakatime", "leetcode", "dynamic"],
@@ -26,21 +26,21 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://gitruby.vercel.app", // Assuming Vercel deployment, editable later
-    title: "GitRuby - Dynamic GitHub README Widgets",
+    title: "Readme-UI - Dynamic GitHub README Widgets",
     description: "Create stunning, dynamic widgets for your GitHub profile. Spotify playing, WakaTime stats, and more.",
-    siteName: "GitRuby",
+    siteName: "Readme-UI",
     images: [
       {
         url: "/og-image.png", // We should create this or use a generic one
         width: 1200,
         height: 630,
-        alt: "GitRuby Preview",
+        alt: "Readme-UI Preview",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "GitRuby - Dynamic GitHub README Widgets",
+    title: "Readme-UI - Dynamic GitHub README Widgets",
     description: "Make your GitHub Profile standout with dynamic animated widgets.",
     creator: "@AdielsonMedeiros", // Placeholder if valid
   },
