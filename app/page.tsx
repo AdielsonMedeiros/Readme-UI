@@ -1001,32 +1001,45 @@ export default function Home() {
                 </button>
                 
                 <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                    🚀 Quick Start Guide
+                    🛠️ How to Configure
                 </h2>
                 
-                <div className="space-y-6 text-neutral-300">
-                    <div className="flex gap-4">
-                        <div className="w-8 h-8 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center shrink-0 font-bold">1</div>
-                        <div>
-                            <h3 className="font-bold text-white mb-1">Choose a Template</h3>
-                            <p className="text-sm text-neutral-400">Pick a widget from the configuration panel on the left (Spotify, 3D Graph, etc).</p>
-                        </div>
+                <div className="space-y-6 text-neutral-300 max-h-[60vh] overflow-y-auto pr-2">
+                    {/* Basic Steps */}
+                    <div className="space-y-2">
+                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2">1. Quick Start</h3>
+                        <p className="text-sm text-neutral-400">Select a template on the left, customize the fields, and click <b>Copy Markdown</b>. Paste the code into your GitHub Profile README.</p>
                     </div>
 
-                     <div className="flex gap-4">
-                        <div className="w-8 h-8 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center shrink-0 font-bold">2</div>
-                        <div>
-                            <h3 className="font-bold text-white mb-1">Customize It</h3>
-                            <p className="text-sm text-neutral-400">Enter your username, change themes, or adjust colors until it looks perfect.</p>
-                        </div>
+                    {/* Goodreads Guide */}
+                    <div className="space-y-2">
+                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2 flex items-center gap-2">📚 Goodreads Auto-Updates</h3>
+                        <p className="text-sm text-neutral-400">To have your book update automatically:</p>
+                        <ol className="list-decimal list-inside text-sm text-neutral-400 space-y-1 ml-1">
+                            <li>Go to your <a href="https://www.goodreads.com" target="_blank" className="text-green-400 hover:underline">Goodreads Profile</a>.</li>
+                            <li>Look at the URL: <code>goodreads.com/user/show/<b>123456</b>-name</code>.</li>
+                            <li>Copy the number (<b>123456</b>) and paste it into the <b>Goodreads User ID</b> field.</li>
+                        </ol>
                     </div>
 
-                     <div className="flex gap-4">
-                        <div className="w-8 h-8 rounded-full bg-purple-500/20 text-purple-500 flex items-center justify-center shrink-0 font-bold">3</div>
-                        <div>
-                            <h3 className="font-bold text-white mb-1">Copy & Paste</h3>
-                            <p className="text-sm text-neutral-400">Click the <span className="inline-flex items-center gap-1 bg-neutral-800 px-2 py-0.5 rounded text-xs text-white"><Copy className="w-3 h-3"/> Copy Markdown</span> button and paste it into your GitHub Profile README.</p>
-                        </div>
+                    {/* WakaTime Guide */}
+                    <div className="space-y-2">
+                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2 flex items-center gap-2">⌚ WakaTime Stats</h3>
+                        <ol className="list-decimal list-inside text-sm text-neutral-400 space-y-1 ml-1">
+                            <li>Log in to WakaTime and go to <b>Settings &gt; Profile</b>.</li>
+                            <li>Check <b>"Display coding activity publicly"</b>.</li>
+                            <li>Change "Readable by" to <b>Everyone</b> for "Languages".</li>
+                            <li>Copy the <b>JSON URL</b> provided there and paste it into the widget.</li>
+                        </ol>
+                    </div>
+
+                    {/* Spotify Guide */}
+                    <div className="space-y-2">
+                        <h3 className="font-bold text-white text-lg border-b border-neutral-800 pb-2 flex items-center gap-2">🎵 Spotify</h3>
+                        <p className="text-sm text-neutral-400">
+                             For the Spotify widget to show "Now Playing" in real-time, you currently need to set the song manually in this generator. 
+                             <br/><span className="italic text-xs opacity-70">(Full OAuth integration coming soon!)</span>
+                        </p>
                     </div>
                 </div>
 
