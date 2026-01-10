@@ -964,6 +964,8 @@ export default function Home() {
                      </button>
                     
         </div>
+            </div>
+        </div>
 
         {/* Preview Area */}
         <div className="w-full lg:w-2/3 flex flex-col gap-6">
@@ -978,6 +980,19 @@ export default function Home() {
                     </div>
                 )}
                 
+                {/* Empty State */}
+                {!url && !loading && (
+                    <div className="flex flex-col items-center gap-4 text-center z-10 p-6">
+                        <div className="w-16 h-16 bg-neutral-800 rounded-full flex items-center justify-center mb-2">
+                            <Layers className="w-8 h-8 text-neutral-600" />
+                        </div>
+                        <h3 className="text-xl font-bold text-white">Ready to Create?</h3>
+                        <p className="text-neutral-400 max-w-md">
+                            Select a template from the sidebar, customize your settings, and click <b>Generate Widgets</b> to see the magic happen!
+                        </p>
+                    </div>
+                )}
+
                 {/* Image Preview */}
                 {url && (
                     <img 
@@ -985,7 +1000,6 @@ export default function Home() {
                         className={`rounded-xl shadow-2xl max-w-full transition-all duration-300 hover:scale-[1.01] ${loading ? 'opacity-0 absolute' : 'opacity-100'}`}
                         alt="Generated Widget"
                         key={url}
-                        onLoadStart={() => setLoading(true)}
                         onLoad={() => setLoading(false)}
                         onError={() => setLoading(false)}
                     />
