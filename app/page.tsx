@@ -89,7 +89,10 @@ export default function Home() {
         activity: ['template', 'username', 'theme'],
         snake: ['template', 'username', 'speed', 'color', 'theme'], // Include speed/color for future proofing
         visitors: ['template', 'username', 'count', 'label', 'theme'],
-        leetcode: ['template', 'username', 'theme']
+        leetcode: ['template', 'username', 'theme'],
+        wakatime: ['template', 'theme', 'api_url'],
+        blog: ['template', 'username', 'theme'],
+        goodreads: ['template', 'title', 'progress', 'coverUrl', 'theme', 'author', 'feedUrl']
     };
 
     const currentTemplate = debouncedParams.template || 'spotify';
@@ -404,9 +407,51 @@ export default function Home() {
                                 }`}
                             >
                                 <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'leetcode' ? 'bg-yellow-500/20 text-yellow-500' : 'bg-neutral-800 text-neutral-400'}`}>
-                                    <span className={`text-lg ${params.template === 'leetcode' ? '' : 'grayscale opacity-50'}`}>🏆</span>
+                                <span className={`text-lg ${params.template === 'leetcode' ? '' : 'grayscale opacity-50'}`}>🏆</span>
                                 </div>
                                 <span className={`text-xs font-medium ${params.template === 'leetcode' ? 'text-white' : 'text-neutral-400'}`}>LeetCode</span>
+                            </button>
+
+                            <button
+                                onClick={() => setParams({ ...params, template: 'wakatime', api_url: '' })}
+                                className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                                    params.template === 'wakatime' 
+                                    ? 'bg-neutral-800 border-blue-600 ring-1 ring-blue-600' 
+                                    : 'bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700'
+                                }`}
+                            >
+                                <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'wakatime' ? 'bg-blue-600/20 text-blue-600' : 'bg-neutral-800 text-neutral-400'}`}>
+                                    <span className={`text-lg ${params.template === 'wakatime' ? '' : 'grayscale opacity-50'}`}>⌚</span>
+                                </div>
+                                <span className={`text-xs font-medium ${params.template === 'wakatime' ? 'text-white' : 'text-neutral-400'}`}>WakaTime</span>
+                            </button>
+
+                            <button
+                                onClick={() => setParams({ ...params, template: 'blog', username: 'adielsonmedeiros' })}
+                                className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                                    params.template === 'blog' 
+                                    ? 'bg-neutral-800 border-black ring-1 ring-white' 
+                                    : 'bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700'
+                                }`}
+                            >
+                                <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'blog' ? 'bg-white text-black' : 'bg-neutral-800 text-neutral-400'}`}>
+                                    <span className={`text-lg ${params.template === 'blog' ? '' : 'grayscale opacity-50'}`}>📝</span>
+                                </div>
+                                <span className={`text-xs font-medium ${params.template === 'blog' ? 'text-white' : 'text-neutral-400'}`}>Blog</span>
+                            </button>
+
+                            <button
+                                onClick={() => setParams({ ...params, template: 'goodreads', title: 'The Pragmatic Programmer', progress: 42 })}
+                                className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
+                                    params.template === 'goodreads' 
+                                    ? 'bg-neutral-800 border-amber-700 ring-1 ring-amber-700' 
+                                    : 'bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700'
+                                }`}
+                            >
+                                <div className={`w-7 h-7 rounded-full flex items-center justify-center ${params.template === 'goodreads' ? 'bg-amber-700/20 text-amber-700' : 'bg-neutral-800 text-neutral-400'}`}>
+                                    <span className={`text-lg ${params.template === 'goodreads' ? '' : 'grayscale opacity-50'}`}>📚</span>
+                                </div>
+                                <span className={`text-xs font-medium ${params.template === 'goodreads' ? 'text-white' : 'text-neutral-400'}`}>Goodreads</span>
                             </button>
 
                         </div>
@@ -767,6 +812,57 @@ export default function Home() {
                                 <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">LeetCode Username</label>
                                 <input type="text" name="username" value={params.username || ''} onChange={handleChange} placeholder="adielson" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-yellow-500 outline-none transition-all" />
                                 <p className="text-xs text-neutral-500">Fetches live stats from LeetCode API</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* WakaTime Stats Controls */}
+                    {params.template === 'wakatime' && (
+                        <div className="space-y-3">
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Public JSON URL (Optional)</label>
+                                <input type="text" name="api_url" value={params.api_url || ''} onChange={handleChange} placeholder="https://wakatime.com/share/@user/stats.json" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-600 outline-none transition-all" />
+                                <p className="text-xs text-neutral-500">Enable "Share coding activity" in WakaTime to get this.</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Blog Post Controls */}
+                    {params.template === 'blog' && (
+                        <div className="space-y-3">
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Dev.to Username</label>
+                                <input type="text" name="username" value={params.username || ''} onChange={handleChange} placeholder="ben" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-white outline-none transition-all" />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Goodreads Controls */}
+                    {params.template === 'goodreads' && (
+                        <div className="space-y-3">
+                             <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Book Title</label>
+                                <input type="text" name="title" value={params.title || ''} onChange={handleChange} placeholder="Title" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-700 outline-none transition-all" />
+                            </div>
+                             <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Author</label>
+                                <input type="text" name="author" value={params.author || ''} onChange={handleChange} placeholder="Author" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-700 outline-none transition-all" />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Progress (%)</label>
+                                <input 
+                                    type="range" 
+                                    name="progress"
+                                    min="0"
+                                    max="100"
+                                    value={params.progress || 0}
+                                    onChange={(e) => setParams({...params, progress: Number(e.target.value)})}
+                                    className="w-full h-2 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-amber-700"
+                                />
+                            </div>
+                             <div className="space-y-2">
+                                <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Cover URL (Optional)</label>
+                                <input type="text" name="coverUrl" value={params.coverUrl || ''} onChange={handleChange} placeholder="https://..." className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-700 outline-none transition-all" />
                             </div>
                         </div>
                     )}
