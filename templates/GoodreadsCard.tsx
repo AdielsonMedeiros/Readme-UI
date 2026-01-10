@@ -11,7 +11,7 @@ export interface GoodreadsCardProps {
 }
 
 export const GoodreadsCard: React.FC<GoodreadsCardProps> = ({
-  coverUrl = "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1544102229i/42983232.jpg", // Default placeholder
+  coverUrl = "https://placehold.co/100x150/png", // Reliable placeholder
   title = "The Pragmatic Programmer",
   author = "Andy Hunt",
   progress = 42,
@@ -37,9 +37,9 @@ export const GoodreadsCard: React.FC<GoodreadsCardProps> = ({
       filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.2))'
     }}>
         {/* Background Texture/Gradient */}
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `linear-gradient(135deg, ${bgColor} 0%, ${isDark ? '#1a0f0a' : '#e6dabb'} 100%)`, zIndex: '0' }} />
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: `linear-gradient(135deg, ${bgColor} 0%, ${isDark ? '#1a0f0a' : '#e6dabb'} 100%)`, zIndex: 0 }} />
 
-        <div style={{ display: 'flex', padding: '24px', width: '100%', zIndex: '1', alignItems: 'center' }}>
+        <div style={{ display: 'flex', padding: '24px', width: '100%', zIndex: 1, alignItems: 'center' }}>
             {/* Book Cover */}
             <div style={{ 
                 width: '100px', 
