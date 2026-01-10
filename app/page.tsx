@@ -843,20 +843,29 @@ export default function Home() {
                                 <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Author</label>
                                 <input type="text" name="author" value={params.author || ''} onChange={handleChange} placeholder="Author" className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-700 outline-none transition-all" />
                             </div>
-                            <div className="space-y-2">
-                                <div className="flex justify-between">
+                            <div className="space-y-3 pt-2">
+                                <div className="flex justify-between items-end">
                                     <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Progress</label>
-                                    <span className="text-xs font-mono text-amber-500">{params.progress || 0}%</span>
+                                    <div className="flex items-center gap-1 bg-neutral-800 px-2 py-1 rounded border border-neutral-700">
+                                        <span className="text-sm font-bold text-amber-500">{params.progress || 0}</span>
+                                        <span className="text-xs text-neutral-500">%</span>
+                                    </div>
                                 </div>
-                                <input 
-                                    type="range" 
-                                    name="progress"
-                                    min="0"
-                                    max="100"
-                                    value={params.progress || 0}
-                                    onChange={(e) => setParams({...params, progress: Number(e.target.value)})}
-                                    className="w-full h-2 bg-neutral-700 rounded-lg appearance-none cursor-pointer accent-amber-500 hover:accent-amber-400 transition-all"
-                                />
+                                <div className="relative w-full h-6 flex items-center">
+                                    <input 
+                                        type="range" 
+                                        name="progress"
+                                        min="0"
+                                        max="100"
+                                        value={params.progress || 0}
+                                        onChange={(e) => setParams({...params, progress: Number(e.target.value)})}
+                                        style={{
+                                            background: `linear-gradient(to right, #f59e0b 0%, #f59e0b ${params.progress || 0}%, #404040 ${params.progress || 0}%, #404040 100%)`
+                                        }}
+                                        className="w-full h-2 rounded-lg appearance-none cursor-pointer 
+                                        [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-amber-500 hover:[&::-webkit-slider-thumb]:scale-110 transition-all"
+                                    />
+                                </div>
                             </div>
                              <div className="space-y-2">
                                 <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Cover URL (Optional)</label>
