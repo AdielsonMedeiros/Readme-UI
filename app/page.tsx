@@ -842,6 +842,7 @@ export default function Home() {
                              <div className="space-y-2">
                                 <label className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Cover URL (Optional)</label>
                                 <input type="text" name="coverUrl" value={params.coverUrl || ''} onChange={handleChange} placeholder="https://..." className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-700 outline-none transition-all" />
+                                <p className="text-xs text-neutral-500">Right-click a book cover image online &gt; "Copy image address" and paste here.</p>
                             </div>
                         </div>
                     )}
